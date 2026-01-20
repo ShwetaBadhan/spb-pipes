@@ -10,7 +10,7 @@ class AuthController extends Controller
     // 👉 GET login page
     public function login()
     {
-        return view('auth.login');
+        return view('admin.auth.login');
     }
 
     // 👉 POST login form

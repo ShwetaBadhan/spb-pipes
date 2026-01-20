@@ -11,9 +11,9 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\InventoryController;
 
-Route::get('/', function () {
-    return view('admin.auth.login');
-})-> name("login");
+// Route::get('/', function () {
+//     return view('admin.auth.login');
+// })-> name("login");
 
 Route::get('/auth/register', function () {
     return view('admin.auth.register');
@@ -250,7 +250,7 @@ Route::get('/admin-users/{user}', [UserRegisterController::class, 'show'])->name
 
 // auth pages
 
-Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::get('/auth/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'authenticate'])->name('login.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

@@ -13,22 +13,22 @@
     <meta name="author" content="">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{url ('assets/img/favicon.png')}}">
 
     <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{url ('assets/img/apple-touch-icon.png')}}">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url ('assets/css/bootstrap.min.css')}}">
 
     <!-- Tabler Icon CSS -->
-    <link rel="stylesheet" href="assets/plugins/tabler-icons/tabler-icons.min.css">
+    <link rel="stylesheet" href="{{url ('assets/plugins/tabler-icons/tabler-icons.min.css')}}">
 
     <!-- Iconsax CSS -->
-    <link rel="stylesheet" href="assets/css/iconsax.css">
+    <link rel="stylesheet" href="{{url ('assets/css/iconsax.css')}}">
 
     <!-- Main CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="{{url ('assets/css/style.css')}}">
 
 </head>
 
@@ -125,15 +125,15 @@
     <!-- End Wrapper -->
 
     <!-- jQuery -->
-    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <script src="{{url ('assets/js/jquery-3.7.1.min.js')}}"></script>
 
     <!-- Bootstrap Core JS -->
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="{{url ('assets/js/bootstrap.bundle.min.js')}}"></script>
 
     <!-- Custom JS -->
-    <script src="assets/js/script.js"></script>
+    <script src="{{url ('assets/js/script.js')}}"></script>
 
-    <script src="scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" defer></script>
+    {{-- <script src="scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js" defer></script> --}}
 </body>
 
 </html>
