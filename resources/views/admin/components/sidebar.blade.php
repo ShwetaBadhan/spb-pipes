@@ -231,7 +231,7 @@
                         <ul>
                             <!-- Manage Users (Admin Only) -->
                             <li class="submenu">
-                               @can('manage-user')
+                              
                                     <a href="javascript:void(0);">
                                         <i class="isax isax-profile-2user5"></i><span>Manage Users</span>
                                         <span class="menu-arrow"></span>
@@ -241,7 +241,7 @@
                                         <li><a href="{{ route('roles.index') }}">Roles</a></li>
                                         <li><a href="{{ route('permissions.index') }}">Permissions</a></li>
                                     </ul>
-                              @endcan
+                              
                             </li>
 
 
