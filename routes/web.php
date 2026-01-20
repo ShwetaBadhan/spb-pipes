@@ -250,12 +250,13 @@ Route::get('/admin-users/{user}', [UserRegisterController::class, 'show'])->name
 
 // auth pages
 
-Route::get('/auth/login', [AuthController::class, 'login'])->name('login');
+Route::get('/', [AuthController::class, 'login'])->name('login');
+
+Route::get('/auth/login', [AuthController::class, 'login']);
+
 Route::post('/login', [AuthController::class, 'authenticate'])->name('login.submit');
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-
-
 // Product Units
 Route::get('/units', [UnitController::class, 'index'])->name('units');
 Route::post('/units/store', [UnitController::class, 'store'])->name('units.store');
