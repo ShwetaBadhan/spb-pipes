@@ -10,16 +10,16 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::table('inventory_logs', function (Blueprint $table) {
-        $table->softDeletes(); // Adds `deleted_at` TIMESTAMP NULL
-    });
-}
+    {
+        Schema::table('inventory_logs', function (Blueprint $table) {
+            $table->softDeletes(); // Adds `deleted_at` TIMESTAMP NULL
+        });
+    }
 
-public function down()
-{
-    Schema::table('inventory_logs', function (Blueprint $table) {
-        $table->dropSoftDeletes();
-    });
-}
+    public function down()
+    {
+        Schema::table('inventory_logs', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
+    }
 };

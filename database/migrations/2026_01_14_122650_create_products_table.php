@@ -11,23 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('products', function (Blueprint $table) {
-    $table->id();
-    $table->string('name');
-    $table->string('slug');
-    $table->unsignedBigInteger('category_id');
-    $table->text('description');
-    $table->string('image_path');
-    $table->string('unit_id');
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('slug');
+            $table->unsignedBigInteger('category_id');
+            $table->text('description');
+            $table->string('image_path');
+            $table->string('unit_id');
 
-    $table->boolean('status')
-          ->default(1)
-          ->comment('1 = Active, 0 = Inactive');
+            $table->boolean('status')
+                ->default(1)
+                ->comment('1 = Active, 0 = Inactive');
 
-    $table->timestamps();
-});
-
-
+            $table->timestamps();
+        });
     }
 
     /**

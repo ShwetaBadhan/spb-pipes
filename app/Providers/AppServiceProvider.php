@@ -3,7 +3,7 @@
 namespace App\Providers;
 use Illuminate\Support\Facades\View;
 use App\Models\ProductionBatch;
-
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,9 +22,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         
-    // Make batches available in all views (sidebar)
-    $batches = ProductionBatch::all();
-    View::share('batches', $batches);
+ // ✅ Prevent DB access before migrations
+        if (Schema::hasTable('production_batches')) {
+            View::share('batches', ProductionBatch::all());
+        } else {
+            // Always define variable to avoid undefined errors in views
+            View::share('batches', collect());
+        }
 
     }
 }

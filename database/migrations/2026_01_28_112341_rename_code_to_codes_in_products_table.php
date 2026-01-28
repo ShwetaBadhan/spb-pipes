@@ -12,18 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            if (!Schema::hasColumn('products', 'code')) {
-                $table->string('code')->nullable()->after('name');
-            }
+            $table->renameColumn('code', 'codes');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            if (Schema::hasColumn('products', 'code')) {
-                $table->dropColumn('code');
-            }
+            $table->renameColumn('codes', 'code');
         });
     }
 };

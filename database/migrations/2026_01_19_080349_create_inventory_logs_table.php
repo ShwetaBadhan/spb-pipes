@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inventory_logs', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('product_id')->constrained()->onDelete('cascade');
-    $table->integer('quantity');
-    $table->string('status'); // e.g., 'stock_in', 'stock_out'
-    $table->timestamps();
-});
+            $table->id();
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->integer('quantity');
+            $table->string('status'); // e.g., 'stock_in', 'stock_out'
+            $table->timestamps();
+        });
     }
 
     /**
