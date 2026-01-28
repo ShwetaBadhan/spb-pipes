@@ -77,7 +77,7 @@ class ProductController extends Controller
             'unit_id'      => 'required|string',
             'status'       => 'required|boolean',
 
-            'image'        => 'image|mimes:jpg,png,jpeg|max:5120',
+            'image_path'        => 'image|mimes:jpg,png,jpeg|max:5120',
             'gallery.*'    => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
 
             'variants'     => 'required|array|min:1',
@@ -92,8 +92,8 @@ class ProductController extends Controller
 
         DB::transaction(function () use ($request) {
 
-            $imagePath = $request->hasFile('image')
-                ? $request->file('image')->store('products', 'public')
+            $imagePath = $request->hasFile('image_path')
+                ? $request->file('image_path')->store('products', 'public')
                 : null;
 
             $product = Product::create([
@@ -104,7 +104,7 @@ class ProductController extends Controller
                 'description' => $request->description,
                 'unit_id'     => $request->unit_id,
                 'status'      => $request->status, // ✅ FIXED
-                'image'       => $imagePath,
+                'image_path'       => $imagePath,
             ]);
 
             foreach ($request->variants as $variant) {
@@ -121,7 +121,7 @@ class ProductController extends Controller
                 foreach ($request->file('gallery') as $file) {
                     ProductImage::create([
                         'product_id' => $product->id,
-                        'image' => $file->store('products/gallery', 'public'),
+                        'image_path' => $file->store('products/gallery', 'public'),
                     ]);
                 }
             }
@@ -163,7 +163,7 @@ public function edit(Product $product)
         'description'  => 'required|string',
         'unit_id'      => 'required|string',
         'status'       => 'required|boolean',
-        'image'        => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
+        'image_path'        => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
 
         // 🔥 VARIANTS
         'variants'     => 'required|array|min:1',
@@ -179,12 +179,12 @@ public function edit(Product $product)
     DB::transaction(function () use ($request, $product) {
 
         /* ---------- MAIN IMAGE ---------- */
-        if ($request->hasFile('image')) {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+        if ($request->hasFile('image_path')) {
+            if ($product->image_path) {
+                Storage::disk('public')->delete($product->image_path);
             }
 
-            $product->image = $request->file('image')
+            $product->image_path = $request->file('image_path')
                 ->store('products', 'public');
         }
 
@@ -196,7 +196,7 @@ public function edit(Product $product)
             'description' => $request->description,
             'unit_id'     => $request->unit_id,
             'status'      => $request->status,
-            'image'       => $product->image,
+            'image_path'       => $product->image_path,
         ]);
 
         /* ---------- VARIANTS UPDATE ---------- */
@@ -220,7 +220,7 @@ public function edit(Product $product)
             foreach ($request->file('gallery') as $file) {
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'image' => $file->store('products/gallery', 'public'),
+                    'image_path' => $file->store('products/gallery', 'public'),
                 ]);
             }
         }
@@ -239,10 +239,10 @@ public function edit(Product $product)
     {
         DB::transaction(function () use ($product) {
 
-            Storage::disk('public')->delete($product->image);
+            Storage::disk('public')->delete($product->image_path);
 
             foreach ($product->gallery as $img) {
-                Storage::disk('public')->delete($img->image);
+                Storage::disk('public')->delete($img->image_path);
                 $img->delete();
             }
 
