@@ -40,5 +40,12 @@ public function inventoryLogs()
 {
     return $this->hasMany(InventoryLog::class, 'product_id');
 }
-
+public function productionRule()
+{
+    return $this->hasOne(ProductionRule::class);
+}
+ public function productionRecipes()
+    {
+        return $this->hasMany(ProductionRecipe::class);
+    }
 }

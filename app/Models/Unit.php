@@ -13,4 +13,8 @@ class Unit extends Model
         'short_name',
         'is_active',
     ];
+     public function rawMaterials()
+    {
+        return $this->hasMany(RawMaterial::class);
+    }
 }

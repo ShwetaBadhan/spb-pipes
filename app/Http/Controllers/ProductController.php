@@ -49,6 +49,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with('category', 'unit', 'variants')->latest()->get();
+        
         return view('admin.pages.products', compact('products'));
     }
 

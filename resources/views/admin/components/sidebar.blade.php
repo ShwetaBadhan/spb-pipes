@@ -110,30 +110,62 @@
                     <li>
                         <ul>
                             <li class="submenu">
-                                @canany(['view-product', 'view-category', 'view-unit'])
-                                    <a href="javascript:void(0);">
-                                        <i class="isax isax-box5"></i><span>Product / Services</span>
-                                        <span class="menu-arrow"></span>
-                                    </a>
-                                    <ul>
-                                        @can('view-product')
-                                            <li><a href="{{ route('products.index') }}">Products</a></li>
-                                        @endcan
-                                        @can('view-category')
-                                            <li><a href="{{ route('category') }}">Category</a></li>
-                                        @endcan
-                                        @can('view-unit')
-                                            <li><a href="{{ route('units') }}">Units</a></li>
-                                        @endcan
-                                    </ul>
-                                @endcanany
+
+                                <a href="javascript:void(0);">
+                                    <i class="isax isax-box5"></i><span>Product / Services</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+
+                                    <li><a href="{{ route('products.index') }}">Products</a></li>
+
+                                    <li><a href="{{ route('category') }}">Category</a></li>
+
+                                    <li><a href="{{ route('units') }}">Units</a></li>
+
+                                </ul>
+
+                            </li>
+                            <li class="submenu">
+
+                                <a href="javascript:void(0);">
+                                    <i class="isax isax-box5"></i><span>Production</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+
+                                    <li><a href="{{ route('production-rules.index') }}">Add Rules</a></li>
+                                    <li><a href="{{ route('production-batches.index') }}">Add Batches</a></li>
+                                    <li><a href="{{ route('bill-of-materials.index') }}">Bill of Materials (BOM)</a>
+                                    </li>
+                                    {{-- <li>
+    <a href="{{ route('production-batches.consumptions') }}">
+        Production Consumption
+    </a>
+
+</li> --}}
+
+
+
+                                </ul>
+
                             </li>
                             <li>
-                                @can('view-inventory')
-                                    <a href="{{ route('inventory.index') }}">
-                                        <i class="isax isax-lifebuoy5"></i><span>Inventory</span>
-                                    </a>
-                                @endcan
+
+                                <a href="{{ route('raw-materials.index') }}">
+                                    <i class="isax isax-layer5"></i>
+
+                                    <span>Raw Material</span>
+                                </a>
+
+
+                            </li>
+                            <li>
+
+                                <a href="{{ route('inventory.index') }}">
+                                    <i class="isax isax-lifebuoy5"></i><span>Inventory</span>
+                                </a>
+
                             </li>
                             <li class="submenu">
                                 <a href="javascript:void(0);">
@@ -167,11 +199,11 @@
                         <ul>
                             <!-- Purchases -->
                             <li>
-                                @can('view-purchase')
-                                    <a href="{{ route('purchases-view') }}">
-                                        <i class="isax isax-bag-tick-25"></i><span>Purchases</span>
-                                    </a>
-                                @endcan
+
+                                <a href="{{ route('purchases-view') }}">
+                                    <i class="isax isax-bag-tick-25"></i><span>Purchases</span>
+                                </a>
+
                             </li>
                             <li>
                                 <a href="{{ route('purchase-order-view') }}">
@@ -231,17 +263,17 @@
                         <ul>
                             <!-- Manage Users (Admin Only) -->
                             <li class="submenu">
-                              
-                                    <a href="javascript:void(0);">
-                                        <i class="isax isax-profile-2user5"></i><span>Manage Users</span>
-                                        <span class="menu-arrow"></span>
-                                    </a>
-                                    <ul>
-                                        <li><a href="{{ route('users.index') }}">Admin Users</a></li>
-                                        <li><a href="{{ route('roles.index') }}">Roles</a></li>
-                                        <li><a href="{{ route('permissions.index') }}">Permissions</a></li>
-                                    </ul>
-                              
+
+                                <a href="javascript:void(0);">
+                                    <i class="isax isax-profile-2user5"></i><span>Manage Users</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="{{ route('users.index') }}">Admin Users</a></li>
+                                    <li><a href="{{ route('roles.index') }}">Roles</a></li>
+                                    <li><a href="{{ route('permissions.index') }}">Permissions</a></li>
+                                </ul>
+
                             </li>
 
 

@@ -10,12 +10,14 @@ class InventoryLog extends Model
     use HasFactory;
 use SoftDeletes; // ← Must be used
 
-    protected $fillable = [
-        'product_id',
-        'quantity',
-        'status',
-        // Add other fields like user_id, reference, etc.
-    ];
+   protected $fillable = [
+    'item_type',
+    'product_id',
+    'raw_material_id',
+    'quantity',
+    'status',
+];
+
 
     // Optional: if you want to auto-convert status to lowercase
     protected $casts = [

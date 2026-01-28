@@ -25,50 +25,7 @@
 					<div class="nav user-menu nav-list">	
 						<div class="me-auto d-flex align-items-center" id="header-search">	
 
-                            <!-- Add -->
-                            <div class="dropdown me-3">
-                                <a class="btn btn-primary bg-gradient btn-xs btn-icon rounded-circle d-flex align-items-center justify-content-center" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
-                                    <i class="isax isax-add text-white"></i>
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-start p-2">
-                                    <li>
-                                        <a href="add-invoice.html" class="dropdown-item d-flex align-items-center">
-                                            <i class="isax isax-document-text-1 me-2"></i>Invoice
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="expenses.html" class="dropdown-item d-flex align-items-center">
-                                            <i class="isax isax-money-send me-2"></i>Expense
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="add-credit-notes.html" class="dropdown-item d-flex align-items-center">
-                                            <i class="isax isax-money-add me-2"></i>Credit Notes
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="add-debit-notes.html" class="dropdown-item d-flex align-items-center">
-                                            <i class="isax isax-money-recive me-2"></i>Debit Notes
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="add-purchases-orders.html" class="dropdown-item d-flex align-items-center">
-                                            <i class="isax isax-document me-2"></i>Purchase Order
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="add-quotation.html" class="dropdown-item d-flex align-items-center">
-                                            <i class="isax isax-document-download me-2"></i>Quotation
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="add-delivery-challan.html" class="dropdown-item d-flex align-items-center">
-                                            <i class="isax isax-document-forward me-2"></i>Delivery Challan
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-
+                           
 							<!-- Breadcrumb -->
 							<nav aria-label="breadcrumb">
 								<ol class="breadcrumb breadcrumb-divide mb-0">
@@ -90,43 +47,44 @@
 							</div>
 							<!-- /Search -->
 
-							<!-- Language Dropdown -->
-							{{-- <div class="nav-item dropdown has-arrow flag-nav me-2">
-								<a class="btn btn-menubar" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
-									<img src="{{ url('assets/img/flags/us.svg') }}" alt="Language" class="img-fluid">
-								</a>
-								<ul class="dropdown-menu p-2">
+						{{-- resources/views/admin/components/top-header.blade.php --}}
+@php
+    $lowStockNotifications = collect();
+    if (auth()->check()) {
+        // Fetch low stock products
+        $products = \App\Models\Product::with('variants')->get();
+        foreach ($products as $product) {
+            $available = \App\Services\InventoryService::productAvailableQty($product->id);
+            $minAlert = $product->variants->min('alert_quantity') ?? 0;
+            if ($minAlert > 0 && $available <= $minAlert) {
+                $lowStockNotifications->push([
+                    'name' => $product->name,
+                    'status' => $available <= 0 ? 'Out of Stock' : 'Low Stock',
+                    'available' => $available,
+                    'url' => route('inventory.index'),
+                ]);
+            }
+        }
 
-									<!-- item-->
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item">
-											<img src="{{ url('assets/img/flags/us.svg')}}" alt="flag" class="me-2">English
-										</a>
-									</li>
+        // Fetch low stock raw materials
+        $raws = \App\Models\RawMaterial::all();
+        foreach ($raws as $raw) {
+            $available = \App\Services\InventoryService::rawAvailableQty($raw->id);
+            $minStock = $raw->min_stock ?? 0;
+            if ($minStock > 0 && $available <= $minStock) {
+                $lowStockNotifications->push([
+                    'name' => $raw->material_name,
+                    'status' => $available <= 0 ? 'Out of Stock' : 'Low Stock',
+                    'available' => $available,
+                    'url' => route('inventory.index'),
+                ]);
+            }
+        }
 
-									<!-- item-->
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item">
-											<img src="{{ url('assets/img/flags/de.svg')}}" alt="flag" class="me-2">German
-										</a>
-									</li>
-
-									<!-- item-->
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item">
-											<img src="{{ url('assets/img/flags/fr.svg')}}" alt="flag" class="me-2">French
-										</a>
-									</li>
-
-									<!-- item-->
-									<li>
-										<a href="javascript:void(0);" class="dropdown-item">
-											<img src="{{ url('assets/img/flags/ae.svg')}}" alt="flag" class="me-2">Arabic
-										</a>
-									</li>
-
-								</ul>
-							</div> --}}
+        // Limit to 5
+        $lowStockNotifications = $lowStockNotifications->take(5);
+    }
+@endphp
 
 							<!-- Notification -->
 							<div class="notification_item me-2">
@@ -159,147 +117,61 @@
 									
 									<!-- Notification Dropdown -->
 									<div class="notification-body position-relative z-2 rounded-0" data-simplebar>
-									 
-										<!-- Item-->
-										<div class="dropdown-item notification-item py-2 text-wrap border-bottom" id="notification-1">
-											<div class="d-flex">
-												<div class="me-2 position-relative flex-shrink-0">
-													<img src="{{url ('assets/img/profiles/avatar-05.jpg')}}" class="avatar-md rounded-circle" alt="User Img">
-												</div>
-												<div class="flex-grow-1">
-													<p class="mb-0 fw-semibold text-dark">John Smith</p>
-													<p class="mb-1 text-wrap fs-14">
-														A <span class="fw-semibold">new sale</span> has been recorded.
-													</p>
-													<div class="d-flex justify-content-between align-items-center">
-														<span class="fs-12"><i class="isax isax-clock me-1"></i>4 min ago</span>
-														<div class="notification-action d-flex align-items-center float-end gap-2">
-															<a href="javascript:void(0);" class="notification-read rounded-circle bg-info" data-bs-toggle="tooltip" title="" data-bs-original-title="Make as Read" aria-label="Make as Read"></a>
-															<button class="btn rounded-circle text-danger p-0" data-dismissible="#notification-1">
-																<i class="isax isax-close-circle fs-12"></i>
-															</button>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-								
-										<!-- Item-->
-										<div class="dropdown-item notification-item py-2 text-wrap border-bottom" id="notification-2">
-											<div class="d-flex">
-												<div class="flex-shrink-0">
-													<div class="avatar-sm me-2">
-														 <span class="avatar-title bg-soft-info text-info fs-18 rounded-circle">
-															  D
-														 </span>
-													</div>
-											   </div>
-												<div class="flex-grow-1">
-													<p class="mb-0 fw-semibold text-dark">Donoghue Susan</p>
-													<p class="mb-0 text-wrap fs-14">
-														Switched to a lower-tier package
-													</p>
-													<div class="d-flex justify-content-between align-items-center">
-														<span class="fs-12"><i class="isax isax-clock me-1"></i>4 min ago</span>
-														<div class="notification-action d-flex align-items-center float-end gap-2">
-															<a href="javascript:void(0);" class="notification-read rounded-circle bg-info" data-bs-toggle="tooltip" title="" data-bs-original-title="Make as Read" aria-label="Make as Read"></a>
-															<button class="btn rounded-circle text-danger p-0" data-dismissible="#notification-2">
-																<i class="isax isax-close-circle fs-12"></i>
-															</button>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										
-										<!-- Item-->
-										<div class="dropdown-item notification-item py-2 text-wrap border-bottom" id="notification-3">
-											<div class="d-flex">
-												<div class="me-2 position-relative flex-shrink-0">
-													<img src="{{url ('assets/img/profiles/avatar-03.jpg')}}" class="avatar-md rounded-circle" alt="User Img">
-												</div>
-												<div class="flex-grow-1">
-													<p class="mb-0 fw-semibold text-dark">Robert Fox </p>
-													<p class="mb-1 text-wrap fs-14">
-														Completed payment for <span class="fw-semibold">#INV00025</span>
-													</p>
-													<div class="d-flex justify-content-between align-items-center">
-														<span class="fs-12"><i class="isax isax-clock me-1"></i>4 min ago</span>
-														<div class="notification-action d-flex align-items-center float-end gap-2">
-															<a href="javascript:void(0);" class="notification-read rounded-circle bg-info" data-bs-toggle="tooltip" title="" data-bs-original-title="Make as Read" aria-label="Make as Read"></a>
-															<button class="btn rounded-circle text-danger p-0" data-dismissible="#notification-3">
-																<i class="isax isax-close-circle fs-12"></i>
-															</button>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										
-										<!-- Item-->
-										<div class="dropdown-item notification-item py-2 text-wrap border-bottom" id="notification-4">
-											<div class="d-flex">
-												<div class="flex-shrink-0">
-													<div class="avatar-sm me-2">
-														<span class="avatar-title bg-soft-warning text-warning fs-18 rounded-circle">
-															<i class="isax isax-message"></i>
-														</span>
-													</div>
-												</div>
-												<div class="flex-grow-1">
-													<p class="mb-0 text-wrap fs-14">You have received <span class="fw-semibold">20</span> new messages in the conversation</p>
-													<div class="d-flex justify-content-between align-items-center">
-														<span class="fs-12"><i class="isax isax-clock me-1"></i>3 min ago</span>
-														<div class="notification-action d-flex align-items-center float-end gap-2">
-															<a href="javascript:void(0);" class="notification-read rounded-circle bg-info" data-bs-toggle="tooltip" title="" data-bs-original-title="Make as Read" aria-label="Make as Read"></a>
-															<button class="btn rounded-circle text-danger p-0" data-dismissible="#notification-4">
-																<i class="isax isax-close-circle fs-12"></i>
-															</button>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										
-										<!-- Item-->
-										<div class="dropdown-item notification-item py-2 text-wrap border-bottom" id="notification-5">
-											<div class="d-flex">
-												<div class="me-2 position-relative flex-shrink-0">
-													<img src="{{url ('assets/img/profiles/avatar-17.jpg')}}" class="avatar-md rounded-circle" alt="User Img">
-												</div>
-												<div class="flex-grow-1">
-													<p class="mb-0 fw-semibold text-dark">Charlotte Brown</p>
-													<p class="mb-1 text-wrap fs-14">
-														New invoice generated <span class="fw-semibold"> #INV00028</span>
-													</p>
-													<div class="mb-1">
-														<a class="badge bg-success p-2 py-1 me-1" href="#">Approve</a>
-														<a class="badge bg-danger p-2 py-1" href="#">Deny</a>
-													</div>
-													<div class="d-flex justify-content-between align-items-center">
-														<span class="fs-12"><i class="isax isax-clock me-1"></i>45 min ago</span>
-														<div class="notification-action d-flex align-items-center float-end gap-2">
-															<a href="javascript:void(0);" class="notification-read rounded-circle bg-info" data-bs-toggle="tooltip" title="" data-bs-original-title="Make as Read" aria-label="Make as Read"></a>
-															<button class="btn rounded-circle text-danger p-0" data-dismissible="#notification-5">
-																<i class="isax isax-close-circle fs-12"></i>
-															</button>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-										 
-									</div>
-									
-									<!-- View All-->
-									<div class="p-2 rounded-bottom border-top text-center">
-										<a href="#" class="text-center fw-medium fs-14 mb-0">
-											View All
-										</a>
-									</div>
-									
-								</div>
-							</div>
+									  @forelse($lowStockNotifications as $index => $item)
+            <div class="dropdown-item notification-item py-2 text-wrap border-bottom"
+                 id="notification-low-{{ $index }}">
+                <div class="d-flex">
+                    <div class="flex-shrink-0 me-2">
+                        <div class="avatar-sm">
+                            <span class="avatar-title bg-soft-warning text-warning fs-18 rounded-circle">
+                               
+								 @if ($product->image_path)
+                                                <img src="{{ asset('storage/' . $product->image_path) }}"
+                                                    alt="{{ $product->name }}">
+                                            @else
+                                                <img src="{{ asset('assets/img/products/default.jfif') }}" alt="Default">
+                                            @endif
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="mb-0 fw-semibold text-dark">{{ $item['name'] }}</p>
+                        <p class="mb-1 text-wrap fs-14">
+                            {{ $item['status'] }}
+                            <span class="text-muted">(Available: {{ $item['available'] }})</span>
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fs-12 text-muted">
+                                <i class="isax isax-clock me-1"></i>Just now
+                            </span>
+                            <div class="notification-action d-flex align-items-center gap-2">
+                                <a href="{{ $item['url'] }}" class="btn rounded-circle text-info p-0"
+                                   data-bs-toggle="tooltip" title="View Inventory">
+                                    <i class="isax isax-eye fs-12"></i>
+                                </a>
+                                <button class="btn rounded-circle text-danger p-0"
+                                        data-dismissible="#notification-low-{{ $index }}">
+                                    <i class="isax isax-close-circle fs-12"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="dropdown-item py-3 text-center text-muted">
+                No low stock alerts
+            </div>
+        @endforelse
+    </div>
+
+    <!-- View All -->
+    <div class="p-2 border-top text-center">
+        <a href="{{ route('inventory.index') }}" class="text-center fw-medium fs-14 text-primary">
+            View All Inventory
+        </a>
+    </div>
+			 </div>				</div>
 
 							<!-- Light/Dark Mode Button -->
 							<div class="me-2 theme-item">

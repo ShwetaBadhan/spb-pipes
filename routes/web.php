@@ -10,7 +10,14 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\InventoryController;
-
+use App\Http\Controllers\RawMaterialController;
+use App\Services\InventoryService;
+use App\Http\Controllers\ProductionRuleController;
+use App\Http\Controllers\ProductionBatchController;
+use App\Http\Controllers\ProductionRecipeController;
+use App\Http\Controllers\ProductionConsumptionController;
+use App\Models\ProductionBatch;
+use Illuminate\Support\Facades\Log;
 // Route::get('/', function () {
 //     return view('admin.auth.login');
 // })-> name("login");
@@ -19,9 +26,19 @@ Route::get('/auth/register', function () {
     return view('admin.auth.register');
 })-> name("register");
 
+// routes/web.php
+Route::get('/test-stock', function () {
+    $product = \App\Models\Product::first();
+    if (!$product) return 'No product found';
 
+    $available = \App\Services\InventoryService::productAvailableQty($product->id);
+    dd("Product: {$product->name}, Available: {$available}");
+});
 Route::get('/dashboard', function () {
-    return view('admin.pages.dashboard');
+    $lowStockProducts = InventoryService::getLowStockProducts();
+    $lowStockRawMaterials = InventoryService::getLowStockRawMaterials();
+
+    return view('admin.pages.dashboard', compact('lowStockProducts', 'lowStockRawMaterials'));
 })->middleware('auth')->name('dashboard');
 
 // Route::get('/admin-users', function () {
@@ -330,8 +347,79 @@ Route::get('/get-cities/{state}', [LocationController::class, 'getCities'])
     // inventory
     Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
 Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
-Route::get('/inventory/history/{product}', [InventoryController::class, 'getHistory'])
+Route::get('/inventory/history', [InventoryController::class, 'getHistory'])
     ->name('inventory.history');
+
     
 Route::delete('/inventory/{log}', [InventoryController::class, 'destroy'])
     ->name('inventory.destroy');
+
+
+    
+Route::resource('/rawmaterials/raw-materials', RawMaterialController::class);
+
+
+// This creates all 7 RESTful routes for production rules
+Route::resource('production-rules', ProductionRuleController::class);
+// routes/web.php
+Route::get('/admin/production-rules/raw-materials/{productId}', [ProductionRuleController::class, 'getRawMaterialsForProduct']);
+// This creates all 7 RESTful routes for production batches
+Route::resource('production-batches', controller: ProductionBatchController::class);
+
+Route::resource('bill-of-materials', ProductionRecipeController::class);
+
+Route::get('bill-of-materials/by-product/{product}', function($productId) {
+    $recipes = \App\Models\ProductionRecipe::with('rawMaterial')
+                ->where('product_id', $productId)->get();
+
+    return response()->json($recipes);
+});
+
+Route::get(
+    'production-batches/consumptions/{batch}', // must be {batch}, not {batchId}
+    [ProductionConsumptionController::class, 'consumptions']
+)->name('production-batches.consumptions');
+Route::put(
+    '/production-batches/{batch}/consumptions',
+    [ProductionConsumptionController::class, 'update']
+)->name('production-consumptions.update');
+
+// Store consumption for that batch
+
+// Route::get('bill-of-materials/by-batch/{batch}', function($batchId){
+//     try {
+//         $batch = ProductionBatch::with('product.productionRecipes.rawMaterial.unit')->find($batchId);
+
+//         if (!$batch) {
+//             Log::info("Batch not found: $batchId");
+//             return response()->json([], 200);
+//         }
+
+//         if (!$batch->product) {
+//             Log::info("Batch $batchId has no product");
+//             return response()->json([], 200);
+//         }
+
+//         $rawMaterials = $batch->product->productionRecipes->map(function($recipe){
+//             $rawMaterial = $recipe->rawMaterial;
+//             if (!$rawMaterial) return null; // skip if missing
+
+//             $unit = $rawMaterial->unit;
+
+//             return [
+//                 'id' => $rawMaterial->id,
+//                 'material_name' => $rawMaterial->material_name,
+//                 'unit' => $unit ? [
+//                     'id' => $unit->id,
+//                     'short_name' => $unit->short_name,
+//                 ] : null,
+//             ];
+//         })->filter(fn($rm) => $rm !== null);
+
+//         return response()->json($rawMaterials);
+
+//     } catch (\Throwable $e) {
+//         Log::error("Error fetching batch $batchId: ".$e->getMessage());
+//         return response()->json(['error' => 'Internal Server Error'], 500);
+//     }
+// });

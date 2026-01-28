@@ -9,7 +9,16 @@
 
 			<!-- Start Content -->
 			<div class="content">
-
+{{-- Low Stock Alert Banner --}}
+@if(($lowStockProducts->count() + $lowStockRawMaterials->count()) > 0)
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>⚠️ Low Stock Alert!</strong>
+        {{ $lowStockProducts->count() }} product(s) and 
+        {{ $lowStockRawMaterials->count() }} raw material(s) are below threshold.
+        <a href="{{ route('inventory.index') }}" class="alert-link">View Inventory</a>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
 				<!-- Start Breadcrumb -->
 				<div class="d-flex d-block align-items-center justify-content-between flex-wrap gap-3 mb-3">
 					<div>
