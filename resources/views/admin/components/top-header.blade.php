@@ -1,3 +1,60 @@
+{{-- resources/views/admin/components/top-header.blade.php --}}
+@php
+use App\Models\Product;
+use App\Models\RawMaterial;
+use App\Services\InventoryService;
+
+$lowStockNotifications = collect();
+
+if (auth()->check()) {
+
+    // ========================
+    // PRODUCTS LOW STOCK
+    // ========================
+    $products = Product::with('variants')->get();
+
+    foreach ($products as $product) {
+        $available = InventoryService::productAvailableQty($product->id);
+        $minAlert  = $product->variants->min('alert_quantity') ?? 0;
+
+        if ($minAlert > 0 && $available <= $minAlert) {
+            $lowStockNotifications->push([
+                'type'      => 'product',
+                'name'      => $product->name,
+                'status'    => $available <= 0 ? 'Out of Stock' : 'Low Stock',
+                'available' => $available,
+                'image'     => $product->image_path ?? null,
+                'url'       => route('inventory.index'),
+            ]);
+        }
+    }
+
+    // ========================
+    // RAW MATERIAL LOW STOCK
+    // ========================
+    $raws = RawMaterial::all();
+
+    foreach ($raws as $raw) {
+        $available = InventoryService::rawAvailableQty($raw->id);
+        $minStock  = $raw->min_stock ?? 0;
+
+        if ($minStock > 0 && $available <= $minStock) {
+            $lowStockNotifications->push([
+                'type'      => 'raw',
+                'name'      => $raw->material_name,
+                'status'    => $available <= 0 ? 'Out of Stock' : 'Low Stock',
+                'available' => $available,
+                'image'     => null,
+                'url'       => route('inventory.index'),
+            ]);
+        }
+    }
+
+    // Max 5 notifications
+    $lowStockNotifications = $lowStockNotifications->take(5);
+}
+@endphp
+
 <!-- Topbar Start -->
 		<div class="header">						
 			<div class="main-header">
@@ -48,43 +105,7 @@
 							<!-- /Search -->
 
 						{{-- resources/views/admin/components/top-header.blade.php --}}
-@php
-    $lowStockNotifications = collect();
-    if (auth()->check()) {
-        // Fetch low stock products
-        $products = \App\Models\Product::with('variants')->get();
-        foreach ($products as $product) {
-            $available = \App\Services\InventoryService::productAvailableQty($product->id);
-            $minAlert = $product->variants->min('alert_quantity') ?? 0;
-            if ($minAlert > 0 && $available <= $minAlert) {
-                $lowStockNotifications->push([
-                    'name' => $product->name,
-                    'status' => $available <= 0 ? 'Out of Stock' : 'Low Stock',
-                    'available' => $available,
-                    'url' => route('inventory.index'),
-                ]);
-            }
-        }
 
-        // Fetch low stock raw materials
-        $raws = \App\Models\RawMaterial::all();
-        foreach ($raws as $raw) {
-            $available = \App\Services\InventoryService::rawAvailableQty($raw->id);
-            $minStock = $raw->min_stock ?? 0;
-            if ($minStock > 0 && $available <= $minStock) {
-                $lowStockNotifications->push([
-                    'name' => $raw->material_name,
-                    'status' => $available <= 0 ? 'Out of Stock' : 'Low Stock',
-                    'available' => $available,
-                    'url' => route('inventory.index'),
-                ]);
-            }
-        }
-
-        // Limit to 5
-        $lowStockNotifications = $lowStockNotifications->take(5);
-    }
-@endphp
 
 							<!-- Notification -->
 							<div class="notification_item me-2">
@@ -117,53 +138,75 @@
 									
 									<!-- Notification Dropdown -->
 									<div class="notification-body position-relative z-2 rounded-0" data-simplebar>
-									  @forelse($lowStockNotifications as $index => $item)
-            <div class="dropdown-item notification-item py-2 text-wrap border-bottom"
-                 id="notification-low-{{ $index }}">
-                <div class="d-flex">
-                    <div class="flex-shrink-0 me-2">
-                        <div class="avatar-sm">
-                            <span class="avatar-title bg-soft-warning text-warning fs-18 rounded-circle">
-                               
-								 @if ($product->image_path)
-                                                <img src="{{ asset('storage/' . $product->image_path) }}"
-                                                    alt="{{ $product->name }}">
-                                            @else
-                                                <img src="{{ asset('assets/img/products/default.jfif') }}" alt="Default">
-                                            @endif
-                            </span>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1">
-                        <p class="mb-0 fw-semibold text-dark">{{ $item['name'] }}</p>
-                        <p class="mb-1 text-wrap fs-14">
-                            {{ $item['status'] }}
-                            <span class="text-muted">(Available: {{ $item['available'] }})</span>
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fs-12 text-muted">
-                                <i class="isax isax-clock me-1"></i>Just now
-                            </span>
-                            <div class="notification-action d-flex align-items-center gap-2">
-                                <a href="{{ $item['url'] }}" class="btn rounded-circle text-info p-0"
-                                   data-bs-toggle="tooltip" title="View Inventory">
-                                    <i class="isax isax-eye fs-12"></i>
-                                </a>
-                                <button class="btn rounded-circle text-danger p-0"
-                                        data-dismissible="#notification-low-{{ $index }}">
-                                    <i class="isax isax-close-circle fs-12"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+
+@forelse($lowStockNotifications as $index => $item)
+<div class="dropdown-item notification-item py-2 text-wrap border-bottom"
+     id="notification-low-{{ $index }}">
+
+    <div class="d-flex">
+
+        <!-- IMAGE / ICON -->
+        <div class="flex-shrink-0 me-2">
+            <div class="avatar-sm">
+                <span class="avatar-title bg-soft-warning text-warning fs-18 rounded-circle">
+
+                    @if (!empty($item['image']))
+                        <img src="{{ asset('storage/' . $item['image']) }}"
+                             alt="{{ $item['name'] }}"
+                             class="rounded-circle"
+                             width="36" height="36">
+                    @else
+                        <i class="isax isax-warning-2"></i>
+                    @endif
+
+                </span>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="flex-grow-1">
+            <p class="mb-0 fw-semibold text-dark">
+                {{ $item['name'] }}
+            </p>
+
+            <p class="mb-1 fs-14">
+                {{ $item['status'] }}
+                <span class="text-muted">
+                    (Available: {{ $item['available'] }})
+                </span>
+            </p>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="fs-12 text-muted">
+                    <i class="isax isax-clock me-1"></i> Just now
+                </span>
+
+                <div class="notification-action d-flex align-items-center gap-2">
+                    <a href="{{ $item['url'] }}"
+                       class="btn rounded-circle text-info p-0"
+                       data-bs-toggle="tooltip"
+                       title="View Inventory">
+                        <i class="isax isax-eye fs-12"></i>
+                    </a>
+
+                    <button class="btn rounded-circle text-danger p-0"
+                            data-bs-dismiss="alert">
+                        <i class="isax isax-close-circle fs-12"></i>
+                    </button>
                 </div>
             </div>
-        @empty
-            <div class="dropdown-item py-3 text-center text-muted">
-                No low stock alerts
-            </div>
-        @endforelse
+        </div>
+
     </div>
+</div>
+@empty
+<div class="dropdown-item py-3 text-center text-muted">
+    No low stock alerts 🎉
+</div>
+@endforelse
+
+</div>
+
 
     <!-- View All -->
     <div class="p-2 border-top text-center">
