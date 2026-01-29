@@ -10,11 +10,11 @@ class RateTypeSeeder extends Seeder
     public function run(): void
     {
         RateType::insert([
-            ['name' => 'Per Unit', 'status' => 'active'],
-            ['name' => 'Per Truck', 'status' => 'active'],
-            ['name' => 'Per Hour', 'status' => 'active'],
-            ['name' => 'Per Batch', 'status' => 'active'],
-            ['name' => 'Per Worker', 'status' => 'active'],
+            ['name' => 'Per Unit', 'slug' => 'per-unit', 'status' => 'active'],
+            ['name' => 'Per Truck', 'slug' => 'per-truck',  'status' => 'active'],
+            ['name' => 'Per Hour', 'slug' => 'per-hour', 'status' => 'active'],
+            ['name' => 'Per Batch', 'slug' => 'per-batch', 'status' => 'active'],
+            ['name' => 'Per Worker', 'slug' => 'per-worker', 'status' => 'active'],
         ]);
     }
 }

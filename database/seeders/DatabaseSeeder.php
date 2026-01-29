@@ -7,6 +7,9 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Database\Seeders\StateSeeder;
 use Database\Seeders\CitySeeder;
+use Database\Seeders\WorkTypeSeeder;
+use Database\Seeders\RateTypeSeeder;
+
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
@@ -21,6 +24,8 @@ class DatabaseSeeder extends Seeder
      UsersTableSeeder::class,
         StateSeeder::class,
         CitySeeder::class,
+        RateTypeSeeder::class,
+        WorkTypeSeeder::class,
     ]);
        
     }
