@@ -201,7 +201,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @forelse ($rules as $rule)
+                    @foreach ($rules as $rule)
                         <tr>
                     <td></td>
                     <td>{{ $rule->product->name }}</td>
@@ -329,11 +329,8 @@
                                 </div>
                             </div>
                             <!-- End Delete -->
-                    @empty
-                         <tr>
-                         <td>No Rules Found</td>
-                         </tr> 
-                    @endforelse 
+               
+                    @endforeach
                         
                   
                    

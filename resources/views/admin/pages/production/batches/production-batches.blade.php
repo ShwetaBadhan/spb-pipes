@@ -2,8 +2,8 @@
 @section('title', 'Production Batch')
 @section('content')
     <!-- ========================
-                               Start Page Content
-                              ========================= -->
+                                   Start Page Content
+                                  ========================= -->
 
     <div class="page-wrapper">
 
@@ -201,7 +201,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($batches as $batch)
+                        @foreach ($batches as $batch)
                             <tr>
                                 <td></td>
                                 <td>{{ $batch->product->name }}</td>
@@ -227,13 +227,14 @@
                                         <i class="isax isax-more"></i>
                                     </a>
                                     <ul class="dropdown-menu">
-                                    <li>
-                                    <a href="{{ route('production-batches.consumptions', $batch->id) }}"
-   class="dropdown-item d-flex align-items-center" > <i class="isax isax-eye me-2"></i>
-    View Consumption
-</a>
+                                        <li>
+                                            <a href="{{ route('production-batches.consumptions', $batch->id) }}"
+                                                class="dropdown-item d-flex align-items-center"> <i
+                                                    class="isax isax-eye me-2"></i>
+                                                View Consumption
+                                            </a>
 
-                                    </li>
+                                        </li>
                                         <li>
                                             <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center"
                                                 data-bs-toggle="modal" data-bs-target="#edit_batch{{ $batch->id }}">
@@ -350,13 +351,8 @@
                                 </div>
                             </div>
                             <!-- End Modal  -->
-                            @empty
-                                <tr>
-                                    <td colspan="8" class="text-center text-muted">
-                                        No production batches found.
-                                    </td>
-                                </tr>
-                            @endforelse
+                        
+                            @endforeach
                         </tbody>
 
 
@@ -372,8 +368,8 @@
         </div>
 
         <!-- ========================
-                                   End Page Content
-                                  ========================= -->
+                                           End Page Content
+                                          ========================= -->
 
 
         <!-- Start Add Modal -->

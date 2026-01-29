@@ -18,6 +18,11 @@ use App\Http\Controllers\ProductionRecipeController;
 use App\Http\Controllers\ProductionConsumptionController;
 use App\Models\ProductionBatch;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\LaborTypeController;
+use App\Http\Controllers\RateTypeController;
+use App\Http\Controllers\WorkTypeController;
+
+
 // Route::get('/', function () {
 //     return view('admin.auth.login');
 // })-> name("login");
@@ -423,3 +428,43 @@ Route::put(
 //         return response()->json(['error' => 'Internal Server Error'], 500);
 //     }
 // });
+
+
+
+
+// Resource routes for LaborType CRUD
+// Define the routes
+Route::get('/labor-types', [LaborTypeController::class, 'index'])->name('labor-types.index');
+Route::get('/labor-types/create', [LaborTypeController::class, 'create'])->name('labor-types.create');
+Route::post('/labor-types', [LaborTypeController::class, 'store'])->name('labor-types.store');
+Route::get('/labor-types/{id}', [LaborTypeController::class, 'show'])->name('labor-types.show');
+Route::get('/labor-types/{id}/edit', [LaborTypeController::class, 'edit'])->name('labor-types.edit');
+Route::put('/labor-types/{id}', [LaborTypeController::class, 'update'])->name('labor-types.update');
+Route::delete('/labor-types/{id}', [LaborTypeController::class, 'destroy'])->name('labor-types.destroy');
+// Custom routes for additional functionality
+Route::prefix('labor-types')->group(function () {
+    // Status management
+    Route::post('/{id}/toggle-status', [LaborTypeController::class, 'toggleStatus'])->name('labor-types.toggle-status');
+    Route::post('/{id}/activate', [LaborTypeController::class, 'activate'])->name('labor-types.activate');
+    Route::post('/{id}/deactivate', [LaborTypeController::class, 'deactivate'])->name('labor-types.deactivate');
+    
+    // Soft delete operations
+    Route::post('/{id}/restore', [LaborTypeController::class, 'restore'])->name('labor-types.restore');
+    Route::delete('/{id}/force-delete', [LaborTypeController::class, 'forceDelete'])->name('labor-types.force-delete');
+    
+    // Helper routes
+    Route::get('/active', [LaborTypeController::class, 'getActiveLaborTypes'])->name('labor-types.active');
+    Route::get('/options', [LaborTypeController::class, 'getOptions'])->name('labor-types.options');
+});
+
+
+// Rate Types
+Route::resource('rate-types', RateTypeController::class)->names('rate-types');
+Route::post('rate-types/{rate_type}/toggle-status', [RateTypeController::class, 'toggleStatus'])->name('rate-types.toggle-status');
+
+// Work Types
+Route::resource('work-types', WorkTypeController::class)->names('work-types');
+Route::post('work-types/{work_type}/toggle-status', [WorkTypeController::class, 'toggleStatus'])->name('work-types.toggle-status');
+
+// Labor Types
+Route::resource('labor-types', LaborTypeController::class)->names('labor-types');
