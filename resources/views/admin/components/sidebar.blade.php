@@ -201,58 +201,19 @@
         <li class="submenu">
             <a href="javascript:void(0);">
                 <i class="isax isax-user-edit"></i>
-                <span>Labor Master</span>
+                <span>Labor Management</span>
                 <span class="menu-arrow"></span>
             </a>
             <ul>
                 <li><a href="{{route ('work-types.index')}}">Manage Work Types</a></li>
                 <li><a href="{{route ('rate-types.index')}}">Manage Rate Types</a></li>
                 <li><a href="{{route ('labor-types.index')}}">Manage Labor Types</a></li>
+                    <li><a href="">Labor Cost Assignment</a></li>
+            <li><a href="">Labor History</a></li>
+            <li><a href="">Labor Cost Reports</a></li>
             </ul>
         </li>
-        <!-- 🔧 PRODUCTION LABOR -->
-        <li class="submenu">
-            <a href="javascript:void(0);">
-                <i class="isax isax-setting-2"></i>
-                <span>Production Labor</span>
-                <span class="menu-arrow"></span>
-            </a>
-            <ul>
-                <li><a href="">Add Production Labor Cost</a></li>
-                <li><a href="">Production Labor History</a></li>
-                <li><a href="">Production Cost Reports</a></li>
-            </ul>
-        </li>
-
-        <!-- 🚚 LOGISTICS LABOR -->
-        <li class="submenu">
-            <a href="javascript:void(0);">
-                <i class="isax isax-truck"></i>
-                <span>Logistics Labor</span>
-                <span class="menu-arrow"></span>
-            </a>
-            <ul>
-                <li><a href="">Add Loading / Unloading Cost</a></li>
-                <li><a href="">Loading / Unloading History</a></li>
-                <li><a href="">Logistics Cost Reports</a></li>
-            </ul>
-        </li>
-
        
-
-        <!-- 📊 COMBINED REPORTS -->
-        <li class="submenu">
-            <a href="javascript:void(0);">
-                <i class="isax isax-document-text-1"></i>
-                <span>Combined Reports</span>
-                <span class="menu-arrow"></span>
-            </a>
-            <ul>
-                <li><a href="">Overall Cost Summary</a></li>
-                <li><a href="">Product-wise Cost Analysis</a></li>
-                <li><a href="">Profit Margin Calculator</a></li>
-            </ul>
-        </li>
 
     </ul>
 </li>

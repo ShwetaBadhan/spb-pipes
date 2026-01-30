@@ -4,188 +4,80 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class LaborType extends Model
 {
     use SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'code',
         'category',
-        'rate_type',
+        'rate_type_id',
         'rate_amount',
-        'unit_type',
-        'work_type',
+        'unit_id',
+        'work_type_id',
         'description',
         'is_active',
         'status',
         'sort_order'
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'is_active' => 'boolean',
-        'rate_amount' => 'decimal:2',
-        'sort_order' => 'integer',
-        'deleted_at' => 'datetime'
     ];
 
-    /**
-     * Appended attributes.
-     *
-     * @var array<int, string>
-     */
-    protected $appends = ['display_name', 'status_label'];
-
-    /**
-     * Get the display name attribute.
-     */
-    public function getDisplayNameAttribute(): string
+    // ✅ Relationships
+    public function rateType()
     {
-        return $this->code ? "{$this->code} - {$this->name}" : $this->name;
+        return $this->belongsTo(RateType::class, 'rate_type_id');
     }
 
-    /**
-     * Get the status label attribute.
-     */
-    public function getStatusLabelAttribute(): string
+    public function unit()
     {
-        return $this->status === 'active' ? 'Active' : 'Inactive';
+        return $this->belongsTo(Unit::class, 'unit_id');
     }
 
-    /**
-     * Scope a query to only include active labor types.
-     */
-    public function scopeActive($query)
+    public function workType()
     {
-        return $query->where('status', 'active');
+        return $this->belongsTo(WorkType::class, 'work_type_id');
     }
 
-    /**
-     * Scope a query to only include inactive labor types.
-     */
-    public function scopeInactive($query)
+    // ✅ Helper methods
+    public function getRateTypeNameAttribute()
     {
-        return $query->where('status', 'inactive');
+        return $this->rateType ? $this->rateType->name : 'N/A';
     }
 
-    /**
-     * Scope a query to only include production labor types.
-     */
-    public function scopeProduction($query)
+    public function getUnitNameAttribute()
     {
-        return $query->where('category', 'production');
+        return $this->unit ? $this->unit->name : 'N/A';
     }
 
-    /**
-     * Scope a query to only include logistics labor types.
-     */
-    public function scopeLogistics($query)
+    public function getWorkTypeNameAttribute()
     {
-        return $query->where('category', 'logistics');
+        return $this->workType ? $this->workType->name : 'N/A';
     }
 
-    /**
-     * Activate the labor type.
-     */
-    public function activate(): bool
+    // ✅ Status toggle methods
+    public function toggleStatus()
     {
-        $this->status = 'active';
+        $this->is_active = !$this->is_active;
+        $this->status = $this->is_active ? 'active' : 'inactive';
+        return $this->save();
+    }
+
+    public function activate()
+    {
         $this->is_active = true;
+        $this->status = 'active';
         return $this->save();
     }
 
-    /**
-     * Deactivate the labor type.
-     */
-    public function deactivate(): bool
+    public function deactivate()
     {
-        $this->status = 'inactive';
         $this->is_active = false;
+        $this->status = 'inactive';
         return $this->save();
-    }
-
-    /**
-     * Toggle the status of the labor type.
-     */
-    public function toggleStatus(): bool
-    {
-        if ($this->status === 'active') {
-            return $this->deactivate();
-        }
-        return $this->activate();
-    }
-
-    /**
-     * Get all possible statuses.
-     */
-    public static function getStatuses(): array
-    {
-        return [
-            'active' => 'Active',
-            'inactive' => 'Inactive'
-        ];
-    }
-
-    /**
-     * Get all possible categories.
-     */
-    public static function getCategories(): array
-    {
-        return [
-            'production' => 'Production',
-            'logistics' => 'Logistics'
-        ];
-    }
-
-    /**
-     * Get all possible rate types.
-     */
-    public static function getRateTypes(): array
-    {
-        return [
-            'per_unit' => 'Per Unit',
-            'per_truck' => 'Per Truck',
-            'per_hour' => 'Per Hour',
-            'per_batch' => 'Per Batch',
-            'per_worker' => 'Per Worker'
-        ];
-    }
-
-    /**
-     * Get all possible unit types.
-     */
-    public static function getUnitTypes(): array
-    {
-        return [
-            'tile' => 'Tile',
-            'pipe' => 'Pipe',
-            'batch' => 'Batch',
-            'other' => 'Other'
-        ];
-    }
-
-    /**
-     * Get all possible work types.
-     */
-    public static function getWorkTypes(): array
-    {
-        return [
-            'loading' => 'Loading',
-            'unloading' => 'Unloading',
-            'both' => 'Both',
-            'none' => 'None'
-        ];
     }
 }

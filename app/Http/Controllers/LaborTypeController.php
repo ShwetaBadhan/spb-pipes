@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\LaborType;
+use App\Models\WorkType;
+use App\Models\RateType;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -10,66 +13,114 @@ use Illuminate\Validation\ValidationException;
 class LaborTypeController extends Controller
 {
     /**
-     * Display a listing of labor types with optional filters and pagination.
-     */
-    public function index(Request $request)
+ * Auto-generate labor type code
+ */
+public function generateCode(Request $request)
 {
-    try {
-        $query = LaborType::query();
+    $request->validate([
+        'name' => 'required|string|max:255'
+    ]);
 
-        // Apply filters
-        if ($request->has('category') && $request->category) {
-            $query->where('category', $request->category);
-        }
+    $name = $request->name;
+    $code = $this->generateUniqueCode($name);
 
-        if ($request->has('rate_type') && $request->rate_type) {
-            $query->where('rate_type', $request->rate_type);
-        }
-
-        if ($request->has('status') && $request->status) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->has('is_active')) {
-            $query->where('is_active', $request->is_active);
-        }
-
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('code', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
-            });
-        }
-
-        // Sorting
-        $sortBy = $request->get('sort_by', 'sort_order');
-        $sortOrder = $request->get('sort_order', 'asc');
-        
-        if (in_array($sortBy, ['name', 'code', 'category', 'rate_type', 'status', 'sort_order', 'created_at'])) {
-            $query->orderBy($sortBy, $sortOrder);
-        }
-
-        // Pagination
-        $perPage = $request->get('per_page', 15);
-        $laborTypes = $query->paginate($perPage);
-
-        // **Return Blade view instead of JSON**
-        return view('admin.pages.labor-types.index', [
-            'laborTypes' => $laborTypes,
-            'filters' => $request->all(), // optional: pass filters to view
-        ]);
-
-    } catch (\Exception $e) {
-        // optional: show error page instead of JSON
-        return redirect()->back()->with('error', 'Error retrieving labor types: '.$e->getMessage());
-    }
+    return response()->json([
+        'success' => true,
+        'code' => $code
+    ]);
 }
 
+/**
+ * Generate unique code: First 4 letters + Series from 5100
+ */
+private function generateUniqueCode($name)
+{
+    // Get first 4 letters of name (uppercase, remove special chars)
+    $prefix = strtoupper(preg_replace('/[^A-Za-z]/', '', $name));
+    $prefix = substr($prefix, 0, 4);
+    
+    // If prefix is less than 4 letters, pad with 'LAB'
+    if (strlen($prefix) < 4) {
+        $prefix = str_pad($prefix, 4, 'L', STR_PAD_RIGHT);
+    }
+    
+    // Start series from 5100
+    $baseNumber = 5100;
+    $counter = 0;
+    
+    // Find next available code
+    do {
+        $code = $prefix . ($baseNumber + $counter);
+        $exists = LaborType::where('code', $code)->exists();
+        $counter++;
+    } while ($exists && $counter < 10000); // Safety limit
+    
+    return $code;
+}
+    /**
+     * Display a listing of labor types
+     */
+    public function index(Request $request)
+    {
+        try {
+            // ✅ Correct: query() first, then with()
+            $query = LaborType::query()->with(['rateType', 'unit', 'workType']);
+
+            // Apply filters
+            if ($request->has('category') && $request->category) {
+                $query->where('category', $request->category);
+            }
+
+            if ($request->has('status') && $request->status) {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->has('is_active')) {
+                $query->where('is_active', $request->is_active);
+            }
+
+            if ($request->has('search')) {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('code', 'like', "%{$search}%")
+                      ->orWhere('description', 'like', "%{$search}%");
+                });
+            }
+
+            // Sorting
+            $sortBy = $request->get('sort_by', 'sort_order');
+            $sortOrder = $request->get('sort_order', 'asc');
+            
+            if (in_array($sortBy, ['name', 'code', 'category', 'status', 'sort_order', 'created_at'])) {
+                $query->orderBy($sortBy, $sortOrder);
+            }
+
+            // Pagination
+            $perPage = $request->get('per_page', 15);
+            $laborTypes = $query->paginate($perPage);
+
+            // ✅ Fetch dropdown options WITHOUT is_active filter
+            $workTypes = WorkType::orderBy('name')->get(['id', 'name']);
+            $rateTypes = RateType::orderBy('name')->get(['id', 'name']);
+            $units = Unit::orderBy('name')->get(['id', 'name']);
+
+            // ✅ Return VIEW
+            return view('admin.pages.labor-types.index', [
+                'laborTypes' => $laborTypes,
+                'workTypes' => $workTypes,
+                'rateTypes' => $rateTypes,
+                'units' => $units,
+            ]);
+
+        } catch (\Exception $e) {
+           
+            return redirect()->route('dashboard')->with('error', 'Error loading labor types: ' . $e->getMessage());
+        }
+    }
 
     /**
-     * Store a newly created labor type in storage.
+     * Store a newly created labor type
      */
     public function store(Request $request)
     {
@@ -80,34 +131,23 @@ class LaborTypeController extends Controller
                 return LaborType::create($validatedData);
             });
 
-            return response()->json([
-                'success' => true,
-                'data' => $laborType,
-                'message' => 'Labor type created successfully'
-            ], 201);
+            return redirect()->back()->with('success', 'Labor type created successfully');
 
         } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating labor type',
-                'error' => $e->getMessage()
-            ], 500);
+         
+            return redirect()->back()->with('error', 'Error creating labor type: ' . $e->getMessage())->withInput();
         }
     }
 
     /**
-     * Display the specified labor type.
+     * Display the specified labor type
      */
     public function show($id)
     {
         try {
-            $laborType = LaborType::withTrashed()->findOrFail($id);
+            $laborType = LaborType::with(['rateType', 'unit', 'workType'])->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -130,7 +170,7 @@ class LaborTypeController extends Controller
     }
 
     /**
-     * Update the specified labor type in storage.
+     * Update the specified labor type
      */
     public function update(Request $request, $id)
     {
@@ -141,34 +181,20 @@ class LaborTypeController extends Controller
 
             $laborType->update($validatedData);
 
-            return response()->json([
-                'success' => true,
-                'data' => $laborType->fresh(),
-                'message' => 'Labor type updated successfully'
-            ], 200);
+            return redirect()->back()->with('success', 'Labor type updated successfully');
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Labor type not found'
-            ], 404);
+            return redirect()->back()->with('error', 'Labor type not found');
         } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $e->errors()
-            ], 422);
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error updating labor type',
-                'error' => $e->getMessage()
-            ], 500);
+          
+            return redirect()->back()->with('error', 'Error updating labor type: ' . $e->getMessage())->withInput();
         }
     }
 
     /**
-     * Remove the specified labor type from storage (soft delete).
+     * Remove the specified labor type (soft delete)
      */
     public function destroy($id)
     {
@@ -196,99 +222,7 @@ class LaborTypeController extends Controller
     }
 
     /**
-     * Restore a soft-deleted labor type.
-     */
-    public function restore($id)
-    {
-        try {
-            $laborType = LaborType::withTrashed()->findOrFail($id);
-            $laborType->restore();
-
-            return response()->json([
-                'success' => true,
-                'data' => $laborType,
-                'message' => 'Labor type restored successfully'
-            ], 200);
-
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Labor type not found'
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error restoring labor type',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Permanently delete a labor type.
-     */
-    public function forceDelete($id)
-    {
-        try {
-            $laborType = LaborType::withTrashed()->findOrFail($id);
-            $laborType->forceDelete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Labor type permanently deleted'
-            ], 200);
-
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Labor type not found'
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error permanently deleting labor type',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Toggle status of a labor type (active/inactive).
-     */
-    public function toggleStatus($id)
-    {
-        try {
-            $laborType = LaborType::findOrFail($id);
-            
-            if ($laborType->toggleStatus()) {
-                return response()->json([
-                    'success' => true,
-                    'data' => $laborType->fresh(),
-                    'message' => 'Labor type status updated successfully'
-                ], 200);
-            }
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update labor type status'
-            ], 500);
-
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Labor type not found'
-            ], 404);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error updating labor type status',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Activate a labor type.
+     * Activate a labor type
      */
     public function activate($id)
     {
@@ -323,7 +257,7 @@ class LaborTypeController extends Controller
     }
 
     /**
-     * Deactivate a labor type.
+     * Deactivate a labor type
      */
     public function deactivate($id)
     {
@@ -358,60 +292,7 @@ class LaborTypeController extends Controller
     }
 
     /**
-     * Get all active labor types for dropdown/select.
-     */
-    public function getActiveLaborTypes()
-    {
-        try {
-            $laborTypes = LaborType::where('status', 'active')
-                ->orderBy('sort_order')
-                ->orderBy('name')
-                ->get(['id', 'name', 'code', 'category', 'rate_type', 'rate_amount', 'status']);
-
-            return response()->json([
-                'success' => true,
-                'data' => $laborTypes,
-                'message' => 'Active labor types retrieved successfully'
-            ], 200);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error retrieving active labor types',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Get labor type options for dropdowns.
-     */
-    public function getOptions()
-    {
-        try {
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'statuses' => LaborType::getStatuses(),
-                    'categories' => LaborType::getCategories(),
-                    'rate_types' => LaborType::getRateTypes(),
-                    'unit_types' => LaborType::getUnitTypes(),
-                    'work_types' => LaborType::getWorkTypes()
-                ],
-                'message' => 'Options retrieved successfully'
-            ], 200);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error retrieving options',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Get validation rules for store and update requests.
+     * Get validation rules
      */
     private function validateRequest(Request $request, $id = null)
     {
@@ -419,30 +300,25 @@ class LaborTypeController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:50|unique:labor_types,code' . ($id ? ",$id" : ''),
             'category' => 'required|in:production,logistics',
-            'rate_type' => 'required|in:per_unit,per_truck,per_hour,per_batch,per_worker',
-            'rate_amount' => 'required|numeric|min:0|max:99999999.99',
-            'unit_type' => 'nullable|in:tile,pipe,batch,other',
-            'work_type' => 'nullable|in:loading,unloading,both,none',
+            'rate_type_id' => 'required|exists:rate_types,id',
+            'rate_amount' => 'required|numeric|min:0',
+            'unit_id' => 'nullable|exists:units,id',
+            'work_type_id' => 'nullable|exists:work_types,id',
             'description' => 'nullable|string',
-            'is_active' => 'boolean',
             'status' => 'required|in:active,inactive',
-            'sort_order' => 'integer|min:0'
+            'sort_order' => 'nullable|integer|min:0'
         ];
 
-        // Conditional validation based on category
         if ($request->category === 'production') {
-            $rules['unit_type'] = 'required|in:tile,pipe,batch,other';
-            $rules['work_type'] = 'nullable|in:none';
+            $rules['unit_id'] = 'required|exists:units,id';
+            $rules['work_type_id'] = 'nullable';
         } elseif ($request->category === 'logistics') {
-            $rules['work_type'] = 'required|in:loading,unloading,both';
-            $rules['unit_type'] = 'nullable|in:none';
+            $rules['work_type_id'] = 'required|exists:work_types,id';
+            $rules['unit_id'] = 'nullable';
         }
 
-        // Auto-sync is_active with status
         $validated = $request->validate($rules);
-        
-        // Ensure is_active is synchronized with status
-        $validated['is_active'] = $validated['status'] === 'active';
+        $validated['is_active'] = ($validated['status'] === 'active');
 
         return $validated;
     }
