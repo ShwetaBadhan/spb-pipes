@@ -194,29 +194,29 @@
                             </li>
                         </ul>
                     </li>
-                 <li class="menu-title"><span>Costing</span></li>
-<li>
-    <ul>
- <!-- ⚙️ LABOR MASTER (COMMON) -->
-        <li class="submenu">
-            <a href="javascript:void(0);">
-                <i class="isax isax-user-edit"></i>
-                <span>Labor Management</span>
-                <span class="menu-arrow"></span>
-            </a>
-            <ul>
-                <li><a href="{{route ('work-types.index')}}">Manage Work Types</a></li>
-                <li><a href="{{route ('rate-types.index')}}">Manage Rate Types</a></li>
-                <li><a href="{{route ('labor-types.index')}}">Manage Labor Types</a></li>
-                    <li><a href="">Labor Cost Assignment</a></li>
-            <li><a href="">Labor History</a></li>
-            <li><a href="">Labor Cost Reports</a></li>
-            </ul>
-        </li>
-       
+                    <li class="menu-title"><span>Costing</span></li>
+                    <li>
+                        <ul>
+                            <!-- ⚙️ LABOR MASTER (COMMON) -->
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="isax isax-user-edit"></i>
+                                    <span>Labor Management</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="{{ route('work-types.index') }}">Manage Work Types</a></li>
+                                    <li><a href="{{ route('rate-types.index') }}">Manage Rate Types</a></li>
+                                    <li><a href="{{ route('labor-types.index') }}">Manage Labor Types</a></li>
+                                    <li><a href="{{ route('labor-cost-assignments.index') }}">Labor Cost Assignment</a></li>
+                                    <li><a href="{{ route('labor-history.index') }}">Labor History</a></li>
+                                    <li><a href="{{ route('labor-cost-reports.index') }}">Labor Cost Reports</a></li>
+                                </ul>
+                            </li>
 
-    </ul>
-</li>
+
+                        </ul>
+                    </li>
 
                     <li class="menu-title"><span>Purchases</span></li>
                     <li>

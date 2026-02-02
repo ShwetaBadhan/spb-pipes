@@ -60,6 +60,7 @@
 	<link rel="stylesheet" href="{{ url('assets/css/style.css')}}">
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 </head>
@@ -117,7 +118,8 @@
 
 	<!-- Custom JS -->
 	<script src="{{ url('assets/js/script.js')}}" ></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     {{-- <script src="{{ url('scripts/7d0fa10a/cloudflare-static/rocket-loader.min.js')}}"></script> --}}
 @stack('scripts')
 </body>

@@ -21,6 +21,11 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\LaborTypeController;
 use App\Http\Controllers\RateTypeController;
 use App\Http\Controllers\WorkTypeController;
+use App\Http\Controllers\LaborCostAssignmentController;
+use App\Http\Controllers\LaborHistoryController;
+use App\Http\Controllers\LaborCostReportController;
+use App\Http\Controllers\OrderController;
+
 
 
 // Route::get('/', function () {
@@ -452,3 +457,31 @@ Route::post('labor-types/generate-code', [LaborTypeController::class, 'generateC
 Route::post('labor-types/{id}/activate', [LaborTypeController::class, 'activate'])->name('labor-types.activate');
 Route::post('labor-types/{id}/deactivate', [LaborTypeController::class, 'deactivate'])->name('labor-types.deactivate');
 Route::post('labor-types/{id}/toggle-status', [LaborTypeController::class, 'toggleStatus'])->name('labor-types.toggle-status');
+
+
+// Labor Cost Assignments
+// ✅ Correct route definition
+Route::resource('labor-cost-assignments', LaborCostAssignmentController::class)
+    ->names('labor-cost-assignments');
+
+// ✅ Additional route for index (if needed)
+Route::get('labor-cost-assignments', [LaborCostAssignmentController::class, 'index'])
+    ->name('labor-cost-assignments.index');
+Route::get('labor-cost-assignments/labor-type/{id}/details', [LaborCostAssignmentController::class, 'getLaborTypeDetails'])->name('labor-cost-assignments.labor-type-details');
+
+// Labor History
+Route::get('labor-history', [LaborHistoryController::class, 'index'])->name('labor-history.index');
+Route::get('labor-history/export', [LaborHistoryController::class, 'export'])->name('labor-history.export');
+
+// Labor Cost Reports
+Route::get('labor-cost-reports', [LaborCostReportController::class, 'index'])->name('labor-cost-reports.index');
+Route::get('labor-cost-reports/generate', [LaborCostReportController::class, 'generate'])->name('labor-cost-reports.generate');
+Route::get('labor-cost-reports/export-pdf', [LaborCostReportController::class, 'exportPdf'])->name('labor-cost-reports.export-pdf');
+Route::get('labor-cost-reports/export-excel', [LaborCostReportController::class, 'exportExcel'])->name('labor-cost-reports.export-excel');
+
+
+// Order Management - Salesman focused
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('orders', OrderController::class)->except(['edit', 'update']);
+    Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+});
