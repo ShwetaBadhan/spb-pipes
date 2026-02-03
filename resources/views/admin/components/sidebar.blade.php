@@ -194,6 +194,23 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="menu-title"><span>Order Management</span></li>
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="isax isax-shopping-cart"></i>
+                                    <span>Orders</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li><a href="{{ route('admin.orders.index') }}">All Orders</a></li>
+                                    {{-- <li><a href="{{ route('admin.orders.create') }}">Create New Order</a></li> --}}
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
                     <li class="menu-title"><span>Costing</span></li>
                     <li>
                         <ul>
@@ -208,7 +225,8 @@
                                     <li><a href="{{ route('work-types.index') }}">Manage Work Types</a></li>
                                     <li><a href="{{ route('rate-types.index') }}">Manage Rate Types</a></li>
                                     <li><a href="{{ route('labor-types.index') }}">Manage Labor Types</a></li>
-                                    <li><a href="{{ route('labor-cost-assignments.index') }}">Labor Cost Assignment</a></li>
+                                    <li><a href="{{ route('labor-cost-assignments.index') }}">Labor Cost
+                                            Assignment</a></li>
                                     <li><a href="{{ route('labor-history.index') }}">Labor History</a></li>
                                     <li><a href="{{ route('labor-cost-reports.index') }}">Labor Cost Reports</a></li>
                                 </ul>

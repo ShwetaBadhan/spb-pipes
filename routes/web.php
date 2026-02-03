@@ -481,7 +481,12 @@ Route::get('labor-cost-reports/export-excel', [LaborCostReportController::class,
 
 
 // Order Management - Salesman focused
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('orders', OrderController::class)->except(['edit', 'update']);
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
-});
+  // Status update route
+  // CORRECT DEFINITION
+Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+    // Order details AJAX route
+    Route::get('orders/{order}/details', [OrderController::class, 'getOrderDetails'])->name('orders.details');
+    });
