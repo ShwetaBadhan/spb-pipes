@@ -343,68 +343,65 @@
 @endsection
 
 @push('scripts')
-    <script>
-        // Prevent duplicate script execution
-        if (typeof window.orderManagementScriptLoaded === 'undefined') {
-            window.orderManagementScriptLoaded = true;
+<script>
+// Prevent duplicate script execution
+if (typeof window.orderManagementScriptLoaded === 'undefined') {
+    window.orderManagementScriptLoaded = true;
 
-            $(document).ready(function() {
-                console.log('Order Management Script Loaded');
+    $(document).ready(function() {
+        console.log('Order Management Script Loaded');
 
-                // ========== View Order Modal ==========
-                $('#orderDetailsModal').off('show.bs.modal').on('show.bs.modal', function(event) {
-                    const button = $(event.relatedTarget);
-                    const orderId = button.data('order-id');
+        // ========== View Order Modal ==========
+        $('#orderDetailsModal').off('show.bs.modal').on('show.bs.modal', function(event) {
+            const button = $(event.relatedTarget);
+            const orderId = button.data('order-id');
 
-                    console.log('Opening order details modal for order:', orderId);
+            console.log('Opening order details modal for order:', orderId);
 
-                    // Show loading
-                    $('#modal-loading').show();
-                    $('#modal-content').hide();
+            // Show loading
+            $('#modal-loading').show();
+            $('#modal-content').hide();
 
-                    // Fetch order details
-                    $.ajax({
-                        url: '{{ url('admin/orders') }}/' + orderId + '/details',
-                        method: 'GET',
-                        dataType: 'json',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function(response) {
-                            console.log('Order details loaded successfully');
+            // ✅ Use named route for better reliability
+            const detailsUrl = '{{ route('admin.orders.details', ['order' => ':orderId']) }}'.replace(':orderId', orderId);
 
-                            // Populate modal
-                            $('#modal-order-number').text(response.order.order_number);
-                            $('#modal-customer-name').text(response.order.customer_name || '-');
-                            $('#modal-customer-phone').text(response.order.customer_phone ||
-                                '-');
-                            $('#modal-customer-email').text(response.order.customer_email ||
-                                '-');
-                            $('#modal-customer-address').text(response.order.customer_address ||
-                                '-');
-                            $('#modal-subtotal').text(parseFloat(response.order.subtotal)
-                                .toFixed(2));
-                            $('#modal-tax').text(parseFloat(response.order.tax || 0).toFixed(
-                                2));
-                            $('#modal-shipping').text(parseFloat(response.order.shipping_cost ||
-                                0).toFixed(2));
-                            $('#modal-total').text(parseFloat(response.order.total).toFixed(2));
-                            $('#modal-created-at').text(response.order.created_at);
-                            $('#modal-notes').text(response.order.notes || '-');
+            // Fetch order details
+            $.ajax({
+                url: detailsUrl,
+                method: 'GET',
+                dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    console.log('Order details loaded successfully');
 
-                            // Set status badge
-                            const status = response.order.status;
-                            const badgeClass = getStatusBadgeClass(status);
-                            $('#modal-status-badge')
-                                .text(status.charAt(0).toUpperCase() + status.slice(1))
-                                .removeClass()
-                                .addClass('badge bg-' + badgeClass);
+                    // Populate modal
+                    $('#modal-order-number').text(response.order.order_number);
+                    $('#modal-customer-name').text(response.order.customer_name || '-');
+                    $('#modal-customer-phone').text(response.order.customer_phone || '-');
+                    $('#modal-customer-email').text(response.order.customer_email || '-');
+                    $('#modal-customer-address').text(response.order.customer_address || '-');
+                    $('#modal-subtotal').text(parseFloat(response.order.subtotal).toFixed(2));
+                    $('#modal-tax').text(parseFloat(response.order.tax || 0).toFixed(2));
+                    $('#modal-shipping').text(parseFloat(response.order.shipping_cost || 0).toFixed(2));
+                    $('#modal-total').text(parseFloat(response.order.total).toFixed(2));
+                    $('#modal-created-at').text(response.order.created_at);
+                    $('#modal-notes').text(response.order.notes || '-');
 
-                            // Populate items
-                            let itemsHtml = '';
-                            if (response.items && response.items.length > 0) {
-                                response.items.forEach(function(item) {
-                                    itemsHtml += `
+                    // Set status badge
+                    const status = response.order.status;
+                    const badgeClass = getStatusBadgeClass(status);
+                    $('#modal-status-badge')
+                        .text(status.charAt(0).toUpperCase() + status.slice(1))
+                        .removeClass()
+                        .addClass('badge bg-' + badgeClass);
+
+                    // Populate items
+                    let itemsHtml = '';
+                    if (response.items && response.items.length > 0) {
+                        response.items.forEach(function(item) {
+                            itemsHtml += `
                                 <tr>
                                     <td>
                                         <strong>${item.product_name}</strong>
@@ -415,208 +412,196 @@
                                     <td>₹${parseFloat(item.subtotal).toFixed(2)}</td>
                                 </tr>
                             `;
-                                });
-                            } else {
-                                itemsHtml =
-                                    `<tr><td colspan="4" class="text-center text-muted">No items found</td></tr>`;
-                            }
-                            $('#modal-order-items').html(itemsHtml);
+                        });
+                    } else {
+                        itemsHtml = `<tr><td colspan="4" class="text-center text-muted">No items found</td></tr>`;
+                    }
+                    $('#modal-order-items').html(itemsHtml);
 
-                            // Hide loading, show content
-                            $('#modal-loading').hide();
-                            $('#modal-content').show();
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('AJAX Error:', error);
-                            $('#modal-loading').hide();
-                            $('#modal-content').show();
-                            $('#modal-order-items').html(`
+                    // Hide loading, show content
+                    $('#modal-loading').hide();
+                    $('#modal-content').show();
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                    console.error('Response:', xhr.responseText);
+                    
+                    $('#modal-loading').hide();
+                    $('#modal-content').show();
+                    $('#modal-order-items').html(`
                         <tr>
                             <td colspan="4" class="text-center text-danger">
                                 <i class="fas fa-exclamation-triangle me-2"></i>
-                                Failed to load order details
+                                Failed to load order details. Error: ${error}
                             </td>
                         </tr>
                     `);
-                        }
-                    });
-                });
+                }
+            });
+        });
 
-                // ========== Change Status Modal ==========
-                $(document).off('click', '.change-status-btn').on('click', '.change-status-btn', function() {
-                    const orderId = $(this).data('order-id');
-                    const currentStatus = $(this).data('current-status');
+        // ========== Change Status Modal ==========
+        $(document).off('click', '.change-status-btn').on('click', '.change-status-btn', function() {
+            const orderId = $(this).data('order-id');
+            const currentStatus = $(this).data('current-status');
 
-                    console.log('Opening status change modal for order:', orderId, 'Current status:',
-                        currentStatus);
+            console.log('Opening status change modal for order:', orderId, 'Current status:', currentStatus);
 
-                    // Set order ID
-                    $('#status-order-id').val(orderId);
+            // Set order ID
+            $('#status-order-id').val(orderId);
 
-                    // Display current status with badge
-                    const badgeClass = getStatusBadgeClass(currentStatus);
-                    $('#current-status-display').html(`
+            // Display current status with badge
+            const badgeClass = getStatusBadgeClass(currentStatus);
+            $('#current-status-display').html(`
                 <span class="badge bg-${badgeClass} fs-5">
                     ${currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}
                 </span>
             `);
 
-                    // Open modal
-                    $('#statusChangeModal').modal('show');
+            // Open modal
+            $('#statusChangeModal').modal('show');
+        });
+
+        // ========== Status Change Form Submit ==========
+        $('#statusChangeForm').off('submit').on('submit', function(e) {
+            e.preventDefault();
+
+            const orderId = $('#status-order-id').val();
+            const newStatus = $('#new-status').val();
+
+            console.log('Status change form submitted for order:', orderId, 'New status:', newStatus);
+
+            if (!newStatus) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning!',
+                    text: 'Please select a status',
+                    timer: 2000,
+                    showConfirmButton: false
                 });
+                return;
+            }
 
-                // ========== Status Change Form Submit ==========
-                $('#statusChangeForm').off('submit').on('submit', function(e) {
-                    e.preventDefault();
+            // Prevent double submission
+            const submitBtn = $(this).find('button[type="submit"]');
+            if (submitBtn.prop('disabled')) {
+                console.log('Form already submitting, ignoring duplicate submission');
+                return;
+            }
 
-                    const orderId = $('#status-order-id').val();
-                    const newStatus = $('#new-status').val();
+            // Disable submit button
+            submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Updating...');
 
-                    console.log('Status change form submitted for order:', orderId, 'New status:',
-                        newStatus);
-
-                    if (!newStatus) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Warning!',
-                            text: 'Please select a status',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                        return;
-                    }
-
-                    // Prevent double submission
-                    const submitBtn = $(this).find('button[type="submit"]');
-                    if (submitBtn.prop('disabled')) {
-                        console.log('Form already submitting, ignoring duplicate submission');
-                        return;
-                    }
-
-                    // Disable submit button
-                    submitBtn.prop('disabled', true).html(
-                        '<i class="fas fa-spinner fa-spin me-1"></i>Updating...');
-
-                    // Show loading
-                    Swal.fire({
-                        title: 'Updating Status...',
-                        html: `<div class="d-flex flex-column align-items-center">
+            // Show loading
+            Swal.fire({
+                title: 'Updating Status...',
+                html: `<div class="d-flex flex-column align-items-center">
                     <div class="spinner-border text-primary mb-3" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                     <small>Processing order status change...</small>
                 </div>`,
-                        allowOutsideClick: false,
-                        showConfirmButton: false,
-                        willOpen: () => {
-                            Swal.showLoading(null);
-                        }
-                    });
-
-                    $.ajax({
-                        url: '{{ url('admin/orders') }}/' + orderId + '/status',
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: {
-                            _method: 'PATCH',
-                            status: newStatus
-                        },
-                        success: function(response) {
-                            console.log('Status update successful:', response);
-
-                            // Close modal
-                            $('#statusChangeModal').modal('hide');
-
-                            // Update status badge in the table
-                            const statusBadge = $(`#status-badge-${orderId}`);
-                            if (statusBadge.length > 0) {
-                                const badgeClass = getStatusBadgeClass(response.new_status);
-                                statusBadge
-                                    .text(response.new_status.charAt(0).toUpperCase() + response
-                                        .new_status.slice(1))
-                                    .removeClass()
-                                    .addClass('badge bg-' + badgeClass);
-
-                                // Update status in dropdown button text
-                                const dropdownBtn = $(`#status-dropdown-${orderId} button`);
-                                if (dropdownBtn.length > 0) {
-                                    dropdownBtn.removeClass().addClass(
-                                        `btn btn-sm dropdown-toggle bg-${badgeClass} text-white`
-                                    );
-                                }
-                            }
-
-                            // Update status in order details modal if open
-                            if ($('#orderDetailsModal').is(':visible')) {
-                                const modalBadgeClass = getStatusBadgeClass(response
-                                    .new_status);
-                                $('#modal-status-badge')
-                                    .text(response.new_status.charAt(0).toUpperCase() + response
-                                        .new_status.slice(1))
-                                    .removeClass()
-                                    .addClass('badge bg-' + modalBadgeClass);
-                            }
-
-                            // Re-enable submit button
-                            submitBtn.prop('disabled', false).html(
-                                '<i class="isax isax-check-circle me-1"></i>Update Status');
-
-                            // Show success message (ONLY ONE TIME)
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                html: `<strong>Status updated to "${response.new_status}"</strong><br>
-                               ${response.old_status === 'pending' && response.new_status === 'confirmed' ? '✅ Stock deducted successfully!' : 
-                                 response.old_status !== 'cancelled' && response.new_status === 'cancelled' ? '🔄 Stock restored successfully!' : ''}`,
-                                timer: 2000,
-                                showConfirmButton: false
-                            });
-                        },
-                        error: function(xhr) {
-                            console.error('Status update error:', xhr);
-
-                            let errorMsg = 'Failed to update status';
-                            if (xhr.responseJSON && xhr.responseJSON.message) {
-                                errorMsg = xhr.responseJSON.message;
-                            }
-
-                            // Re-enable submit button
-                            submitBtn.prop('disabled', false).html(
-                                '<i class="isax isax-check-circle me-1"></i>Update Status');
-
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error!',
-                                html: `<strong>${errorMsg}</strong><br>
-                               <small class="text-muted">Check console for details</small>`,
-                                timer: 4000,
-                                showConfirmButton: true
-                            });
-                        }
-                    });
-                });
-
-                // Reset status modal when closed
-                $('#statusChangeModal').off('hidden.bs.modal').on('hidden.bs.modal', function() {
-                    $('#statusChangeForm')[0].reset();
-                    $('#current-status-display').html('');
-                });
-
-                // Helper function for status badge
-                function getStatusBadgeClass(status) {
-                    const classes = {
-                        'pending': 'warning',
-                        'confirmed': 'info',
-                        'processing': 'primary',
-                        'shipped': 'success',
-                        'delivered': 'success',
-                        'cancelled': 'danger'
-                    };
-                    return classes[status] || 'secondary';
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading(null);
                 }
             });
+
+            // ✅ Use named route for better reliability
+            const statusUrl = '{{ route('admin.orders.update-status', ['order' => ':orderId']) }}'.replace(':orderId', orderId);
+
+            $.ajax({
+                url: statusUrl,
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    _method: 'PATCH',
+                    status: newStatus
+                },
+                success: function(response) {
+                    console.log('Status update successful:', response);
+
+                    // Close modal
+                    $('#statusChangeModal').modal('hide');
+
+                    // Update status badge in the table
+                    const statusBadge = $(`#status-badge-${orderId}`);
+                    if (statusBadge.length > 0) {
+                        const badgeClass = getStatusBadgeClass(response.new_status);
+                        statusBadge
+                            .text(response.new_status.charAt(0).toUpperCase() + response.new_status.slice(1))
+                            .removeClass()
+                            .addClass('badge bg-' + badgeClass);
+                    }
+
+                    // Update status in order details modal if open
+                    if ($('#orderDetailsModal').is(':visible')) {
+                        const modalBadgeClass = getStatusBadgeClass(response.new_status);
+                        $('#modal-status-badge')
+                            .text(response.new_status.charAt(0).toUpperCase() + response.new_status.slice(1))
+                            .removeClass()
+                            .addClass('badge bg-' + modalBadgeClass);
+                    }
+
+                    // Re-enable submit button
+                    submitBtn.prop('disabled', false).html('<i class="isax isax-check-circle me-1"></i>Update Status');
+
+                    // Show success message (ONLY ONE TIME)
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        html: `<strong>Status updated to "${response.new_status}"</strong><br>
+                               ${response.old_status === 'pending' && response.new_status === 'confirmed' ? '✅ Stock deducted successfully!' : 
+                                 response.old_status !== 'cancelled' && response.new_status === 'cancelled' ? '🔄 Stock restored successfully!' : ''}`,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Status update error:', xhr);
+
+                    let errorMsg = 'Failed to update status';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+
+                    // Re-enable submit button
+                    submitBtn.prop('disabled', false).html('<i class="isax isax-check-circle me-1"></i>Update Status');
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        html: `<strong>${errorMsg}</strong><br>
+                               <small class="text-muted">Check console for details</small>`,
+                        timer: 4000,
+                        showConfirmButton: true
+                    });
+                }
+            });
+        });
+
+        // Reset status modal when closed
+        $('#statusChangeModal').off('hidden.bs.modal').on('hidden.bs.modal', function() {
+            $('#statusChangeForm')[0].reset();
+            $('#current-status-display').html('');
+        });
+
+        // Helper function for status badge
+        function getStatusBadgeClass(status) {
+            const classes = {
+                'pending': 'warning',
+                'confirmed': 'info',
+                'processing': 'primary',
+                'shipped': 'success',
+                'delivered': 'success',
+                'cancelled': 'danger'
+            };
+            return classes[status] || 'secondary';
         }
-    </script>
+    });
+}
+</script>
 @endpush
