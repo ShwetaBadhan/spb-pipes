@@ -34,7 +34,7 @@
 							</a>
 							<ul class="dropdown-menu dropdown-menu-start">
 								<li>
-									<a href="{{ route('add-invoice')}}" class="dropdown-item d-flex align-items-center">
+									<a href="" class="dropdown-item d-flex align-items-center">
 										<i class="isax isax-document-text-1 me-2"></i>Invoice
 									</a>
 								</li>
@@ -320,7 +320,7 @@
 										<i class="isax isax-document-text fs-16"></i>
 									</span>
 								</div>
-								<a href="{{ route('invoices-view')}}" class="fw-medium text-decoration-underline">View Invoices</a>
+								<a href="" class="fw-medium text-decoration-underline">View Invoices</a>
 							</div> <!-- end card body -->
 							<div class="position-absolute end-0 bottom-0 z-n1">
 								<img src="{{ url('assets/img/bg/card-bg-02.svg')}}" alt="img">
@@ -404,7 +404,7 @@
 												</td>
 												<td>
 													<div class="d-flex align-items-center justify-content-end gap-2">
-														<a href="{{ route('add-invoice')}}" class="btn btn-icon btn-sm btn-light" data-bs-toggle="tooltip" data-bs-title="New Invoice"><i class="isax isax-add-circle"></i></a>
+														<a href="" class="btn btn-icon btn-sm btn-light" data-bs-toggle="tooltip" data-bs-title="New Invoice"><i class="isax isax-add-circle"></i></a>
 														<div data-bs-toggle="tooltip" data-bs-title="Add Ledger">
 															<a href="#" class="btn btn-icon btn-sm btn-light"  data-bs-toggle="modal" data-bs-target="#add_ledger"><i class="isax isax-document-text-1"></i></a>															
 														</div>
@@ -429,7 +429,7 @@
 												</td>
 												<td>
 													<div class="d-flex align-items-center justify-content-end gap-2">
-														<a href="{{ route('add-invoice')}}" class="btn btn-icon btn-sm btn-light" data-bs-toggle="tooltip" data-bs-title="New Invoice"><i class="isax isax-add-circle"></i></a>
+														<a href="" class="btn btn-icon btn-sm btn-light" data-bs-toggle="tooltip" data-bs-title="New Invoice"><i class="isax isax-add-circle"></i></a>
 														<div data-bs-toggle="tooltip" data-bs-title="Add Ledger">
 															<a href="#" class="btn btn-icon btn-sm btn-light"  data-bs-toggle="modal" data-bs-target="#add_ledger"><i class="isax isax-document-text-1"></i></a>															
 														</div>
@@ -454,7 +454,7 @@
 												</td>
 												<td>
 													<div class="d-flex align-items-center justify-content-end gap-2">
-														<a href="{{ route('add-invoice')}}" class="btn btn-icon btn-sm btn-light" data-bs-toggle="tooltip" data-bs-title="New Invoice"><i class="isax isax-add-circle"></i></a>
+														<a href="" class="btn btn-icon btn-sm btn-light" data-bs-toggle="tooltip" data-bs-title="New Invoice"><i class="isax isax-add-circle"></i></a>
 														<div data-bs-toggle="tooltip" data-bs-title="Add Ledger">
 															<a href="#" class="btn btn-icon btn-sm btn-light"  data-bs-toggle="modal" data-bs-target="#add_ledger"><i class="isax isax-document-text-1"></i></a>															
 														</div>
@@ -479,7 +479,7 @@
 												</td>
 												<td>
 													<div class="d-flex align-items-center justify-content-end gap-2">
-														<a href="{{ route('add-invoice')}}" class="btn btn-icon btn-sm btn-light" data-bs-toggle="tooltip" data-bs-title="New Invoice"><i class="isax isax-add-circle"></i></a>
+														<a href="" class="btn btn-icon btn-sm btn-light" data-bs-toggle="tooltip" data-bs-title="New Invoice"><i class="isax isax-add-circle"></i></a>
 														<div data-bs-toggle="tooltip" data-bs-title="Add Ledger">
 															<a href="#" class="btn btn-icon btn-sm btn-light"  data-bs-toggle="modal" data-bs-target="#add_ledger"><i class="isax isax-document-text-1"></i></a>															
 														</div>
@@ -504,7 +504,7 @@
 												</td>
 												<td>
 													<div class="d-flex align-items-center justify-content-end gap-2">
-														<a href="{{ route('add-invoice')}}" class="btn btn-icon btn-sm btn-light" data-bs-toggle="tooltip" data-bs-title="New Invoice"><i class="isax isax-add-circle"></i></a>
+														<a href="" class="btn btn-icon btn-sm btn-light" data-bs-toggle="tooltip" data-bs-title="New Invoice"><i class="isax isax-add-circle"></i></a>
 														<div data-bs-toggle="tooltip" data-bs-title="Add Ledger">
 															<a href="#" class="btn btn-icon btn-sm btn-light"  data-bs-toggle="modal" data-bs-target="#add_ledger"><i class="isax isax-document-text-1"></i></a>															
 														</div>
@@ -528,7 +528,7 @@
 							<div class="card-body">
 								<div class="d-flex align-items-center justify-content-between gap-2 flex-wrap mb-3">
 									<h6 class="mb-1">Invoices</h6>
-									<a href="{{ route('invoices-view')}}" class="btn btn-primary mb-1">View all Invoices</a>
+									<a href="" class="btn btn-primary mb-1">View all Invoices</a>
 								</div>
 								<div class="table-responsive no-filter no-pagination">
 									<table class="table table-nowrap border mb-0">
@@ -546,7 +546,7 @@
 										<tbody>
 											<tr>
 												<td>
-													<a href="{{ route('invoice-details')}}" class="link-default">INV00025</a>
+													<a href="" class="link-default">INV00025</a>
 												</td>
 												<td>
 													<div class="d-flex align-items-center">
@@ -566,7 +566,7 @@
 											</tr>
 											<tr>
 												<td>
-													<a href="{{ route('invoice-details')}}" class="link-default">INV00024</a>
+													<a href="" class="link-default">INV00024</a>
 												</td>
 												<td>
 													<div class="d-flex align-items-center">
@@ -586,7 +586,7 @@
 											</tr>
 											<tr>
 												<td>
-													<a href="{{ route('invoice-details')}}" class="link-default">INV00023</a>
+													<a href="" class="link-default">INV00023</a>
 												</td>
 												<td>
 													<div class="d-flex align-items-center">
@@ -606,7 +606,7 @@
 											</tr>
 											<tr>
 												<td>
-													<a href="{{ route('invoice-details')}}" class="link-default">INV00022</a>
+													<a href="" class="link-default">INV00022</a>
 												</td>
 												<td>
 													<div class="d-flex align-items-center">
@@ -626,7 +626,7 @@
 											</tr>
 											<tr>
 												<td>
-													<a href="{{ route('invoice-details')}}" class="link-default">INV00016</a>
+													<a href="" class="link-default">INV00016</a>
 												</td>
 												<td>
 													<div class="d-flex align-items-center">
@@ -646,7 +646,7 @@
 											</tr>
 											<tr>
 												<td>
-													<a href="{{ route('invoice-details')}}" class="link-default">INV00015</a>
+													<a href="" class="link-default">INV00015</a>
 												</td>
 												<td>
 													<div class="d-flex align-items-center">
@@ -666,7 +666,7 @@
 											</tr>
 											<tr>
 												<td>
-													<a href="{{ route('invoice-details')}}" class="link-default">INV00014</a>
+													<a href="" class="link-default">INV00014</a>
 												</td>
 												<td>
 													<div class="d-flex align-items-center">
@@ -686,7 +686,7 @@
 											</tr>
 											<tr>
 												<td>
-													<a href="{{ route('invoice-details')}}" class="link-default">INV00013</a>
+													<a href="" class="link-default">INV00013</a>
 												</td>
 												<td>
 													<div class="d-flex align-items-center">
@@ -729,7 +729,7 @@
 										</a>
 										<div>
 											<h6 class="fs-14 fw-semibold mb-1"><a href="javascript:void(0);">Andrew James</a></h6>
-											<p class="fs-13"><a href="{{ route('invoice-details')}}" class="link-default">#INV45478</a></p>
+											<p class="fs-13"><a href="" class="link-default">#INV45478</a></p>
 										</div>
 									</div>
 									<div class="text-end">
@@ -743,7 +743,7 @@
 										</a>
 										<div>
 											<h6 class="fs-14 fw-semibold mb-1"><a href="javascript:void(0);">John Carter</a></h6>
-											<p class="fs-13"><a href="{{ route('invoice-details')}}" class="link-default">#INV45477</a></p>
+											<p class="fs-13"><a href="" class="link-default">#INV45477</a></p>
 										</div>
 									</div>
 									<div class="text-end">
@@ -759,7 +759,7 @@
 										</a>
 										<div>
 											<h6 class="fs-14 fw-semibold mb-1"><a href="javascript:void(0);">Sophia White</a></h6>
-											<p class="fs-13"><a href="{{ route('invoice-details')}}" class="link-default">#INV45476</a></p>
+											<p class="fs-13"><a href="" class="link-default">#INV45476</a></p>
 										</div>
 									</div>
 									<div class="text-end">
@@ -773,7 +773,7 @@
 										</a>
 										<div>
 											<h6 class="fs-14 fw-semibold mb-1"><a href="javascript:void(0);">Daniel Martinez</a></h6>
-											<p class="fs-13"><a href="{{ route('invoice-details')}}" class="link-default">#INV45475</a></p>
+											<p class="fs-13"><a href="" class="link-default">#INV45475</a></p>
 										</div>
 									</div>
 									<div class="text-end">
@@ -787,7 +787,7 @@
 										</a>
 										<div>
 											<h6 class="fs-14 fw-semibold mb-1"><a href="javascript:void(0);">Amelia Robinson</a></h6>
-											<p class="fs-13"><a href="{{ route('invoice-details')}}" class="link-default">#INV45474</a></p>
+											<p class="fs-13"><a href="" class="link-default">#INV45474</a></p>
 										</div>
 									</div>
 									<div class="text-end">

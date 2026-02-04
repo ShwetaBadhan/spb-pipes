@@ -11,7 +11,7 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-start">
                 <li>
-                    <a href="{{ route('add-invoice') }}" class="dropdown-item d-flex align-items-center">
+                    <a href="" class="dropdown-item d-flex align-items-center">
                         <i class="isax isax-document-text-1 me-2"></i>Invoice
                     </a>
                 </li>
@@ -173,9 +173,9 @@
                                     <span class="menu-arrow"></span>
                                 </a>
                                 <ul>
-                                    <li><a href="{{ route('invoices-view') }}">Invoices</a></li>
-                                    <li><a href="{{ route('add-invoice') }}">Create Invoice</a></li>
-                                    <li><a href="{{ route('invoice-details') }}">Invoice Details</a></li>
+                                     <li><a href="{{ route('admin.invoices.index') }}">Invoices</a></li>
+    <li><a href="{{ route('admin.invoices.create') }}">Create Invoice</a></li>
+                                    {{-- <li><a href="{{ route('invoice-details') }}">Invoice Details</a></li> --}}
 
 
                                 </ul>
@@ -236,7 +236,7 @@
                         </ul>
                     </li>
 
-                    <li class="menu-title"><span>Purchases</span></li>
+                    {{-- <li class="menu-title"><span>Purchases</span></li>
                     <li>
                         <ul>
                             <!-- Purchases -->
@@ -264,7 +264,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li> --}}
                     <li class="menu-title"><span>Finance & Accounts</span></li>
                     <li>
                         <ul>

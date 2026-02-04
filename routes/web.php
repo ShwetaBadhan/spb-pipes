@@ -25,6 +25,7 @@ use App\Http\Controllers\LaborCostAssignmentController;
 use App\Http\Controllers\LaborHistoryController;
 use App\Http\Controllers\LaborCostReportController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\InvoiceController;
 
 
 
@@ -95,28 +96,28 @@ Route::get('/admin-roles', function () {
 
 // invoice routes
 
-Route::get('/invoices/invoices-view', function () {
-    return view('admin.pages.invoices.invoices-view');
-})-> name("invoices-view");
+// Route::get('/invoices/invoices-view', function () {
+//     return view('admin.pages.invoices.invoices-view');
+// })-> name("invoices-view");
 
 
 
-Route::get('/invoices/add-invoice', function () {
-    return view('admin.pages.invoices.add-invoice');
-})-> name("add-invoice");
+// Route::get('/invoices/add-invoice', function () {
+//     return view('admin.pages.invoices.add-invoice');
+// })-> name("add-invoice");
 
 
 
 
-Route::get('/invoices/edit-invoice', function () {
-    return view('admin.pages.invoices.edit-invoice');
-})-> name("edit-invoice");
+// Route::get('/invoices/edit-invoice', function () {
+//     return view('admin.pages.invoices.edit-invoice');
+// })-> name("edit-invoice");
 
 
 
-Route::get('/invoices/invoice-details', function () {
-    return view('admin.pages.invoices.invoice-details');
-})-> name("invoice-details");
+// Route::get('/invoices/invoice-details', function () {
+//     return view('admin.pages.invoices.invoice-details');
+// })-> name("invoice-details");
 
 // customer routes
 
@@ -490,3 +491,21 @@ Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])-
     // Order details AJAX route
     Route::get('orders/{order}/details', [OrderController::class, 'getOrderDetails'])->name('orders.details');
     });
+
+
+    // Invoice Management Routes
+Route::middleware(['auth'])
+    ->prefix('admin')          // Adds /admin to all URLs
+    ->name('admin.invoices.')  // Prefixes route names with admin.invoices.
+    ->group(function () {
+        Route::get('/invoices', [InvoiceController::class, 'index'])->name('index');
+        Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('create');
+        Route::post('/invoices', [InvoiceController::class, 'store'])->name('store');
+        Route::get('/invoices/{invoice}', [InvoiceController::class, 'show'])->name('show');
+        Route::get('/invoices/{invoice}/edit', [InvoiceController::class, 'edit'])->name('edit');
+        Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('update');
+        Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
+        Route::patch('/invoices/{invoice}/status', [InvoiceController::class, 'updateStatus'])->name('update-status');
+    // ✅ Fixed: Changed from 'invoices.pdf' to 'pdf'
+        Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'pdf'])->name('pdf');
+        });
