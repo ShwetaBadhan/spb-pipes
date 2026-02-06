@@ -173,8 +173,8 @@
                                     <span class="menu-arrow"></span>
                                 </a>
                                 <ul>
-                                     <li><a href="{{ route('admin.invoices.index') }}">Invoices</a></li>
-    <li><a href="{{ route('admin.invoices.create') }}">Create Invoice</a></li>
+                                    <li><a href="{{ route('admin.invoices.index') }}">Invoices</a></li>
+                                    <li><a href="{{ route('admin.invoices.create') }}">Create Invoice</a></li>
                                     {{-- <li><a href="{{ route('invoice-details') }}">Invoice Details</a></li> --}}
 
 
@@ -207,6 +207,24 @@
                                     <li><a href="{{ route('admin.orders.index') }}">All Orders</a></li>
                                     {{-- <li><a href="{{ route('admin.orders.create') }}">Create New Order</a></li> --}}
 
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="menu-title"><span>Gate Pass Management</span></li>
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="isax isax-scan"></i>
+                                    <span>Gate Pass</span>
+
+
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <!-- CORRECTED ROUTE NAME BELOW -->
+                                    <li><a href="{{ route('admin.gate-passes.index') }}">All Passes</a></li>
                                 </ul>
                             </li>
                         </ul>

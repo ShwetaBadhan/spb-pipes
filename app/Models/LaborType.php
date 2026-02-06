@@ -80,4 +80,8 @@ class LaborType extends Model
         $this->status = 'inactive';
         return $this->save();
     }
+     public function gatePasses()
+    {
+        return $this->hasMany(GatePass::class);
+    }
 }

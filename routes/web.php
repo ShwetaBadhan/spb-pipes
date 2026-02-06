@@ -26,6 +26,7 @@ use App\Http\Controllers\LaborHistoryController;
 use App\Http\Controllers\LaborCostReportController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\GatePassController;
 
 
 
@@ -35,7 +36,7 @@ use App\Http\Controllers\InvoiceController;
 
 Route::get('/auth/register', function () {
     return view('admin.auth.register');
-})-> name("register");
+})->name("register");
 
 // routes/web.php
 Route::get('/test-stock', function () {
@@ -70,7 +71,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/products', function () {
     return view('admin.pages.products');
-})-> name("products");
+})->name("products");
 
 // Route::get('/category', function () {
 //     return view('admin.pages.category');
@@ -91,7 +92,7 @@ Route::get('/products', function () {
 
 Route::get('/admin-roles', function () {
     return view('admin.pages.admin-roles');
-})-> name("roles");
+})->name("roles");
 
 
 // invoice routes
@@ -148,88 +149,88 @@ Route::get('/admin-roles', function () {
 
 Route::get('/purchases/purchases-view', function () {
     return view('admin.pages.purchases.purchases-view');
-})-> name("purchases-view");
+})->name("purchases-view");
 
 
 
 Route::get('/purchases/add-purchase', function () {
     return view('admin.pages.purchases.add-purchase');
-})-> name("add-purchase");
+})->name("add-purchase");
 
 
 
 
 Route::get('/purchases/edit-purchase', function () {
     return view('admin.pages.purchases.edit-purchase');
-})-> name("edit-purchase");
+})->name("edit-purchase");
 
 // purchase order routes
 
 Route::get('/purchaseorders/purchase-order-view', function () {
     return view('admin.pages.purchaseorders.purchase-order-view');
-})-> name("purchase-order-view");
+})->name("purchase-order-view");
 
 
 
 Route::get('/purchaseorders/add-purchase-order', function () {
     return view('admin.pages.purchaseorders.add-purchase-order');
-})-> name("add-purchase-orders");
+})->name("add-purchase-orders");
 
 
 
 
 Route::get('/purchaseorders/edit-purchase-order', function () {
     return view('admin.pages.purchaseorders.edit-purchase-order');
-})-> name("edit-purchase-orders");
+})->name("edit-purchase-orders");
 
 // suppliers route
 
 Route::get('/suppliers/suppliers-view', function () {
     return view('admin.pages.suppliers.suppliers-view');
-})-> name("suppliers");
+})->name("suppliers");
 
 
 
 
 Route::get('/suppliers/supplier-payment', function () {
     return view('admin.pages.suppliers.supplier-payment');
-})-> name("supplier-payment");
+})->name("supplier-payment");
 
 // finance routes
 
 Route::get('/finances/expenses', function () {
     return view('admin.pages.finances.expenses');
-})-> name("expenses");
+})->name("expenses");
 
 
 Route::get('/finances/incomes', function () {
     return view('admin.pages.finances.incomes');
-})-> name("incomes");
+})->name("incomes");
 
 
 Route::get('/finances/payments', function () {
     return view('admin.pages.finances.payments');
-})-> name("payments");
+})->name("payments");
 
 
 Route::get('/finances/transactions', function () {
     return view('admin.pages.finances.transactions');
-})-> name("transactions");
+})->name("transactions");
 
 
 Route::get('/finances/bank-accounts', function () {
     return view('admin.pages.finances.bank-accounts');
-})-> name("bank-accounts");
+})->name("bank-accounts");
 
 
 Route::get('/finances/money-transfer', function () {
     return view('admin.pages.finances.money-transfer');
-})-> name("money-transfer");
+})->name("money-transfer");
 
 
 Route::get('/settings/account-setting', function () {
     return view('admin.pages.settings.account-setting');
-})-> name("account-settings");
+})->name("account-settings");
 
 
 // controllers
@@ -251,13 +252,13 @@ Route::put('/admin-roles/{role}/permissions', [RolePermissionController::class, 
 
 // Permissions routes
 
-    Route::get('/admin-permissions', [RolePermissionController::class, 'permissionsIndex'])->name('permissions.index');
-    Route::post('/admin-permissions', [RolePermissionController::class, 'storePermission'])->name('permissions.store');
-    Route::put('/admin-permissions/{permission}', [RolePermissionController::class, 'updatePermission'])->name('permissions.update');
-    Route::delete('/admin-permissions/{permission}', [RolePermissionController::class, 'destroyPermission'])->name('permissions.destroy');
+Route::get('/admin-permissions', [RolePermissionController::class, 'permissionsIndex'])->name('permissions.index');
+Route::post('/admin-permissions', [RolePermissionController::class, 'storePermission'])->name('permissions.store');
+Route::put('/admin-permissions/{permission}', [RolePermissionController::class, 'updatePermission'])->name('permissions.update');
+Route::delete('/admin-permissions/{permission}', [RolePermissionController::class, 'destroyPermission'])->name('permissions.destroy');
 
 // admin user register
-    // Users List Page
+// Users List Page
 Route::get('/admin-users', [UserRegisterController::class, 'index'])->name('users.index');
 
 // Add New User
@@ -355,18 +356,18 @@ Route::get('/get-cities/{state}', [LocationController::class, 'getCities'])
     ->name('get.cities');
 
 
-    // inventory
-    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+// inventory
+Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
 Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
 Route::get('/inventory/history', [InventoryController::class, 'getHistory'])
     ->name('inventory.history');
 
-    
+
 Route::delete('/inventory/{log}', [InventoryController::class, 'destroy'])
     ->name('inventory.destroy');
 
 
-    
+
 Route::resource('/rawmaterials/raw-materials', RawMaterialController::class);
 
 
@@ -379,9 +380,9 @@ Route::resource('production-batches', controller: ProductionBatchController::cla
 
 Route::resource('bill-of-materials', ProductionRecipeController::class);
 
-Route::get('bill-of-materials/by-product/{product}', function($productId) {
+Route::get('bill-of-materials/by-product/{product}', function ($productId) {
     $recipes = \App\Models\ProductionRecipe::with('rawMaterial')
-                ->where('product_id', $productId)->get();
+        ->where('product_id', $productId)->get();
 
     return response()->json($recipes);
 });
@@ -485,15 +486,15 @@ Route::get('labor-cost-reports/export-excel', [LaborCostReportController::class,
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('orders', OrderController::class)->except(['edit', 'update']);
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
-  // Status update route
-  // CORRECT DEFINITION
-Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+    // Status update route
+    // CORRECT DEFINITION
+    Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
     // Order details AJAX route
     Route::get('orders/{order}/details', [OrderController::class, 'getOrderDetails'])->name('orders.details');
-    });
+});
 
 
-    // Invoice Management Routes
+// Invoice Management Routes
 Route::middleware(['auth'])
     ->prefix('admin')          // Adds /admin to all URLs
     ->name('admin.invoices.')  // Prefixes route names with admin.invoices.
@@ -506,6 +507,21 @@ Route::middleware(['auth'])
         Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('update');
         Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
         Route::patch('/invoices/{invoice}/status', [InvoiceController::class, 'updateStatus'])->name('update-status');
-    // ✅ Fixed: Changed from 'invoices.pdf' to 'pdf'
+        // ✅ Fixed: Changed from 'invoices.pdf' to 'pdf'
         Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'pdf'])->name('pdf');
-        });
+    });
+
+
+// gate-passes
+Route::name('admin.')->group(function () {
+    // Custom route MUST be BEFORE resource
+    Route::get('gate-passes/labor-rate/{id}', [GatePassController::class, 'getLaborRate'])
+        ->name('gate-passes.labor-rate');
+
+    // Resource route
+    Route::resource('gate-passes', GatePassController::class);
+
+    // NEW: Generate Slip route (AFTER resource)
+    Route::get('gate-passes/slip/{batchNumber}', [GatePassController::class, 'generateSlip'])
+        ->name('gate-passes.slip');
+});
