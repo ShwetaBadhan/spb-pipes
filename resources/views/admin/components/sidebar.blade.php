@@ -175,8 +175,8 @@
                                 <ul>
                                     <li><a href="{{ route('admin.invoices.index') }}">Invoices</a></li>
                                     <li><a href="{{ route('admin.invoices.create') }}">Create Invoice</a></li>
-                                    {{-- <li><a href="{{ route('invoice-details') }}">Invoice Details</a></li> --}}
-
+                                    {{-- <li><a href="{{ route('admin.invoices.add-payment') }}">Create Payment</a></li>
+ --}}
 
                                 </ul>
                             </li>
@@ -283,7 +283,7 @@
                             </li>
                         </ul>
                     </li> --}}
-                    <li class="menu-title"><span>Finance & Accounts</span></li>
+                    {{-- <li class="menu-title"><span>Finance & Accounts</span></li>
                     <li>
                         <ul>
                             <li>
@@ -317,7 +317,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li> --}}
                     <li class="menu-title"><span>Manage</span></li>
                     <li>
                         <ul>

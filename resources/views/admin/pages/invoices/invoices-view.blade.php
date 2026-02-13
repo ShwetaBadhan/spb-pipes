@@ -127,45 +127,37 @@
             </a>
         </div>
 
-        <!-- Search & Filter -->
-        <div class="card mb-3">
-            <div class="card-body">
-                <form method="GET" action="{{ route('admin.invoices.index') }}">
-                    <div class="row gy-3">
-                        <div class="col-md-4">
-                            <input type="text" name="search" class="form-control" placeholder="Search by invoice number..." value="{{ request('search') }}">
-                        </div>
-                        <div class="col-md-3">
-                            <select name="status" class="form-select">
-                                <option value="">All Status</option>
-                                <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Paid</option>
-                                <option value="unpaid" {{ request('status') == 'unpaid' ? 'selected' : '' }}>Unpaid</option>
-                                <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                                <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
-                                <option value="partially_paid" {{ request('status') == 'partially_paid' ? 'selected' : '' }}>Partially Paid</option>
-                                <option value="refunded" {{ request('status') == 'refunded' ? 'selected' : '' }}>Refunded</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select name="customer_id" class="form-select">
-                                <option value="">All Customers</option>
-                                @foreach($customers as $customer)
-                                    <option value="{{ $customer->id }}" {{ request('customer_id') == $customer->id ? 'selected' : '' }}>
-                                        {{ $customer->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="isax isax-search-normal me-1"></i>Search
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+       
+ @if (session('success'))
+                <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '{{ session('success') }}',
+                        timer: 5000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                </script>
+            @endif
 
+            @if ($errors->any())
+                <script>
+                    let errorMessages = [];
+                    @foreach ($errors->all() as $error)
+                        errorMessages.push("{{ $error }}");
+                    @endforeach
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        html: errorMessages.join('<br>'),
+                        timer: 6000,
+                        timerProgressBar: true,
+                        showConfirmButton: true
+                    });
+                </script>
+            @endif
         <!-- Tabs Navigation -->
         <ul class="nav nav-tabs nav-bordered mb-3">
             <li class="nav-item">

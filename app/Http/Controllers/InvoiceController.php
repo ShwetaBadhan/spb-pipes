@@ -123,192 +123,203 @@ class InvoiceController extends Controller
     }
 
     // Store new invoice
-    public function store(Request $request)
-    {
+// app/Http/Controllers/InvoiceController.php
+
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'customer_id' => 'required|exists:customers,id',
+        'invoice_date' => 'required|date',
+        'due_date' => 'required|date|after_or_equal:invoice_date',
+        'reference_number' => 'nullable|string|max:255',
+        'items' => 'required|array|min:1',
+        'items.*.item_name' => 'required|string|max:255',
+        'items.*.quantity' => 'required|numeric|min:0.01',
+        'items.*.unit' => 'required|string|max:50',
+        'items.*.rate' => 'required|numeric|min:0',
+        'items.*.discount_percent' => 'nullable|numeric|min:0|max:100',
+        'tax_type' => 'required|in:none,gst_5,gst_12,gst_18,gst_28,cgst_sgst,igst',
+        'enable_tax' => 'nullable|boolean',
+        'discount_amount' => 'nullable|numeric|min:0',
+        'shipping_cost' => 'nullable|numeric|min:0',
+        'notes' => 'nullable|string',
+        'round_off' => 'nullable|boolean',
+        'status' => 'required|in:draft,sent,paid,unpaid,cancelled,partially_paid,refunded',
+        'amount_paid' => 'nullable|numeric|min:0', // For partial payment
+    ]);
+
+    DB::beginTransaction();
+    try {
+        $enableTax = $request->boolean('enable_tax');
+        $roundOff = $request->boolean('round_off');
+        $status = $validated['status']; // Already underscore format
+
+        // Generate invoice number
+        $invoiceNumber = 'INV-' . date('ymd') . '-' . str_pad(
+            Invoice::whereDate('created_at', today())->count() + 1,
+            5,
+            '0',
+            STR_PAD_LEFT
+        );
+
+        // Calculate subtotal
+        $subtotal = 0;
+        foreach ($validated['items'] as $item) {
+            $itemTotal = $item['quantity'] * $item['rate'];
+            $discount = ($item['discount_percent'] ?? 0) > 0 
+                ? ($itemTotal * ($item['discount_percent'] / 100)) 
+                : 0;
+            $subtotal += ($itemTotal - $discount);
+        }
+
+        // Calculate tax (only if enabled)
+        $totalTax = 0;
+        $taxBreakdown = [];
         
+        if ($enableTax && $validated['tax_type'] !== 'none') {
+            $taxDetails = $this->calculateTax($subtotal, $validated['tax_type']);
+            $totalTax = $taxDetails['total_tax'];
+            $taxBreakdown = $taxDetails['breakdown'];
+        }
 
+       // Calculate final totals
+$shipping = $validated['shipping_cost'] ?? 0;
+
+// ✅ Handle both percentage and amount discount
+$discount = 0;
+if ($request->has('discount_type')) {
+    if ($request->discount_type === 'percent') {
+        $discountPercent = $request->input('discount_percent', 0);
+        $discount = ($subtotal * $discountPercent) / 100;
+    } else {
+        $discount = $request->input('discount_amount', 0);
+    }
+} else {
+    // Fallback to old discount_amount field
+    $discount = $validated['discount_amount'] ?? 0;
+}
+
+$grandTotal = $subtotal + $totalTax + $shipping - $discount;
+
+       // ✅ CREATE INVOICE RECORD FIRST
+$invoice = Invoice::create([
+    'invoice_number' => $invoiceNumber,
+    'reference_number' => $validated['reference_number'] ?? null,
+    'invoice_date' => $validated['invoice_date'],
+    'due_date' => $validated['due_date'],
+    'customer_id' => $validated['customer_id'],
+    'created_by' => Auth::id() ?? 1,
+    'subtotal' => $subtotal,
+    'total_tax' => $totalTax,
+    'discount_amount' => $discount,
+    'shipping_cost' => $shipping,
+    'grand_total' => $grandTotal,
+    'tax_type' => $validated['tax_type'],
+    'status' => $status,
+    'notes' => $validated['notes'] ?? null,
+    'round_off' => $roundOff,
+    'enable_tax' => $enableTax,
+]);
+// ✅ CRITICAL FIX: SAVE INVOICE ITEMS (THIS WAS MISSING!)
+foreach ($validated['items'] as $item) {
+    $itemSubtotal = $item['quantity'] * $item['rate'];
+    $discountAmount = ($item['discount_percent'] ?? 0) > 0
+        ? ($itemSubtotal * ($item['discount_percent'] / 100))
+        : 0;
+    $itemAmount = $itemSubtotal - $discountAmount;
+
+    InvoiceItem::create([
+        'invoice_id' => $invoice->id,
+        'item_name' => $item['item_name'],
+        'item_type' => 'product',
+        'quantity' => $item['quantity'],
+        'unit' => $item['unit'] ?? 'Pcs',
+        'rate' => $item['rate'],
+        'discount_percent' => $item['discount_percent'] ?? 0,
+        'discount_amount' => $discountAmount,
+        'amount' => $itemAmount,
+    ]);
+}
+// ✅ END OF CRITICAL FIX
+
+// ✅ CRITICAL: CREATE LEDGER ENTRY FOR INVOICE BEFORE ANY PAYMENT
+try {
+    $invoice->createLedgerEntry(
+        'invoice_created',
+        $grandTotal,
+        0,
+        "Invoice {$invoiceNumber} created for ₹" . number_format($grandTotal, 2)
+    );
+} catch (\Exception $e) {
+    DB::rollBack();
+    Log::error('Invoice ledger creation failed', [
+        'invoice_number' => $invoiceNumber,
+        'grand_total' => $grandTotal,
+        'error' => $e->getMessage()
+    ]);
+    return back()->withInput()->withErrors([
+        'error' => 'Failed to create invoice ledger: ' . $e->getMessage()
+    ]);
+}
+
+// Save tax breakdown
+foreach ($taxBreakdown as $tax) {
+    InvoiceTax::create([
+        'invoice_id' => $invoice->id,
+        'tax_name' => $tax['name'],
+        'tax_type' => $tax['type'],
+        'tax_rate' => $tax['rate'],
+        'taxable_amount' => $subtotal,
+        'tax_amount' => $tax['amount'],
+    ]);
+}
+
+// ✅ ONLY NOW handle partial payment (after invoice ledger exists)
+if ($status === 'partially_paid' && isset($validated['amount_paid'])) {
+    $amountPaid = $validated['amount_paid'];
+    
+    if ($amountPaid > 0 && $amountPaid <= $grandTotal) {
         try {
-            $validated = $request->validate([
-                'customer_id' => 'required|exists:customers,id',
-                'invoice_date' => 'required|date',
-                'due_date' => 'required|date',
-                'reference_number' => 'nullable|string|max:255',
-                'items' => 'required|array|min:1',
-                'items.*.item_name' => 'required|string|max:255',
-                'items.*.quantity' => 'required|integer|min:1',
-                'items.*.unit' => 'required|string',
-                'items.*.rate' => 'required|numeric|min:0',
-                'items.*.discount_percent' => 'nullable|numeric|min:0|max:100',
-                'tax_type' => 'required|in:none,gst_5,gst_12,gst_18,gst_28,cgst_sgst,igst',
-                'discount_amount' => 'nullable|numeric|min:0',
-                'shipping_cost' => 'nullable|numeric|min:0',
-                'notes' => 'nullable|string',
-                'round_off' => 'nullable|boolean',
-                'status' => 'nullable|string|in:draft,sent,paid,unpaid',
-                'enable_tax' => 'nullable|boolean',
+            $invoice->recordPayment(
+                $amountPaid,
+                null,
+                null,
+                'Partial payment received on invoice creation: ₹' . number_format($amountPaid, 2)
+            );
+        } catch (\Exception $e) {
+            // Don't rollback entire invoice - just log payment failure
+            Log::warning('Partial payment failed but invoice created', [
+                'invoice_id' => $invoice->id,
+                'amount' => $amountPaid,
+                'error' => $e->getMessage()
             ]);
-
-            // ✅ Set boolean values
-            $validated['round_off'] = $request->has('round_off') && $request->round_off == '1';
-            $validated['enable_tax'] = $request->has('enable_tax') && $request->enable_tax == '1';
-
-            // \Log::info('Validation passed successfully!');
-
-            DB::beginTransaction();
-            try {
-                $invoiceDate = $validated['invoice_date'];
-                $dueDate = $validated['due_date'];
-
-                // // \Log::info(/'Parsed dates:', [
-                //     'invoice_date' => $invoiceDate,
-                //     'due_date' => $dueDate
-                // ]);
-
-                // Generate invoice number
-                $invoiceNumber = 'INV-' . date('ymd') . '-' . str_pad(Invoice::count() + 1, 5, '0', STR_PAD_LEFT);
-
-                // \Log::info('Generated invoice number:', ['number' => $invoiceNumber]);
-
-                // Calculate subtotal from items
-                $subtotal = 0;
-                foreach ($validated['items'] as $item) {
-                    $itemSubtotal = $item['quantity'] * $item['rate'];
-                    $discountAmount = ($item['discount_percent'] ?? 0) > 0
-                        ? ($itemSubtotal * ($item['discount_percent'] / 100))
-                        : 0;
-                    $itemAmount = $itemSubtotal - $discountAmount;
-                    $subtotal += $itemAmount;
-                }
-
-                // \Log::info('Calculated subtotal:', ['subtotal' => $subtotal]);
-
-                // Calculate tax
-                $taxDetails = $this->calculateTax($subtotal, $validated['tax_type']);
-                $totalTax = $taxDetails['total_tax'];
-
-                // \Lo/g::info('Tax details:', ['total_tax' => $totalTax]);
-
-                // Calculate discount & shipping
-                $discountAmount = $validated['discount_amount'] ?? 0;
-                $shippingCost = $validated['shipping_cost'] ?? 0;
-
-                // Calculate grand total
-                $grandTotal = $subtotal + $totalTax - $discountAmount + $shippingCost;
-                $roundOff = $validated['round_off'];
-                $roundOffAmount = 0;
-
-                if ($roundOff) {
-                    $roundedTotal = round($grandTotal);
-                    $roundOffAmount = $roundedTotal - $grandTotal;
-                    $grandTotal = $roundedTotal;
-                }
-
-                // \Log::info(/'Final calculations:', [
-                //     'grand_total' => $grandTotal,
-                //     'round_off' => $roundOffAmount
-                // ]);
-
-                // Create invoice
-                // \Log::info(/'Creating invoice record...');
-
-                $invoice = Invoice::create([
-                    'invoice_number' => $invoiceNumber,
-                    'reference_number' => $validated['reference_number'] ?? null,
-                    'invoice_date' => $invoiceDate,
-                    'due_date' => $dueDate,
-                    'customer_id' => $validated['customer_id'],
-                    'created_by' => Auth::id(),
-                    'subtotal' => $subtotal,
-                    'total_tax' => $totalTax,
-                    'discount_amount' => $discountAmount,
-                    'shipping_cost' => $shippingCost,
-                    'grand_total' => $grandTotal,
-                    'tax_type' => $validated['tax_type'],
-                    'status' => $validated['status'] ?? 'draft',
-                    'notes' => $validated['notes'] ?? null,
-                    'round_off' => $roundOff,
-                    'round_off_amount' => $roundOffAmount,
-                ]);
-
-                // \Log::info('Invoice created successfully!', [
-                //     'id' => $invoice->id,
-                //     'number' => $invoice->invoice_number
-                // ]);
-
-                // Save invoice items
-                // \Log::info('Saving invoice items...');
-
-                foreach ($validated['items'] as $item) {
-                    $itemSubtotal = $item['quantity'] * $item['rate'];
-                    $discountAmountItem = ($item['discount_percent'] ?? 0) > 0
-                        ? ($itemSubtotal * ($item['discount_percent'] / 100))
-                        : 0;
-                    $itemAmount = $itemSubtotal - $discountAmountItem;
-
-                    InvoiceItem::create([
-                        'invoice_id' => $invoice->id,
-                        'item_name' => $item['item_name'],
-                        'item_type' => 'product',
-                        'quantity' => $item['quantity'],
-                        'unit' => $item['unit'],
-                        'rate' => $item['rate'],
-                        'discount_percent' => $item['discount_percent'] ?? 0,
-                        'discount_amount' => $discountAmountItem,
-                        'amount' => $itemAmount,
-                    ]);
-                }
-
-                // \Log::info('Invoice items saved!');
-
-                // Save tax breakdown
-                // \Log::info('Saving tax breakdown...');
-
-                if (!empty($taxDetails['breakdown'])) {
-                    foreach ($taxDetails['breakdown'] as $tax) {
-                        InvoiceTax::create([
-                            'invoice_id' => $invoice->id,
-                            'tax_name' => $tax['name'],
-                            'tax_type' => $tax['type'],
-                            'tax_rate' => $tax['rate'],
-                            'taxable_amount' => $subtotal,
-                            'tax_amount' => $tax['amount'],
-                        ]);
-                    }
-                }
-
-                // \Log::info('Tax breakdown saved!');
-
-                DB::commit();
-
-                // \Log::info('=== INVOICE CREATION SUCCESSFUL ===', ['invoice_id' => $invoice->id]);
-
-                // ✅ Redirect to index page with success message (safer option)
-                return redirect()->route('admin.invoices.index')
-                    ->with('success', 'Invoice created successfully! Invoice Number: ' . $invoice->invoice_number);
-            } catch (\Illuminate\Database\QueryException $e) {
-                DB::rollBack();
-                // \Log::error('Database error:', [
-                //     'message' => $e->getMessage(),
-                //     'sql' => $e->getSql() ?? 'N/A',
-                //     'bindings' => $e->getBindings() ?? [],
-                // ]);
-                return back()->withInput()->with('error', 'Database error: ' . $e->getMessage());
-            } catch (\Exception $e) {
-                DB::rollBack();
-                // \Log::error('Invoice creation failed:', [
-                //     'message' => $e->getMessage(),
-                //     'file' => $e->getFile(),
-                //     'line' => $e->getLine(),
-                //     'trace' => $e->getTraceAsString()
-                // ]);
-                return back()->withInput()->with('error', 'Failed to create invoice: ' . $e->getMessage());
-            }
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // \Log::error('Validation failed!', $e->errors());
-            return redirect()->route('admin.invoices.index')
-                ->with('success', 'Invoice created successfully! ');
         }
     }
+}
+
+// ✅ CRITICAL FIX: ADD DB::COMMIT() HERE!
+DB::commit();
+
+// ✅ Redirect to invoice details page after successful creation
+return redirect()->route('admin.invoices.index', $invoice->id)
+    ->with('success', 'Invoice created successfully! Invoice Number: ' . $invoice->invoice_number);
+
+    } catch (\Exception $e) {
+        // ✅ CRITICAL FIX: ADD CATCH BLOCK HERE!
+        DB::rollBack();
+        
+        Log::error('Invoice creation failed', [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        return back()->withInput()->withErrors([
+            'error' => 'Failed to create invoice: ' . $e->getMessage()
+        ]);
+    }
+}
     // ✅ Helper method to parse dates safely
     private function parseDate($dateString)
     {
@@ -345,18 +356,20 @@ public function show(Invoice $invoice)
     return view('admin.pages.invoices.invoice-details', compact('invoice'));
 }
 
-    // Show edit form
-    public function edit(Invoice $invoice)
-    {
-        $customers = Customer::all();
-        $products = \App\Models\Product::all();
+   
+    // Show edit form// Show edit form
+public function edit(Invoice $invoice)
+{
+    $customers = Customer::all();
+    $products = \App\Models\Product::with('variants')->get();
+    // dd($products);
+    $invoice->load(['items', 'taxes']);
 
-        $invoice->load(['items', 'taxes']);
+    // ✅ DEBUG: Check if products exist (remove after testing)
+    // dd($products->count() . ' products loaded', $products->pluck('name'));
 
-        return view('admin.pages.invoices.edit-invoice', compact('invoice', 'customers', 'products'));
-    }
-
-    // Update invoice
+    return view('admin.pages.invoices.edit-invoice', compact('invoice', 'customers', 'products'));
+}
 // Update invoice
 public function update(Request $request, Invoice $invoice)
 {
@@ -367,60 +380,75 @@ public function update(Request $request, Invoice $invoice)
         'reference_number' => 'nullable|string|max:255',
         'items' => 'required|array|min:1',
         'items.*.item_name' => 'required|string|max:255',
-        'items.*.quantity' => 'required|integer|min:1',
-        'items.*.unit' => 'required|string',
+        'items.*.quantity' => 'required|numeric|min:0.01',
+        'items.*.unit' => 'required|string|max:50',
         'items.*.rate' => 'required|numeric|min:0',
         'items.*.discount_percent' => 'nullable|numeric|min:0|max:100',
         'tax_type' => 'required|in:none,gst_5,gst_12,gst_18,gst_28,cgst_sgst,igst',
-        'discount_amount' => 'nullable|numeric|min:0',
         'shipping_cost' => 'nullable|numeric|min:0',
         'notes' => 'nullable|string',
         'round_off' => 'nullable|boolean',
-        'status' => 'nullable|string|in:draft,sent,paid,unpaid,cancelled,partially_paid,refunded',
+        'status' => 'nullable|in:draft,sent,paid,unpaid,cancelled,partially_paid,refunded',
         'enable_tax' => 'nullable|boolean',
+        'discount_type' => 'nullable|string|in:percent,amount',
+        'discount_percent' => 'nullable|numeric|min:0|max:100',
+        'discount_amount' => 'nullable|numeric|min:0',
     ]);
 
     DB::beginTransaction();
     try {
-        // ✅ Set boolean values
-        $validated['round_off'] = $request->has('round_off') && $request->round_off == '1';
-        $validated['enable_tax'] = $request->has('enable_tax') && $request->enable_tax == '1';
-        
-        // Calculate subtotal from items
+        // Parse boolean flags
+        $enableTax = $request->boolean('enable_tax');
+        $roundOff = $request->boolean('round_off');
+
+        // Recalculate subtotal from items
         $subtotal = 0;
         foreach ($validated['items'] as $item) {
             $itemSubtotal = $item['quantity'] * $item['rate'];
-            $discountAmount = ($item['discount_percent'] ?? 0) > 0
-                ? ($itemSubtotal * ($item['discount_percent'] / 100))
-                : 0;
-            $itemAmount = $itemSubtotal - $discountAmount;
+            $discountPercent = $item['discount_percent'] ?? 0;
+            $discountAmountItem = ($discountPercent > 0) ? ($itemSubtotal * $discountPercent / 100) : 0;
+            $itemAmount = $itemSubtotal - $discountAmountItem;
             $subtotal += $itemAmount;
         }
 
-        // Calculate tax
-        $taxDetails = $this->calculateTax($subtotal, $validated['tax_type']);
-        $totalTax = $taxDetails['total_tax'];
+        // Calculate tax only if enabled and not "none"
+        $totalTax = 0;
+        $taxBreakdown = [];
+        if ($enableTax && $validated['tax_type'] !== 'none') {
+            $taxDetails = $this->calculateTax($subtotal, $validated['tax_type']);
+            $totalTax = $taxDetails['total_tax'];
+            $taxBreakdown = $taxDetails['breakdown'];
+        }
 
-        // Calculate discount
-        $discountAmount = $validated['discount_amount'] ?? 0;
+        // ✅ CORRECT DISCOUNT HANDLING
+        $discount = 0;
+        if ($request->filled('discount_type')) {
+            if ($request->discount_type === 'percent') {
+                $discountPercent = $request->input('discount_percent', 0);
+                $discount = ($subtotal * $discountPercent) / 100;
+            } elseif ($request->discount_type === 'amount') {
+                $discount = $request->input('discount_amount', 0);
+            }
+        } else {
+            // Legacy fallback (optional – remove after full migration)
+            $discount = $validated['discount_amount'] ?? 0;
+        }
 
-        // Calculate shipping
+        // Shipping
         $shippingCost = $validated['shipping_cost'] ?? 0;
 
-        // Calculate grand total
-        $grandTotal = $subtotal + $totalTax - $discountAmount + $shippingCost;
+        // Grand total before rounding
+        $grandTotal = $subtotal + $totalTax + $shippingCost - $discount;
 
-        // Round off if needed
-        $roundOff = $validated['round_off'];
+        // Round off if enabled
         $roundOffAmount = 0;
-
         if ($roundOff) {
             $roundedTotal = round($grandTotal);
             $roundOffAmount = $roundedTotal - $grandTotal;
             $grandTotal = $roundedTotal;
         }
 
-        // Update invoice
+        // Update invoice record
         $invoice->update([
             'reference_number' => $validated['reference_number'] ?? null,
             'invoice_date' => $validated['invoice_date'],
@@ -429,25 +457,25 @@ public function update(Request $request, Invoice $invoice)
             'status' => $validated['status'] ?? $invoice->status,
             'subtotal' => $subtotal,
             'total_tax' => $totalTax,
-            'discount_amount' => $discountAmount,
+            'discount_amount' => $discount, // ✅ Correct field
             'shipping_cost' => $shippingCost,
             'grand_total' => $grandTotal,
             'tax_type' => $validated['tax_type'],
             'notes' => $validated['notes'] ?? null,
             'round_off' => $roundOff,
             'round_off_amount' => $roundOffAmount,
+            'enable_tax' => $enableTax,
         ]);
 
-        // Delete old items and taxes
+        // Delete old related records
         $invoice->items()->delete();
         $invoice->taxes()->delete();
 
-        // Save new invoice items
-        foreach ($validated['items'] as $item) {
+        // Re-save invoice items
+        foreach ($validated['items'] as $index => $item) {
             $itemSubtotal = $item['quantity'] * $item['rate'];
-            $discountAmountItem = ($item['discount_percent'] ?? 0) > 0
-                ? ($itemSubtotal * ($item['discount_percent'] / 100))
-                : 0;
+            $discountPercent = $item['discount_percent'] ?? 0;
+            $discountAmountItem = ($discountPercent > 0) ? ($itemSubtotal * $discountPercent / 100) : 0;
             $itemAmount = $itemSubtotal - $discountAmountItem;
 
             InvoiceItem::create([
@@ -457,40 +485,45 @@ public function update(Request $request, Invoice $invoice)
                 'quantity' => $item['quantity'],
                 'unit' => $item['unit'] ?? 'Pcs',
                 'rate' => $item['rate'],
-                'discount_percent' => $item['discount_percent'] ?? 0,
+                'discount_percent' => $discountPercent,
                 'discount_amount' => $discountAmountItem,
                 'amount' => $itemAmount,
             ]);
         }
 
         // Save tax breakdown
-        if (!empty($taxDetails['breakdown'])) {
-            foreach ($taxDetails['breakdown'] as $tax) {
-                InvoiceTax::create([
-                    'invoice_id' => $invoice->id,
-                    'tax_name' => $tax['name'],
-                    'tax_type' => $tax['type'],
-                    'tax_rate' => $tax['rate'],
-                    'taxable_amount' => $subtotal,
-                    'tax_amount' => $tax['amount'],
-                ]);
-            }
+        foreach ($taxBreakdown as $tax) {
+            InvoiceTax::create([
+                'invoice_id' => $invoice->id,
+                'tax_name' => $tax['name'],
+                'tax_type' => $tax['type'],
+                'tax_rate' => $tax['rate'],
+                'taxable_amount' => $subtotal,
+                'tax_amount' => $tax['amount'],
+            ]);
         }
-
+Log::info('Invoice update totals', [
+    'subtotal' => $subtotal,
+    'total_tax' => $totalTax,
+    'shipping' => $shippingCost,
+    'discount' => $discount,
+    'grand_total' => $grandTotal,
+    'round_off' => $roundOff,
+    'round_off_amount' => $roundOffAmount,
+]);
         DB::commit();
 
-        // ✅ Redirect to index page after update
         return redirect()->route('admin.invoices.index')
             ->with('success', 'Invoice updated successfully!');
-            
+
     } catch (\Exception $e) {
         DB::rollBack();
-        // \Log::error('Invoice update failed:', [
-        //     'message' => $e->getMessage(),
-        //     'file' => $e->getFile(),
-        //     'line' => $e->getLine(),
-        // ]);
-        return back()->withInput()->with('error', 'Failed to update invoice: ' . $e->getMessage());
+        Log::error('Invoice update failed', [
+            'invoice_id' => $invoice->id,
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+        return back()->withInput()->withErrors(['error' => 'Failed to update invoice: ' . $e->getMessage()]);
     }
 }
     // Delete invoice
@@ -612,5 +645,22 @@ public function pdf(Invoice $invoice)
     $pdf->setPaper('a4', 'portrait');
     
     return $pdf->download($invoice->invoice_number . '.pdf');
+}
+public function filterLedger(Request $request, Invoice $invoice)
+{
+    $request->validate([
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+    ]);
+
+    $ledgers = $invoice->ledgers()
+        ->whereBetween('created_at', [
+            $request->start_date . ' 00:00:00',
+            $request->end_date . ' 23:59:59'
+        ])
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('admin.pages.invoices.partials.ledger-table', compact('ledgers'));
 }
 }

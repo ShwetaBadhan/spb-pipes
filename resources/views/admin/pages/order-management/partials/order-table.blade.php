@@ -67,12 +67,36 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#delete_modal">
+                                <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#delete_modal{{ $order->id }}">
                                     <i class="isax isax-trash me-2"></i>Delete
                                 </a>
                             </li>
                         </ul>
                     </td>
+                      <!-- Start Modal  -->
+                            <div class="modal fade" id="delete_modal{{ $order->id }}">
+                                <div class="modal-dialog modal-dialog-centered modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-body text-center">
+                                        
+                                            <div class="mb-3">
+                                                <img src="{{ url ('assets/img/icons/delete.svg')}}" alt="img">
+                                            </div>
+                                             <form action="{{ route('admin.orders.destroy', $order->id  )}}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                            <h6 class="mb-1">Delete Order</h6>
+                                            <p class="mb-3">Are you sure, you want to delete Order?</p>
+                                            <div class="d-flex justify-content-center">
+                                                <a href="javascript:void(0);" class="btn btn-outline-white me-3" data-bs-dismiss="modal">Cancel</a>
+                                                <button type="submit" class="btn btn-primary">Yes, Delete</button>
+                                            </div>
+                                            </form>
+                                        </div> <!-- end modal-body -->
+                                    </div> <!-- end modal-content -->
+                                </div>
+                            </div>
+                            <!-- End Modal  -->
                 </tr>
                 @endforeach
             </tbody>

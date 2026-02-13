@@ -28,34 +28,38 @@ class CustomerController extends Controller
     }
 
     public function store(Request $request)
-    {
-        // Validate input
-        $data = $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email',
-            'phone' => 'required|digits_between:8,15',
+{
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:customers,email',
+        'phone' => 'required|digits_between:8,15|unique:customers,phone',
 
-            'account_number' => 'nullable|numeric',
-            'ifsc' => 'nullable|string|max:20',
-        ]);
+        // Billing address
+        'billing_address' => 'nullable|string|max:500',
+        'billing_state' => 'nullable|exists:states,id',
+        'billing_city' => 'nullable|exists:cities,id',
+        'billing_pincode' => 'nullable|string|max:10',
 
-        // Check if customer already exists by email or phone
-        $exists = Customer::where('email', $request->email)
-            ->orWhere('phone', $request->phone)
-            ->first();
+        // Shipping address
+        'shipping_address' => 'nullable|string|max:500',
+        'shipping_state' => 'nullable|exists:states,id',
+        'shipping_city' => 'nullable|exists:cities,id',
+        'shipping_pincode' => 'nullable|string|max:10',
 
-        if ($exists) {
-            return redirect()->back()
-                ->withInput()
-                ->withErrors(['duplicate' => 'Customer already exists.']);
-        }
+        // Banking details
+        'bank_name' => 'nullable|string|max:255',
+        'branch' => 'nullable|string|max:255',
+        'account_holder' => 'nullable|string|max:255',
+        'account_number' => 'nullable|numeric',
+        'ifsc' => 'nullable|string|regex:/^[A-Z]{4}0[A-Z0-9]{6}$/|max:11', // IFSC format validation
+    ]);
 
-        // Create new customer
-        Customer::create($data);
+    // ✅ ALL FIELDS WILL NOW BE SAVED
+    Customer::create($data);
 
-        return redirect()->route('customers.index')
-            ->with('success', 'Customer created successfully.');
-    }
+    return redirect()->route('customers.index')
+        ->with('success', 'Customer created successfully.');
+}
 
     public function edit(Customer $customer)
     {
@@ -64,26 +68,46 @@ class CustomerController extends Controller
         return view('admin.pages.customers.edit-customer', compact('customer', 'states'));
     }
 
-    public function update(Request $request, Customer $customer)
-    {
-        $data = $request->validate([
-            'name'  => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('customers')->ignore($customer->id)
-            ],
-            'phone' => 'required|digits_between:8,15',
+   public function update(Request $request, Customer $customer)
+{
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => [
+            'required',
+            'email',
+            Rule::unique('customers')->ignore($customer->id)
+        ],
+        'phone' => [
+            'required',
+            'digits_between:8,15',
+            Rule::unique('customers')->ignore($customer->id)
+        ],
 
-            'account_number' => 'nullable|numeric',
-            'ifsc' => 'nullable|string|max:20',
-        ]);
+        // Billing address
+        'billing_address' => 'nullable|string|max:500',
+        'billing_state' => 'nullable|exists:states,id',
+        'billing_city' => 'nullable|exists:cities,id',
+        'billing_pincode' => 'nullable|string|max:10',
 
-        $customer->update($request->all());
+        // Shipping address
+        'shipping_address' => 'nullable|string|max:500',
+        'shipping_state' => 'nullable|exists:states,id',
+        'shipping_city' => 'nullable|exists:cities,id',
+        'shipping_pincode' => 'nullable|string|max:10',
 
-        return redirect()->route('customers.index')
-            ->with('success', 'Customer updated successfully.');
-    }
+        // Banking details
+        'bank_name' => 'nullable|string|max:255',
+        'branch' => 'nullable|string|max:255',
+        'account_holder' => 'nullable|string|max:255',
+        'account_number' => 'nullable|numeric',
+        'ifsc' => 'nullable|string|regex:/^[A-Z]{4}0[A-Z0-9]{6}$/|max:11',
+    ]);
+
+    $customer->update($data);
+
+    return redirect()->route('customers.index')
+        ->with('success', 'Customer updated successfully.');
+}
 
     public function destroy(Customer $customer)
     {

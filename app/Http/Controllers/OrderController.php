@@ -180,9 +180,8 @@ private function validateOrderStock(array $items): array
         return view('admin.pages.order-management.orders', compact('order'));
     }
 
-    public function updateStatus(Request $request, Order $order)
+   public function updateStatus(Request $request, Order $order)
 {
-    // Only allow updating orders created by the logged-in user
     if ($order->salesman_id !== Auth::id()) {
         abort(403, 'Unauthorized action.');
     }
@@ -194,23 +193,45 @@ private function validateOrderStock(array $items): array
     $oldStatus = $order->status;
     $newStatus = $validated['status'];
     
+    // ✅ Validate status transitions
+    $validTransitions = [
+        'pending' => ['confirmed', 'cancelled'],
+        'confirmed' => ['processing', 'pending', 'cancelled'],
+        'processing' => ['shipped', 'cancelled'],
+        'shipped' => ['delivered', 'cancelled'],
+        'delivered' => [],
+        'cancelled' => ['pending', 'confirmed'],
+    ];
+    
+    if (!in_array($newStatus, $validTransitions[$oldStatus])) {
+        return response()->json([
+            'success' => false,
+            'message' => "Invalid status transition: {$oldStatus} → {$newStatus}"
+        ], 422);
+    }
+    
     DB::beginTransaction();
     try {
         // Handle stock based on status transition
         if ($oldStatus !== $newStatus) {
-            // CASE 1: Confirming order → DEDUCT STOCK FROM VARIANTS
+            // ✅ CASE 1: Confirming order → DEDUCT STOCK (only from pending)
             if ($oldStatus === 'pending' && $newStatus === 'confirmed') {
                 $this->deductOrderStock($order);
             }
             
-            // CASE 2: Cancelling order → RESTORE STOCK TO VARIANTS
-            if (in_array($oldStatus, ['pending', 'confirmed', 'processing', 'shipped']) && $newStatus === 'cancelled') {
+            // ✅ CASE 2: Cancelling order → RESTORE STOCK (only if previously confirmed/processing/shipped)
+            if (in_array($oldStatus, ['confirmed', 'processing', 'shipped']) && $newStatus === 'cancelled') {
                 $this->restoreOrderStock($order);
             }
             
-            // CASE 3: Reverting cancelled order → DEDUCT STOCK again
-            if ($oldStatus === 'cancelled' && in_array($newStatus, ['pending', 'confirmed', 'processing'])) {
+            // ✅ CASE 3: Reverting cancelled order → DEDUCT STOCK (only if going to confirmed)
+            if ($oldStatus === 'cancelled' && $newStatus === 'confirmed') {
                 $this->deductOrderStock($order);
+            }
+            
+            // ✅ CASE 4: Moving from confirmed back to pending → RESTORE STOCK
+            if ($oldStatus === 'confirmed' && $newStatus === 'pending') {
+                $this->restoreOrderStock($order);
             }
         }
         
@@ -235,56 +256,64 @@ private function validateOrderStock(array $items): array
     }
 }
 
-// Helper: Deduct stock ONLY from variants (products table has no quantity)
-private function deductOrderStock(Order $order)
+// app/Http/Controllers/OrderController.php
+
+// Helper: Deduct stock - ONLY create inventory log, don't touch original quantity
+private function deductOrderStock(Order $order): void
 {
     foreach ($order->items as $item) {
-        // ⚠️ CRITICAL: Products table has NO quantity column - ONLY variants have stock
         if (!$item->variant_id) {
-            throw new \Exception("Cannot deduct stock: Product '{$item->product_name}' requires variant selection. Order item #{$item->id} missing variant_id.");
+            throw new \Exception("Cannot deduct stock: Product '{$item->product_name}' requires variant selection.");
         }
         
         $variant = \App\Models\ProductVariant::find($item->variant_id);
         if (!$variant) {
-            throw new \Exception("Variant not found for item: {$item->product_name} (Variant ID: {$item->variant_id})");
+            throw new \Exception("Variant not found for item: {$item->product_name}");
         }
         
-        if ($variant->quantity < $item->quantity) {
-            throw new \Exception("Insufficient stock for variant '{$variant->name}' of product '{$item->product_name}': Requested {$item->quantity}, Available {$variant->quantity}");
+        // ✅ CHECK if enough stock available (from original quantity + logs)
+        $availableQty = \App\Services\InventoryService::productAvailableQty($item->product_id);
+        if ($availableQty < $item->quantity) {
+            throw new \Exception("Insufficient stock for '{$item->product_name} ({$item->variant_name})': Requested {$item->quantity}, Available {$availableQty}");
         }
         
-        // ✅ DEDUCT FROM VARIANT ONLY (products table has no quantity column)
-        $variant->decrement('quantity', $item->quantity);
+        // ✅ ONLY CREATE INVENTORY LOG - Don't touch original quantity
+        \App\Models\InventoryLog::create([
+            'item_type' => 'product',
+            'product_id' => $item->product_id,
+            'quantity' => $item->quantity,
+            'status' => 'stock_out',
+            'notes' => "Order #{$order->order_number} confirmed - deducted {$item->quantity} units of {$item->product_name} ({$item->variant_name})",
+        ]);
         
-        Log::info("Stock deducted from variant", [
+        Log::info("Stock deducted via inventory log", [
             'order_id' => $order->id,
-            'variant_id' => $variant->id,
-            'variant_name' => $variant->name,
-            'quantity_deducted' => $item->quantity,
-            'remaining_stock' => $variant->quantity
+            'product_id' => $item->product_id,
+            'quantity' => $item->quantity,
         ]);
     }
 }
 
-// Helper: Restore stock ONLY to variants
-private function restoreOrderStock(Order $order)
+// Helper: Restore stock - ONLY create inventory log
+private function restoreOrderStock(Order $order): void
 {
     foreach ($order->items as $item) {
         if ($item->variant_id) {
-            $variant = \App\Models\ProductVariant::find($item->variant_id);
-            if ($variant) {
-                // ✅ RESTORE TO VARIANT ONLY
-                $variant->increment('quantity', $item->quantity);
-                
-                Log::info("Stock restored to variant", [
-                    'order_id' => $order->id,
-                    'variant_id' => $variant->id,
-                    'quantity_restored' => $item->quantity,
-                    'new_stock' => $variant->quantity
-                ]);
-            }
+            // ✅ ONLY CREATE INVENTORY LOG - Don't touch original quantity
+            \App\Models\InventoryLog::create([
+                'item_type' => 'product',
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'status' => 'stock_in',
+                'notes' => "Order #{$order->order_number} cancelled/reverted - restored {$item->quantity} units of {$item->product_name} ({$item->variant_name})",
+            ]);
+            
+            Log::info("Stock restored via inventory log", [
+                'order_id' => $order->id,
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+            ]);
         }
-        // Note: If variant_id is null, we cannot restore (shouldn't happen with proper validation)
     }
 }
     public function destroy(Order $order)

@@ -4,8 +4,8 @@
 
 
     <!-- ========================
-               Start Page Content
-              ========================= -->
+                   Start Page Content
+                  ========================= -->
 
     <div class="page-wrapper">
 
@@ -240,12 +240,18 @@
                                             </div>
                                             <div class="col-lg-4 col-md-6">
                                                 <div class="mb-3">
-                                                    <label class="form-label">IFSC</label>
+                                                    <label class="form-label">IFSC
+                                                        <span class="text-muted ms-1">(e.g. SBIN0001234)</span>
+                                                    </label>
                                                     <input type="text" name="ifsc" value="{{ old('ifsc') }}"
-                                                        class="form-control">
+                                                        class="form-control" placeholder="SBIN0001234" maxlength="11">
                                                     @error('ifsc')
                                                         <small class="text-danger">{{ $message }}</small>
                                                     @enderror
+                                                    <small class="text-muted d-block mt-1">
+                                                        Format: 4 letters + 0 + 6 alphanumeric characters (e.g.,
+                                                        HDFC0001234)
+                                                    </small>
                                                 </div>
                                             </div>
                                         </div>
@@ -270,8 +276,8 @@
     </div>
 
     <!-- ========================
-               End Page Content
-              ========================= -->
+                   End Page Content
+                  ========================= -->
 @endsection
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -354,47 +360,47 @@
             }
         });
 
-       document.getElementById('copyBilling').addEventListener('click', function () {
-    const billingAddress = document.getElementById('billing_address');
-    const billingPincode = document.getElementById('billing_pincode');
-    const billingState   = document.getElementById('billing_state');
-    const billingCity    = document.getElementById('billing_city');
+        document.getElementById('copyBilling').addEventListener('click', function() {
+            const billingAddress = document.getElementById('billing_address');
+            const billingPincode = document.getElementById('billing_pincode');
+            const billingState = document.getElementById('billing_state');
+            const billingCity = document.getElementById('billing_city');
 
-    const shippingAddress = document.getElementById('shipping_address');
-    const shippingPincode = document.getElementById('shipping_pincode');
-    const shippingState   = document.getElementById('shipping_state');
-    const shippingCity    = document.getElementById('shipping_city');
+            const shippingAddress = document.getElementById('shipping_address');
+            const shippingPincode = document.getElementById('shipping_pincode');
+            const shippingState = document.getElementById('shipping_state');
+            const shippingCity = document.getElementById('shipping_city');
 
-    // Copy address & pincode
-    shippingAddress.value = billingAddress.value;
-    shippingPincode.value = billingPincode.value;
+            // Copy address & pincode
+            shippingAddress.value = billingAddress.value;
+            shippingPincode.value = billingPincode.value;
 
-    // Copy state
-    shippingState.value = billingState.value;
+            // Copy state
+            shippingState.value = billingState.value;
 
-    // If using a select plugin, trigger change so UI updates
-    $(shippingState).trigger('change');
+            // If using a select plugin, trigger change so UI updates
+            $(shippingState).trigger('change');
 
-    // Load shipping cities via AJAX
-    if (billingState.value) {
-        $.ajax({
-            url: '/get-cities/' + billingState.value,
-            type: 'GET',
-            success: function(data) {
-                shippingCity.innerHTML = '<option value="">Select City</option>';
-                $.each(data, function(_, city) {
-                    shippingCity.innerHTML += `<option value="${city.id}">${city.name}</option>`;
+            // Load shipping cities via AJAX
+            if (billingState.value) {
+                $.ajax({
+                    url: '/get-cities/' + billingState.value,
+                    type: 'GET',
+                    success: function(data) {
+                        shippingCity.innerHTML = '<option value="">Select City</option>';
+                        $.each(data, function(_, city) {
+                            shippingCity.innerHTML +=
+                                `<option value="${city.id}">${city.name}</option>`;
+                        });
+
+                        // Set shipping city after options are loaded
+                        shippingCity.value = billingCity.value;
+                        $(shippingCity).trigger('change'); // update UI if select plugin used
+                    }
                 });
-
-                // Set shipping city after options are loaded
-                shippingCity.value = billingCity.value;
-                $(shippingCity).trigger('change'); // update UI if select plugin used
+            } else {
+                shippingCity.innerHTML = '<option value="">Select City</option>';
             }
         });
-    } else {
-        shippingCity.innerHTML = '<option value="">Select City</option>';
-    }
-});
-
     </script>
 @endpush

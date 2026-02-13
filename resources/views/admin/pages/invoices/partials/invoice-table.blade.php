@@ -11,6 +11,8 @@
                 <th>Customer</th>
                 <th>Created On</th>
                 <th>Amount</th>
+                <th>Paid Amount</th>
+                <th>Pending Amount</th>
                 <th class="no-sort">Status</th>
                 <th>Due Date</th>
                 <th class="no-sort">Action</th>
@@ -50,7 +52,47 @@
                     </div>
                 </td>
                 <td>{{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d M Y') }}</td>
-                <td class="text-dark">₹{{ number_format($invoice->grand_total, 2) }}</td>
+                <td class="text-dark">₹{{ number_format($invoice->grand_total, 0) }}</td>
+                
+                {{-- ✅ PAID AMOUNT COLUMN --}}
+                <td>
+                    @php
+                        $paidAmount = $invoice->total_paid ?? 0;
+                    @endphp
+                    @if($paidAmount > 0)
+                        <span class="text-success fw-semibold">
+                            ₹{{ number_format($paidAmount, 0) }}
+                        </span>
+                    @else
+                        <span class="text-muted">₹0</span>
+                    @endif
+                </td>
+                
+                {{-- ✅ PENDING AMOUNT COLUMN --}}
+                <td>
+                    @php
+                        $pendingAmount = $invoice->pending_amount ?? ($invoice->grand_total - ($invoice->total_paid ?? 0));
+                        $isOverdue = $invoice->due_date && 
+                                     \Carbon\Carbon::parse($invoice->due_date)->isPast() && 
+                                     in_array($invoice->status, ['unpaid', 'partially_paid']);
+                    @endphp
+                    
+                    @if($pendingAmount > 0)
+                        <span class="text-danger fw-semibold">
+                            ₹{{ number_format($pendingAmount, 0) }}
+                        </span>
+                        @if($isOverdue)
+                            <span class="text-danger ms-1" title="Overdue">
+                                <i class="isax isax-danger"></i>
+                            </span>
+                        @endif
+                    @else
+                        <span class="text-success fw-semibold">
+                            ₹0
+                        </span>
+                    @endif
+                </td>
+                
                 <td>
                     @php
                         $statusClass = [
@@ -78,10 +120,11 @@
                         <i class="{{ $statusIcon }} ms-1"></i>
                     </span>
                 </td>
+                
                 <td>
                     @if($invoice->due_date)
                         {{ \Carbon\Carbon::parse($invoice->due_date)->format('d M Y') }}
-                        @if(\Carbon\Carbon::parse($invoice->due_date)->isPast() && $invoice->status === 'unpaid')
+                        @if($isOverdue)
                             <span class="text-danger ms-1" title="Overdue">
                                 <i class="isax isax-danger"></i>
                             </span>
@@ -90,6 +133,7 @@
                         N/A
                     @endif
                 </td>
+                 
                 <td class="action-item">
                     <a href="javascript:void(0);" data-bs-toggle="dropdown">
                         <i class="isax isax-more"></i>
@@ -105,12 +149,17 @@
                                 <i class="isax isax-edit me-2"></i>Edit
                             </a>
                         </li>
+                        @if(in_array($invoice->status, ['unpaid', 'partially_paid']))
                         <li>
-                        <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#delete_modal{{ $invoice->id }}"><i class="isax isax-trash me-2"></i>Delete</a>
-
-                            {{-- <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center delete-invoice" data-id="{{ $invoice->id }}">
+                            <a href="{{ route('admin.invoices.add-payment', $invoice->id) }}" class="dropdown-item d-flex align-items-center">
+                                <i class="isax isax-money-3 me-2"></i>Record Payment
+                            </a>
+                        </li>
+                        @endif
+                        <li>
+                            <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#delete_modal{{ $invoice->id }}">
                                 <i class="isax isax-trash me-2"></i>Delete
-                            </a> --}}
+                            </a>
                         </li>
                         <li>
                             <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center download-pdf" data-id="{{ $invoice->id }}">
@@ -120,33 +169,30 @@
                     </ul>
                 </td>
             </tr>
-              <!-- Start Modal  -->
-                            <div class="modal fade" id="delete_modal{{ $invoice->id }}">
-                                <div class="modal-dialog modal-dialog-centered modal-sm">
-                                    <div class="modal-content">
-                                        <div class="modal-body text-center">
-                                        
-                                            <div class="mb-3">
-                                                <img src="assets/img/icons/delete.svg" alt="img">
-                                            </div>
-                                             <form action="{{ route('admin.invoices.destroy', $invoice->id) }}" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                            <h6 class="mb-1">Delete Unit</h6>
-                                            <p class="mb-3">Are you sure, you want to delete unit?</p>
-                                            <div class="d-flex justify-content-center">
-                                                <a href="javascript:void(0);" class="btn btn-outline-white me-3" data-bs-dismiss="modal">Cancel</a>
-                                                <button type="submit" class="btn btn-primary">Yes, Delete</button>
-                                            </div>
-                                            </form>
-                                        </div> <!-- end modal-body -->
-                                    </div> <!-- end modal-content -->
-                                </div>
+            
+            <!-- Delete Modal -->
+            <div class="modal fade" id="delete_modal{{ $invoice->id }}">
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <div class="mb-3">
+                                <img src="{{ url ('assets/img/icons/delete.svg')}}" alt="img">
                             </div>
-                            <!-- End Modal  -->
+                            <form action="{{ route('admin.invoices.destroy', $invoice->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <h6 class="mb-1">Delete Invoice</h6>
+                                <p class="mb-3">Are you sure, you want to delete Invoice?</p>
+                                <div class="d-flex justify-content-center">
+                                    <a href="javascript:void(0);" class="btn btn-outline-white me-3" data-bs-dismiss="modal">Cancel</a>
+                                    <button type="submit" class="btn btn-primary">Yes, Delete</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             @endforeach
         </tbody>
     </table>
-    
-   
 </div>

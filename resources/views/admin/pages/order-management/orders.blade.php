@@ -602,6 +602,7 @@ if (typeof window.orderManagementScriptLoaded === 'undefined') {
             return classes[status] || 'secondary';
         }
     });
+    
 }
 </script>
 @endpush

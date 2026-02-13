@@ -8,35 +8,42 @@ use App\Models\RawMaterial;
 
 class InventoryService
 {
-    public static function productAvailableQty($productId)
-    {
-        $opening = ProductVariant::where('product_id', $productId)->sum('quantity');
+  // app/Services/InventoryService.php
 
-        $in = InventoryLog::where('item_type', 'product')
-            ->where('product_id', $productId)
-            ->where('status', 'stock_in')
-            ->sum('quantity');
+public static function productAvailableQty($productId)
+{
+    // ✅ Get original quantity from variants
+    $product = \App\Models\Product::with('variants')->find($productId);
+    $originalQty = $product ? $product->variants->sum('quantity') : 0;
+    
+    // ✅ Get all inventory logs for this product
+    $logs = \App\Models\InventoryLog::where('item_type', 'product')
+        ->where('product_id', $productId)
+        ->get();
+    
+    // ✅ Calculate adjustments from logs
+    $totalIn = $logs->where('status', 'stock_in')->sum('quantity');
+    $totalOut = $logs->where('status', 'stock_out')->sum('quantity');
+    
+    // ✅ Available = Original + Stock In - Stock Out
+    $available = $originalQty + $totalIn - $totalOut;
+    
+    return max(0, $available);
+}
 
-        $out = InventoryLog::where('item_type', 'product')
-            ->where('product_id', $productId)
-            ->where('status', 'stock_out')
-            ->sum('quantity');
-
-        return max(0, $opening + $in - $out);
-    }
-
-    public static function rawAvailableQty($rawId)
-    {
-        $in = InventoryLog::where('item_type', 'raw_material')
-            ->where('raw_material_id', $rawId)
-            ->where('status', 'stock_in')
-            ->sum('quantity');
-
-        $out = InventoryLog::where('item_type', 'raw_material')
-            ->where('raw_material_id', $rawId)
-            ->where('status', 'stock_out')
-            ->sum('quantity');
-
-        return max(0, $in - $out);
-    }
+public static function rawAvailableQty($rawId)
+{
+    // For raw materials, you might not have original quantity
+    // So available is just from logs
+    $logs = \App\Models\InventoryLog::where('item_type', 'raw_material')
+        ->where('raw_material_id', $rawId)
+        ->get();
+    
+    $totalIn = $logs->where('status', 'stock_in')->sum('quantity');
+    $totalOut = $logs->where('status', 'stock_out')->sum('quantity');
+    
+    $available = $totalIn - $totalOut;
+    
+    return max(0, $available);
+}
 }

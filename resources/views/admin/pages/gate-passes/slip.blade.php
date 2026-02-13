@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,224 +9,199 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Arial', sans-serif;
             padding: 20px;
-            background: #f5f5f5;
+            background: #f8f9fa;
+            color: #333;
         }
 
         .slip-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
-            padding: 40px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
         }
 
         .header {
-            text-align: center;
-            border-bottom: 3px solid #333;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .header .subtitle {
-            font-size: 16px;
-            color: #666;
-            font-weight: normal;
-        }
-
-        .slip-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 15px;
         }
 
-        .info-box {
-            padding: 15px;
-            background: #f9f9f9;
-            border-left: 4px solid #007bff;
+        .field {
+            display: flex;
+            flex-direction: column;
         }
 
-        .info-box.type-inward {
-            border-left-color: #28a745;
-        }
-
-        .info-box.type-outward {
-            border-left-color: #dc3545;
-        }
-
-        .info-label {
-            font-weight: bold;
-            color: #555;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-
-        .info-value {
-            font-size: 18px;
-            color: #333;
+        .field-label {
             font-weight: 600;
-        }
-
-        .type-badge {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: bold;
             font-size: 14px;
-            margin-top: 5px;
+            color: #555;
+            margin-bottom: 3px;
+            text-align: left;
         }
 
-        .type-badge.inward {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .type-badge.outward {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: bold;
+        .field-value {
+            border-bottom: 1px dotted #777;
+            padding-bottom: 5px;
+            min-height: 20px;
+            font-size: 15px;
             color: #333;
-            margin: 30px 0 15px 0;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #eee;
         }
 
-        table {
+        .field-value.bold {
+            font-weight: 600;
+            color: #222;
+        }
+
+        .slip-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin: 25px 0;
         }
 
-        table th {
-            background: #007bff;
-            color: white;
-            padding: 12px;
+        .slip-table th {
+            border: 1px solid #ddd;
+            padding: 10px 8px;
             text-align: left;
+            background: #f5f5f5;
             font-weight: 600;
+            color: #444;
         }
 
-        table td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
+        .slip-table td {
+            border: 1px solid #ddd;
+            padding: 10px 8px;
+            font-size: 14px;
         }
 
-        table tr:nth-child(even) {
-            background: #f9f9f9;
+        .slip-table tr:nth-child(even) {
+            background: #fcfcfc;
         }
 
-        table tr:last-child td {
+        .slip-table tr:last-child td {
             border-bottom: none;
+        }
+
+        .signature-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+
+        .signature-box {
+            text-align: center;
+        }
+
+        .signature-label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .signature-line {
+            border-bottom: 1px solid #000;
+            height: 25px;
+            margin: 8px 0;
+        }
+
+        .signature-name {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
         }
 
         .total-row {
             font-weight: bold;
-            background: #f0f0f0;
+            background: #f8f9fa;
         }
 
-        .total-row td:last-child {
-            font-size: 20px;
-            color: #dc3545;
+        .total-row td {
+            border-top: 2px solid #000;
         }
 
-        .remarks-box {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-
-        .remarks-box .label {
-            font-weight: bold;
-            color: #856404;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .remarks-box .value {
-            color: #856404;
-        }
-
-        .footer {
-            margin-top: 40px;
+        .total-value {
+            font-size: 16px;
+            color: #d32f2f;
             text-align: center;
-            padding-top: 20px;
-            border-top: 2px solid #333;
-        }
-
-        .signature-box {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .signature {
-            text-align: center;
-            padding: 40px 10px 10px 10px;
-            border-top: 1px solid #333;
-        }
-
-        .signature .label {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .signature .name {
-            color: #666;
         }
 
         .print-btn {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #007bff;
+            top: 15px;
+            right: 15px;
+            background: #1976d2;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 8px 16px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .print-btn:hover {
-            background: #0056b3;
+            background: #1565c0;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #222;
+            margin: 20px 0 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .slip-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .slip-header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            color: #1a237e;
+            letter-spacing: 1px;
+        }
+
+        .slip-header p {
+            font-size: 16px;
+            color: #555;
+            font-weight: 500;
         }
 
         @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-
-            .slip-container {
-                box-shadow: none;
-                padding: 20px;
-            }
-
             .print-btn {
                 display: none;
+            }
+            
+            body {
+                padding: 0;
+                background: white;
+            }
+            
+            .slip-container {
+                box-shadow: none;
+                border: none;
+                padding: 15px;
+                max-width: 100%;
             }
         }
     </style>
 </head>
-
 <body>
     <button class="print-btn" onclick="window.print()">
         <i class="fas fa-print"></i> Print Slip
@@ -235,112 +209,142 @@
 
     <div class="slip-container">
         <!-- Header -->
-        <div class="header">
+        <div class="slip-header">
             <h1>GATE PASS SLIP</h1>
-            <p class="subtitle">Vehicle Entry/Exit Authorization</p>
+            <p>Vehicle Entry/Exit Authorization</p>
         </div>
 
-        <!-- Slip Information -->
-        <div class="slip-info">
-            <div class="info-box {{ $firstEntry->type == 'inward' ? 'type-inward' : 'type-outward' }}">
-                <div class="info-label">Gate Pass Type</div>
-                <div class="info-value">
-                    @if ($firstEntry->type == 'inward')
-                        <span class="type-badge inward">
-                            <i class="fas fa-arrow-down"></i> INWARD
-                        </span>
+        <div class="header">
+           
+            <div class="field">
+                <div class="field-label">Date</div>
+                <div class="field-value">{{ $firstEntry->date->format('d-m-Y') }}</div>
+            </div>
+          
+            <div class="field">
+                <div class="field-label">Name of Party</div>
+                <div class="field-value bold">{{ $firstEntry->customer->name ?? 'N/A' }}</div>
+            </div>
+        <div class="field">
+    <div class="field-label">Address of the Party</div>
+    <div class="field-value">
+        {{ $firstEntry->customer->billing_address ?? 'N/A' }},
+        @if($firstEntry->customer->billingCityRelation)
+            {{ $firstEntry->customer->billingCityRelation->name }}, 
+        @else
+            N/A, 
+        @endif
+        @if($firstEntry->customer->billingStateRelation)
+            {{ $firstEntry->customer->billingStateRelation->name }} 
+        @else
+            N/A - 
+        @endif
+        {{ $firstEntry->customer->pincode ?? '' }}
+    </div>
+</div>
+            <div class="field">
+                <div class="field-label">Purpose</div>
+                <div class="field-value">
+                    @if($firstEntry->type == 'inward')
+                        Material Delivery / Inward Gate Pass
                     @else
-                        <span class="type-badge outward">
-                            <i class="fas fa-arrow-up"></i> OUTWARD
-                        </span>
+                        Material Dispatch / Outward Gate Pass
                     @endif
                 </div>
             </div>
 
-            <div class="info-box">
-                <div class="info-label">Batch Number</div>
-                <div class="info-value">{{ $firstEntry->batch_number }}</div>
-            </div>
-
-            <div class="info-box">
-                <div class="info-label">Date</div>
-                <div class="info-value">{{ $firstEntry->date->format('d-m-Y') }}</div>
-            </div>
-
-            <div class="info-box">
-                <div class="info-label">Total Products</div>
-                <div class="info-value">{{ $gatePasses->count() }}</div>
+            <div class="field">
+                <div class="field-label">Batch Number</div>
+                <div class="field-value bold">{{ $firstEntry->batch_number }}</div>
             </div>
         </div>
 
         <!-- Product Details Section -->
         <div class="section-title">Product Details</div>
-        <table>
+        <table class="slip-table">
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Product Name</th>
+                    <th>S.No.</th>
+                    <th>Drq. No/Code No. & Other specification</th>
+                    <th>Description of the Items</th>
+                    <th>U/M</th>
                     <th>Quantity</th>
-                    <th>Labor Type</th>
-                    <th>Workers</th>
-                    <th>Rate/Worker (₹)</th>
-                    <th>Total Cost (₹)</th>
+                    <th>Approx Value (Rs.)</th>
+                    <th>Remarks</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($gatePasses as $index => $gp)
                     <tr>
                         <td>{{ $index + 1 }}</td>
+                        <td>{{ $gp->product->code ?? 'N/A' }}</td>
                         <td>{{ $gp->product->name }}</td>
+                        <td>Unit</td>
                         <td>{{ $gp->quantity }}</td>
-                        <td>{{ $gp->laborType->name }}</td>
-                        <td>{{ $gp->workers_count }}</td>
-                        <td>{{ number_format($gp->rate_amount, 2) }}</td>
                         <td>{{ number_format($gp->total_cost, 2) }}</td>
+                        <td></td>
                     </tr>
                 @endforeach
                 <tr class="total-row">
-                    <td colspan="6" style="text-align: right;"><strong>GRAND TOTAL:</strong></td>
-                    <td><strong>₹{{ number_format($totalCost, 2) }}</strong></td>
+                    <td colspan="5" style="text-align: right; font-weight: bold;">GRAND TOTAL:</td>
+                    <td class="total-value">₹{{ number_format($totalCost, 2) }}</td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
 
-        <!-- Remarks Section -->
-        @if ($firstEntry->remarks)
-            <div class="section-title">Remarks</div>
-            <div class="remarks-box">
-                <span class="label">Additional Notes:</span>
-                <p class="value">{{ $firstEntry->remarks }}</p>
-            </div>
-        @endif
-
-        <!-- Footer with Signatures -->
-        <div class="footer">
+        <!-- Signature Section -->
+        <div class="signature-section">
             <div class="signature-box">
-                <div class="signature">
-                    <div class="label">Prepared By</div>
-                    <div class="name">_________________</div>
-                </div>
-                <div class="signature">
-                    <div class="label">Verified By</div>
-                    <div class="name">_________________</div>
-                </div>
-                <div class="signature">
-                    <div class="label">Authorized By</div>
-                    <div class="name">_________________</div>
-                </div>
+                <div class="signature-label">Initiator</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">Signature</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">Name</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">Designation</div>
             </div>
+            
+            <div class="signature-box">
+                <div class="signature-label">Authorised Signatory</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">Signature</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">Name</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">Designation</div>
+            </div>
+            
+            <div class="signature-box">
+                <div class="signature-label">Received by</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">Signature</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">Name</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">(Representative of the Party)</div>
+            </div>
+            
+            <div class="signature-box">
+                <div class="signature-label">Security Department</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">Out at _______ (Time)</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">On _______ (Date)</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">Signature</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">Name</div>
+            </div>
+        </div>
 
-            <div style="margin-top: 30px; color: #666; font-size: 12px;">
-                <p>Generated on: {{ now()->format('d-m-Y H:i:s') }}</p>
-                <p>Slip ID: GP-{{ $firstEntry->batch_number }}-{{ $firstEntry->date->format('Ymd') }}</p>
-            </div>
+        <div style="text-align: center; margin-top: 25px; color: #666; font-size: 12px;">
+            <p>Generated on: {{ now()->format('d-m-Y H:i:s') }}</p>
+            <p>Slip ID: GP-{{ $firstEntry->batch_number }}-{{ $firstEntry->date->format('Ymd') }}</p>
         </div>
     </div>
 
     <script>
-        // Auto-focus on load for better UX
         window.onload = function() {
             // Optional: Auto-print on load (uncomment if needed)
             // setTimeout(function() {
@@ -349,5 +353,4 @@
         };
     </script>
 </body>
-
 </html>

@@ -95,7 +95,7 @@
                                                     <i class="isax isax-lock"></i>
                                                 </span>
                                                 <input type="password" name="password"
-                                                    class="border-start-0 ps-0 pass-inputs form-control">
+                                                    class="border-start-0 ps-0 pass-inputs form-control" placeholder="Enter Password">
                                                 <span
                                                     class="isax toggle-passwords isax-eye-slash text-gray-7 fs-14"></span>
                                             </div>

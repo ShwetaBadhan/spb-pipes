@@ -149,7 +149,7 @@
                                         <h5 class="mb-0">Order Summary</h5>
                                     </div>
                                     <div class="card-body">
-                                        <div class="mb-3">
+                                        {{-- <div class="mb-3">
                                             <label class="form-label">Tax</label>
                                             <input type="number" name="tax" class="form-control" step="0.01"
                                                 value="0" min="0" id="tax-input">
@@ -159,12 +159,12 @@
                                             <label class="form-label">Shipping Cost</label>
                                             <input type="number" name="shipping_cost" class="form-control"
                                                 step="0.01" value="0" min="0" id="shipping-input">
-                                        </div>
+                                        </div> --}}
 
-                                        <div class="mb-3">
+                                        {{-- <div class="mb-3">
                                             <label class="form-label">Notes</label>
                                             <textarea name="notes" class="form-control" rows="3">{{ old('notes') }}</textarea>
-                                        </div>
+                                        </div> --}}
 
                                         <div class="mb-3 p-3 bg-light rounded">
                                             <div class="d-flex justify-content-between mb-2">
@@ -383,22 +383,21 @@
                     $badgeClass = $product['quantity'] < 5 ? 'danger' : ($product['quantity'] < 10 ? 'warning' : 'success');
                 @endphp
                 productOptions += `<option value="{{ $product['id'] }}"
-                data-variant-id="{{ $product['variant_id'] }}"
-                data-variant-name="{{ $product['variant_name'] }}"
+               
                 data-price="{{ $product['selling_price'] }}"
                 data-stock="{{ $product['quantity'] }}">
-            {{ $product['product_name'] }} - {{ $product['variant_name'] }} 
-            (₹{{ number_format($product['selling_price'], 2) }}, {{ $product['quantity'] }} left)
+            {{ $product['product_name'] }} 
+            
         </option>`;
             @endforeach
 
             const newRow = `
         <div class="item-row mb-3 p-3 border rounded bg-light">
             <div class="row align-items-end">
-                <div class="col-md-5">
-                    <label class="form-label">Product & Variant</label>
+                <div class="col-md-4">
+                    <label class="form-label">Product</label>
                     <select name="items[${rowCount}][product_id]" class="form-select product-select" required>
-                        <option value="">-- Select Product & Variant --</option>
+                        <option value="">-- Select Product --</option>
                         ${productOptions}
                     </select>
                     <small class="text-muted d-block mt-1 stock-warning" style="display:none;"></small>

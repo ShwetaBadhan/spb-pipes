@@ -27,7 +27,7 @@ use App\Http\Controllers\LaborCostReportController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\GatePassController;
-
+use App\Http\Controllers\PaymentController; // ✅ IMPORT FROM ROOT CONTROLLERS
 
 
 // Route::get('/', function () {
@@ -53,41 +53,12 @@ Route::get('/dashboard', function () {
     return view('admin.pages.dashboard', compact('lowStockProducts', 'lowStockRawMaterials'));
 })->middleware('auth')->name('dashboard');
 
-// Route::get('/admin-users', function () {
-//     return view('admin.pages.admin-users');
-// })-> name("admin-users");
 
-// Route::get('/admin-roles', function () {
-//     return view('admin.pages.admin-roles');
-// })-> name("roles");
-
-// Route::get('/admin-permissions', function () {
-//     return view('admin.pages.admin-permissions');
-// })-> name("permissions");
-
-// Route::get('/inventory', function () {
-//     return view('admin.pages.inventory');
-// })-> name("inventory");
 
 Route::get('/products', function () {
     return view('admin.pages.products');
 })->name("products");
 
-// Route::get('/category', function () {
-//     return view('admin.pages.category');
-// })-> name("category");
-
-// Route::get('/units', function () {
-//     return view('admin.pages.units');
-// })-> name("units");
-
-// Route::get('/add-product', function () {
-//     return view('admin.pages.add-product');
-// })-> name("add-product");
-
-// Route::get('/edit-product', function () {
-//     return view('admin.pages.edit-product');
-// })-> name("edit-product");
 
 
 Route::get('/admin-roles', function () {
@@ -95,55 +66,6 @@ Route::get('/admin-roles', function () {
 })->name("roles");
 
 
-// invoice routes
-
-// Route::get('/invoices/invoices-view', function () {
-//     return view('admin.pages.invoices.invoices-view');
-// })-> name("invoices-view");
-
-
-
-// Route::get('/invoices/add-invoice', function () {
-//     return view('admin.pages.invoices.add-invoice');
-// })-> name("add-invoice");
-
-
-
-
-// Route::get('/invoices/edit-invoice', function () {
-//     return view('admin.pages.invoices.edit-invoice');
-// })-> name("edit-invoice");
-
-
-
-// Route::get('/invoices/invoice-details', function () {
-//     return view('admin.pages.invoices.invoice-details');
-// })-> name("invoice-details");
-
-// customer routes
-
-// Route::get('/customers/customers-view', function () {
-//     return view('admin.pages.customers.customers-view');
-// })-> name("customers-view");
-
-
-
-// Route::get('/customers/add-customer', function () {
-//     return view('admin.pages.customers.add-customer');
-// })-> name("add-customer");
-
-
-
-
-// Route::get('/customers/edit-customer', function () {
-//     return view('admin.pages.customers.edit-customer');
-// })-> name("edit-customers");
-
-
-
-// Route::get('/customers/customer-details', function () {
-//     return view('admin.pages.customers.customer-details');
-// })-> name("customer-details");
 
 // purchase routes
 
@@ -495,22 +417,30 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 
 // Invoice Management Routes
-Route::middleware(['auth'])
-    ->prefix('admin')          // Adds /admin to all URLs
-    ->name('admin.invoices.')  // Prefixes route names with admin.invoices.
-    ->group(function () {
-        Route::get('/invoices', [InvoiceController::class, 'index'])->name('index');
-        Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('create');
-        Route::post('/invoices', [InvoiceController::class, 'store'])->name('store');
-        Route::get('/invoices/{invoice}', [InvoiceController::class, 'show'])->name('show');
-        Route::get('/invoices/{invoice}/edit', [InvoiceController::class, 'edit'])->name('edit');
-        Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('update');
-        Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
-        Route::patch('/invoices/{invoice}/status', [InvoiceController::class, 'updateStatus'])->name('update-status');
-        // ✅ Fixed: Changed from 'invoices.pdf' to 'pdf'
-        Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'pdf'])->name('pdf');
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    
+    // ✅ Invoice routes with payment routes INSIDE
+    Route::prefix('invoices')->name('admin.invoices.')->group(function () {
+        Route::get('/', [InvoiceController::class, 'index'])->name('index');
+        Route::get('/create', [InvoiceController::class, 'create'])->name('create');
+        Route::post('/', [InvoiceController::class, 'store'])->name('store');
+        Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('show');
+        Route::get('/{invoice}/edit', [InvoiceController::class, 'edit'])->name('edit');
+        Route::put('/{invoice}', [InvoiceController::class, 'update'])->name('update');
+        Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
+        Route::patch('/{invoice}/status', [InvoiceController::class, 'updateStatus'])->name('update-status');
+        Route::get('/{invoice}/pdf', [InvoiceController::class, 'pdf'])->name('pdf');
+        
+        // ✅ PAYMENT ROUTES - INSIDE the invoice group
+        Route::get('/{invoice}/add-payment', [PaymentController::class, 'create'])->name('add-payment');
+        Route::post('/{invoice}/record-payment', [PaymentController::class, 'store'])->name('record-payment');
+        Route::get('/{invoice}/ledger', [PaymentController::class, 'getLedger'])->name('ledger');
+        // ✅ CORRECTED FILTER ROUTE
+        Route::post('/{invoice}/ledger/filter', [InvoiceController::class, 'filterLedger'])
+    ->name('ledger.filter');
     });
-
+    
+});
 
 // gate-passes
 Route::name('admin.')->group(function () {
@@ -524,4 +454,8 @@ Route::name('admin.')->group(function () {
     // NEW: Generate Slip route (AFTER resource)
     Route::get('gate-passes/slip/{batchNumber}', [GatePassController::class, 'generateSlip'])
         ->name('gate-passes.slip');
+
+
 });
+
+
