@@ -93,17 +93,19 @@
                                                         </div>
 
                                                         <div class="mb-3">
-                                                            <label class="form-label">Tax Rate</label>
-                                                            <select class="form-select" id="tax_type" name="tax_type" required>
-                                                                <option value="none" selected>None</option>
-                                                                <option value="gst_5">GST 5%</option>
-                                                                <option value="gst_12">GST 12%</option>
-                                                                <option value="gst_18">GST 18%</option>
-                                                                <option value="gst_28">GST 28%</option>
-                                                                <option value="cgst_sgst">CGST 9% + SGST 9%</option>
-                                                                <option value="igst">IGST 18%</option>
-                                                            </select>
-                                                        </div>
+    <label class="form-label">Tax Rate</label>
+    <select class="form-select" id="tax_type" name="tax_type" required>
+        <option value="none" selected>None</option>
+        <option value="gst_5">GST 5%</option>
+        <option value="gst_12">GST 12%</option>
+        <option value="gst_18">GST 18%</option>
+        <option value="gst_28">GST 28%</option>
+        <option value="cgst_sgst">CGST 9% + SGST 9%</option>
+        <option value="igst">IGST 18%</option>
+    </select>
+    <!-- ✅ ADD THIS HIDDEN INPUT -->
+    <input type="hidden" id="tax_type_hidden" name="tax_type" value="none">
+</div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -275,30 +277,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             hiddenInput.value = checkbox.checked ? '1' : '0';
         });
-    });
+});
 
-    // Tax toggle
-    document.getElementById('enable_tax').addEventListener('change', function() {
-        const taxTypeSelect = document.getElementById('tax_type');
-        if (!this.checked) {
-            taxTypeSelect.value = 'none';
-            taxTypeSelect.disabled = true;
-        } else {
-            taxTypeSelect.disabled = false;
-            if (taxTypeSelect.value === 'none') taxTypeSelect.value = 'gst_18';
-        }
-        calculateTotals();
-    });
-
-    // ✅ CRITICAL FIX #1: Tax type change listener (was missing!)
-    document.getElementById('tax_type').addEventListener('change', calculateTotals);
-
-    // Initialize tax field state
-    if (!document.getElementById('enable_tax').checked) {
-        document.getElementById('tax_type').value = 'none';
-        document.getElementById('tax_type').disabled = true;
+   // Tax toggle
+document.getElementById('enable_tax').addEventListener('change', function() {
+    const taxTypeSelect = document.getElementById('tax_type');
+    const taxTypeHidden = document.getElementById('tax_type_hidden');
+    
+    if (!this.checked) {
+        taxTypeSelect.value = 'none';
+        taxTypeSelect.disabled = true;
+    } else {
+        taxTypeSelect.disabled = false;
+        if (taxTypeSelect.value === 'none') taxTypeSelect.value = 'gst_18';
     }
+    
+    // ✅ Sync hidden input
+    taxTypeHidden.value = taxTypeSelect.value;
+    calculateTotals();
+});
 
+    
+// ✅ CRITICAL FIX: Tax type change listener
+document.getElementById('tax_type').addEventListener('change', function() {
+    document.getElementById('tax_type_hidden').value = this.value;
+    calculateTotals();
+});
     // Auto-fill price when product selected
     document.addEventListener('change', function(e) {
         if (e.target.classList.contains('item-select')) {
