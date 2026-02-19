@@ -14,10 +14,10 @@
 <meta http-equiv="Cache-Control" content="no-transform">
 
 	<!-- Favicon -->
-	<link rel="shortcut icon" type="image/x-icon" href="{{ url('assets/img/favicon.png')}}">
+<link rel="shortcut icon" type="image/x-icon" href="{{ $system_favicon ? asset('storage/' . $system_favicon) : asset('assets/img/favicon.png') }}">
 
-	<!-- Apple Touch Icon -->
-	<link rel="apple-touch-icon" sizes="180x180" href="{{ url('assets/img/apple-touch-icon.png')}}">
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" sizes="180x180" href="{{ $system_favicon ? asset('storage/' . $system_favicon) : asset('assets/img/favicon.png') }}">
 
     <!-- Theme Script js -->
     <script src="{{ url('assets/js/theme-script.js') }}"></script>

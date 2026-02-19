@@ -12,11 +12,11 @@
     <meta name="keywords" content="">
     <meta name="author" content="">
 
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ url('assets/img/favicon.png') }}">
+  	<!-- Favicon -->
+<link rel="shortcut icon" type="image/x-icon" href="{{ $system_favicon ? asset('storage/' . $system_favicon) : asset('assets/img/favicon.png') }}">
 
-    <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url('assets/img/apple-touch-icon.png') }}">
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" sizes="180x180" href="{{ $system_favicon ? asset('storage/' . $system_favicon) : asset('assets/img/favicon.png') }}">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url('assets/css/bootstrap.min.css') }}">
@@ -50,8 +50,8 @@
 
                             <div class="d-flex flex-column justify-content-lg-center p-4 p-lg-0 pb-0 flex-fill">
                                 <div class="mx-auto mb-5 text-center">
-                                    <img src="{{ asset('assets/img/logo/logo-spb.png') }}" class="img-fluid"
-                                        alt="Logo">
+                                <img src="{{ $system_white_logo ? asset('storage/' . $system_white_logo) : asset('assets/img/logo-spb.png') }} " class="img-fluid" alt="Logo">
+                                    
                                 </div>
 
                                 <div class="card border-0 p-lg-3 shadow-lg">

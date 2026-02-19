@@ -28,6 +28,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\GatePassController;
 use App\Http\Controllers\PaymentController; // ✅ IMPORT FROM ROOT CONTROLLERS
+use App\Http\Controllers\CaptchaSettingController;
+use App\Http\Controllers\SystemSettingController;
 
 
 // Route::get('/', function () {
@@ -133,6 +135,8 @@ Route::get('/finances/incomes', function () {
 Route::get('/finances/payments', function () {
     return view('admin.pages.finances.payments');
 })->name("payments");
+
+
 
 
 Route::get('/finances/transactions', function () {
@@ -459,3 +463,16 @@ Route::name('admin.')->group(function () {
 });
 
 
+
+Route::get('/general-settings', [CaptchaSettingController::class, 'index'])->name('general-settings');
+Route::post('/general-settings', [CaptchaSettingController::class, 'update'])->name('general-settings.update');
+Route::get('/general-settings/check-domain', [CaptchaSettingController::class, 'checkDomain'])->name('general-settings.check-domain');
+
+
+// System Settings
+Route::get('/admin/settings/system-settings', [SystemSettingController::class, 'index'])
+     ->name('settings.system-settings');
+Route::post('/admin/settings/system-settings', [SystemSettingController::class, 'update'])
+     ->name('settings.system-settings.update');
+Route::delete('/admin/settings/system-settings/remove-image/{type}', [SystemSettingController::class, 'removeImage'])
+     ->name('settings.system-settings.remove-image');

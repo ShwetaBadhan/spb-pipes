@@ -56,11 +56,13 @@
         <!-- Start Logo -->
         <div class="sidebar-logo">
             <a href="{{ route('dashboard') }}" class="logo logo-normal">
-                <img src="{{ url('assets/img/logo/logo-spb.png') }} " alt="Logo">
+                <img src="{{ $system_white_logo ? asset('storage/' . $system_white_logo) : asset('assets/img/logo-spb.png') }} " alt="Logo">
 
             </a>
             <a href="{{ route('dashboard') }}" class="logo-small">
-                <img src="{{ url('assets/img/logo-small.svg') }}" alt="Logo">
+
+                <img src="{{ $system_single_logo ? asset('storage/' . $system_single_logo) : asset('assets/img/logo-small.png') }} " alt="Logo">
+
             </a>
             <a href="{{ route('dashboard') }}" class="dark-logo">
                 <img src="{{ url('assets/img/logo-white.svg') }}" alt="Logo">
@@ -340,176 +342,33 @@
 
                         </ul>
                     </li>
-                    {{-- <li class="menu-title"><span>Administration</span></li>
-							<li>
-								<ul>
-									<li class="submenu">
-										<a href="javascript:void(0);">
-											<i class="isax isax-chart-35"></i><span>Reports</span>
-											<span class="menu-arrow"></span>
-										</a>
-										<ul>
-											<li class="submenu submenu-two">
-												<a href="javascript:void(0);">Item Reports<span class="menu-arrow"></span></a>
-												<ul>
-													<li><a href="stock-summary">Stock Summary</a></li>
-													<li><a href="inventory-report">Inventory</a></li>
-													<li><a href="best-seller">Best Seller</a></li>
-													<li><a href="low-stock">Low Stock</a></li>
-													<li><a href="stock-history">Stock History</a></li>
-													<li><a href="sold-stock">Sold Stock</a></li>
-												</ul>
-											</li>
-											<li class="submenu submenu-two">
-												<a href="javascript:void(0);">Transaction Reports<span class="menu-arrow"></span></a>
-												<ul>
-													<li><a href="sales-report.html">Sales</a></li>
-													<li><a href="sales-returns.html">Sales Return</a></li>
-													<li><a href="sales-orders.html">Sales Orders</a></li>
-													<li><a href="purchases-report.html">Purchases</a></li>
-													<li><a href="purchase-return-report.html">Purchase Return</a></li>
-													<li><a href="purchase-orders-report.html">Purchase Orders</a></li>
-													<li><a href="quotation-report.html">Quotation</a></li>
-												</ul>
-											</li>
-											<li class="submenu submenu-two">
-												<a href="javascript:void(0);">Finance Reports<span class="menu-arrow"></span></a>
-												<ul>
-													<li><a href="payment-summary.html">Payment Summary</a></li>
-													<li><a href="tax-report.html">Taxes</a></li>
-												</ul>
-											</li>
-											<li class="submenu submenu-two">
-												<a href="javascript:void(0);">Accounting Reports<span class="menu-arrow"></span></a>
-												<ul>
-													<li><a href="expense-report.html">Expenses</a></li>
-													<li><a href="income-report.html">Income</a></li>
-													<li><a href="profit-loss-report.html">Profit & Loss</a></li>
-													<li><a href="annual-report.html">Annual Report</a></li>
-													<li><a href="balance-sheet.html">Balance Sheet</a></li>
-													<li><a href="trial-balance.html">Trial Balance</a></li>
-													<li><a href="cash-flow.html">Cash Flow</a></li>
-													<li><a href="account-statement.html">Account Statement</a></li>
-												</ul>
-											</li>
-											<li class="submenu submenu-two">
-												<a href="javascript:void(0);">User Reports<span class="menu-arrow"></span></a>
-												<ul>
-													<li>
-														<a href="customers-report.html">Customers</a>
-													</li>
-													<li>
-														<a href="customer-due-report.html">Customer Due Report</a>
-													</li>
-													<li>
-														<a href="supplier-report.html">Supplier</a>
-													</li>
-												</ul>
-											</li>
-										</ul>
-									</li>
-									<li class="submenu">
-										<a href="javascript:void(0);">
-											<i class="isax isax-setting-25"></i><span>Settings</span>
-											<span class="menu-arrow"></span>
-										</a>
-										<ul>
-											<li class="submenu submenu-two">
-												<a href="javascript:void(0);">General Settings<span class="menu-arrow"></span></a>
-												<ul>
-													<li><a href="account-settings.html">Account Settings</a></li>
-													<li><a href="plans-billings.html">Plans & Billing</a></li>
-													<li><a href="notifications-settings.html">Notifications</a></li>
-													<li><a href="integrations-settings.html">Integrations</a></li>
-												</ul>
-											</li>
-											<li class="submenu submenu-two">
-												<a href="javascript:void(0);">Website Settings<span class="menu-arrow"></span></a>
-												<ul>
-													<li><a href="company-settings.html">Company Settings</a></li>
-													<li><a href="localization-settings.html">Localization</a></li>
-													<li><a href="preference-settings.html">Preference</a></li>
-													<li><a href="seo-setup.html">SEO Setup</a></li>
-													<li><a href="language-settings.html">Language</a></li>
-													<li><a href="maintenance-mode.html">Maintenance Mode</a></li>
-													<li><a href="authentication-settings.html">Authentication</a></li>
-													<li><a href="ai-configuration.html">AI Configuration</a></li>
-													<li><a href="appearance-settings.html">Appearance</a></li>
-													<li><a href="plugin-manager.html">Plugin Manager</a></li>
-												</ul>
-											</li>
-											<li class="submenu submenu-two">
-												<a href="javascript:void(0);">App Settings<span class="menu-arrow"></span></a>
-												<ul>
-													<li><a href="invoice-settings.html">Invoice Settings</a></li>
-													<li><a href="invoice-templates-settings.html">Invoice Templates</a></li>
-													<li><a href="esignatures.html">eSignatures</a></li>
-													<li><a href="barcode-settings.html">Barcode</a></li>
-													<li><a href="thermal-printer.html">Thermal Printer</a></li>
-													<li><a href="custom-fields.html">Custom Fields</a></li>
-													<li><a href="sass-settings.html">SaaS Settings</a></li>
-												</ul>
-											</li>
-											<li class="submenu submenu-two">
-												<a href="javascript:void(0);">System Settings<span class="menu-arrow"></span></a>
-												<ul>
-													<li><a href="email-settings.html">Email Settings</a></li>
-													<li><a href="email-templates.html">Email Templates</a></li>
-													<li><a href="sms-gateways.html">SMS Gateways</a></li>
-													<li><a href="gdpr-cookies.html">GDPR Cookies</a></li>
-												</ul>
-											</li>
-											<li class="submenu submenu-two">
-												<a href="javascript:void(0);">Finance Settings<span class="menu-arrow"></span></a>
-												<ul>
-													<li>
-														<a href="payment-methods.html">Payment Methods</a>
-													</li>
-													<li>
-														<a href="bank-accounts.html">Bank Accounts</a>
-													</li>
-													<li>
-														<a href="tax-rates.html">Tax Rates</a>
-													</li>
-													<li>
-														<a href="currencies.html">Currencies</a>
-													</li>
-												</ul>
-											</li>
-											<li class="submenu submenu-two">
-												<a href="javascript:void(0);">Other Settings<span class="menu-arrow"></span></a>
-												<ul>
-													<li>
-														<a href="custom-css.html">Custom CSS</a>
-													</li>
-													<li>
-														<a href="custom-js.html">Custom JS</a>
-													</li>
-													<li>
-														<a href="clear-cache.html">Clear Cache</a>
-													</li>
-													<li>
-														<a href="sitemap.html">Sitemap</a>
-													</li>
-													<li>
-														<a href="storage.html">Storage</a>
-													</li>
-													<li>
-														<a href="cronjob.html">Cronjob</a>
-													</li>
-													<li>
-														<a href="system-backup.html">System Backup</a>
-													</li>
-													<li>
-														<a href="database-backup.html">Database Backup</a>
-													</li>
-												</ul>
-											</li>
-										</ul>
-									</li>
-								</ul>
-							</li>
-							 --}}
+                    <li class="menu-title"><span>Administration</span></li>
+                    <li>
+                        <ul>
+
+                            <li class="submenu">
+                                <a href="javascript:void(0);">
+                                    <i class="isax isax-setting-25"></i><span>Settings</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('general-settings') }}">General Settings</a>
+
+                                    </li>
+
+
+                                    <li>
+                                        <a href="{{ route('settings.system-settings') }}">System Settings</a>
+
+                                    </li>
+
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
 
 
                     {{-- <li class="menu-title"><span>Authentication</span></li>
