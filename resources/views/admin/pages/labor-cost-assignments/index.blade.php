@@ -188,12 +188,16 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Batch Number</label>
-                                <input type="text" name="batch_number" class="form-control">
-                            </div>
-                        </div>
+                       <div class="col-md-6">
+    <div class="mb-3">
+        <label class="form-label">Batch Number</label>
+        <select name="batch_number" id="batch_number" class="form-select">
+            <option value="">-- Select Product First --</option>
+            <!-- Options will be populated by JS -->
+        </select>
+        <small class="text-muted" id="batch-help">Select a product to see available batches</small>
+    </div>
+</div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Quantity *</label>
@@ -508,5 +512,58 @@ document.getElementById('searchInput').addEventListener('keyup', function(e) {
         window.location.href = '?search=' + encodeURIComponent(this.value);
     }
 });
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // ✅ Pass batches from Blade to JS
+    const allBatches = @json($batches);
+    
+    const productSelect = document.querySelector('select[name="product_id"]');
+    const batchSelect = document.getElementById('batch_number');
+    const batchHelp = document.getElementById('batch-help');
+
+    // ✅ Filter batches when product changes
+    productSelect.addEventListener('change', function() {
+        const productId = this.value;
+        
+        // Clear existing options
+        batchSelect.innerHTML = '<option value="">-- Select Batch --</option>';
+        
+        if (!productId) {
+            batchHelp.textContent = 'Select a product to see available batches';
+            batchSelect.disabled = true;
+            return;
+        }
+
+        // Filter batches for selected product
+        const productBatches = allBatches.filter(batch => batch.product_id == productId);
+        
+        if (productBatches.length === 0) {
+            batchSelect.innerHTML = '<option value="">No batches found</option>';
+            batchHelp.textContent = 'No production batches exist for this product';
+            batchSelect.disabled = true;
+            return;
+        }
+
+        // Populate dropdown
+        productBatches.forEach(batch => {
+            const option = document.createElement('option');
+            option.value = batch.id; // or batch.batch_number if you have that field
+            option.textContent = `Batch #${batch.id} - ${batch.production_date} (${batch.actual_output} units)`;
+            option.dataset.output = batch.actual_output; // optional: for display
+            batchSelect.appendChild(option);
+        });
+
+        batchHelp.textContent = `${productBatches.length} batch(es) available`;
+        batchSelect.disabled = false;
+    });
+
+    // ✅ Trigger change on page load if product is pre-selected (edit mode)
+    if (productSelect.value) {
+        productSelect.dispatchEvent(new Event('change'));
+    }
+});
+</script>
+<script>
+    console.log('Batches in view:', @json($batches ?? []));
 </script>
 @endpush

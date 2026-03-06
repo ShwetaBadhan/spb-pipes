@@ -6,6 +6,7 @@ use App\Models\LaborCostAssignment;
 use App\Models\LaborType;
 use App\Models\Product; // Update with your actual Product model
 use App\Models\User;
+use App\Models\ProductionBatch;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -40,7 +41,9 @@ class LaborCostAssignmentController extends Controller
         // ✅ CORRECT (use Spatie's role() method properly)
 $supervisors = User::role(['supervisor'])->get();
         // \Log::info('Supervisors fetched: ' . $supervisors->count());
-
+  $batches = ProductionBatch::with('product')
+            ->orderBy('production_date', 'desc')
+            ->get();
         // ✅ Return view
         return view('admin.pages.labor-cost-assignments.index', [
             'assignments' => $assignments,
@@ -48,6 +51,7 @@ $supervisors = User::role(['supervisor'])->get();
             'products' => $products,
             'supervisors' => $supervisors,
             'filters' => $request->all(),
+             'batches' => $batches, 
         ]);
 
     } catch (\Exception $e) {

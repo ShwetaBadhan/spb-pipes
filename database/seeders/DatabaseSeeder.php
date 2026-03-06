@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         CitySeeder::class,
         RateTypeSeeder::class,
         WorkTypeSeeder::class,
+         PermissionSeeder::class,
     ]);
        
     }

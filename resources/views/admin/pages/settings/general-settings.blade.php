@@ -1,8 +1,8 @@
 @extends('admin.layout.master')
 @section('content')
     <!-- ========================
-           Start Page Content
-          ========================= -->
+               Start Page Content
+              ========================= -->
 
     <div class="page-wrapper">
 
@@ -44,7 +44,8 @@
                         <!-- Start settings sidebar -->
 
                         <div class="col-xl-3 col-lg-4">
-                            <div class="card settings-card">
+                        @include('admin.components.settings-sidebar')
+                            {{-- <div class="card settings-card">
                                 <div class="card-header">
                                     <h6 class="mb-0">Settings</h6>
                                 </div>
@@ -60,22 +61,23 @@
                                                                     <i class="isax isax-setting-2 fs-18"></i>
                                                                     <span class="fs-14 fw-medium ms-2">General
                                                                         Settings</span>
-                                                                   
+
                                                                 </a>
-                                                            
+
                                                             </li>
-                                                            
-                                                            
-                                                           
+
+
+
                                                             <li class="submenu">
                                                                 <a href="{{ route('settings.system-settings') }}">
                                                                     <i class="isax isax-more-2 fs-18"></i>
-                                                                    <span class="fs-14 fw-medium ms-2">System Settings</span>
-                                                                  
+                                                                    <span class="fs-14 fw-medium ms-2">System
+                                                                        Settings</span>
+
                                                                 </a>
-                                                               
+
                                                             </li>
-                                                           
+
                                                         </ul>
                                                     </li>
                                                 </ul>
@@ -83,7 +85,7 @@
                                         </div>
                                     </div>
                                 </div><!-- end card body -->
-                            </div><!-- end card -->
+                            </div><!-- end card --> --}}
                         </div><!-- end col -->
 
                         <!-- End settings sidebar -->
@@ -155,9 +157,8 @@
                                         <label for="allowed_domain" class="form-label fw-bold">
                                             Allowed Domain <span class="text-danger">*</span>
                                         </label>
-                                        <input type="text" class="form-control" id="allowed_domain"
-                                            name="allowed_domain" value="{{ old('allowed_domain', $allowed_domain) }}"
-                                            placeholder="example.com">
+                                        <input type="text" class="form-control" id="allowed_domain" name="allowed_domain"
+                                            value="{{ old('allowed_domain', $allowed_domain) }}" placeholder="example.com">
                                         <small class="text-muted d-block mt-1">
                                             Captcha will only be active when accessing from this domain.<br>
                                             Current domain: <strong>{{ $current_domain }}</strong>
@@ -169,15 +170,15 @@
                                         style="display: {{ $provider == 'google' ? 'block' : 'none' }};">
                                         <h6 class="fw-bold text-dark mb-3">Google reCAPTCHA Keys</h6>
                                         <div class="mb-3">
-                                            <label for="google_recaptcha_site_key"
-                                                class="form-label small text-muted">Site Key</label>
+                                            <label for="google_recaptcha_site_key" class="form-label small text-muted">Site
+                                                Key</label>
                                             <input type="text" class="form-control" id="google_recaptcha_site_key"
                                                 name="google_recaptcha_site_key"
                                                 value="{{ old('google_recaptcha_site_key', $google_recaptcha_site_key) }}">
                                         </div>
                                         <div>
-                                            <label for="google_recaptcha_secret"
-                                                class="form-label small text-muted">Secret Key</label>
+                                            <label for="google_recaptcha_secret" class="form-label small text-muted">Secret
+                                                Key</label>
                                             <input type="text" class="form-control" id="google_recaptcha_secret"
                                                 name="google_recaptcha_secret"
                                                 value="{{ old('google_recaptcha_secret', $google_recaptcha_secret) }}">
@@ -230,8 +231,8 @@
     </div>
 
     <!-- ========================
-           End Page Content
-          ========================= -->
+               End Page Content
+              ========================= -->
 @endsection
 
 @push('scripts')

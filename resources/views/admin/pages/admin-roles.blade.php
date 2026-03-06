@@ -158,6 +158,43 @@
                                 </div>
                             </div>
                             <!-- / End Delete Modal  -->
+                             <!-- Assign Permissions Modal -->
+    <div class="modal fade" id="assignPermissionsModal{{ $role->id }}">
+        <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content">
+                <!-- modal header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Assing Permissions</h4>
+                    <button type="button" class="btn-close btn-close-modal custom-btn-close" data-bs-dismiss="modal"><i
+                            class="fa-solid fa-x"></i></button>
+                </div>
+
+                <form action="{{ route('roles.update-permissions', $role) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="mb-0">
+                            <label class="form-label">Permissions</label>
+                            <select class="select2 form-control select2-multiple" name="permissions[]"
+                                multiple="multiple" data-placeholder="Choose permissions...">
+                                @foreach ($permissions as $permission)
+                                    <option value="{{ $permission->name }}"
+                                        {{ $role->hasPermissionTo($permission->name) ? 'selected' : '' }}>
+                                        {{ $permission->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex align-items-center justify-content-between gap-1">
+                        <button type="button" class="btn btn-outline-white" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Assign Permissions</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
                         @endforeach
                     </tbody>
                 </table>
@@ -200,43 +237,7 @@
     </div>
     <!-- / End Add Modal -->
 
-    <!-- Assign Permissions Modal -->
-    <div class="modal fade" id="assignPermissionsModal{{ $role->id }}">
-        <div class="modal-dialog modal-dialog-centered modal-md">
-            <div class="modal-content">
-                <!-- modal header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Assing Permissions</h4>
-                    <button type="button" class="btn-close btn-close-modal custom-btn-close" data-bs-dismiss="modal"><i
-                            class="fa-solid fa-x"></i></button>
-                </div>
-
-                <form action="{{ route('roles.update-permissions', $role) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <div class="mb-0">
-                            <label class="form-label">Permissions</label>
-                            <select class="select2 form-control select2-multiple" name="permissions[]"
-                                multiple="multiple" data-placeholder="Choose permissions...">
-                                @foreach ($permissions as $permission)
-                                    <option value="{{ $permission->name }}"
-                                        {{ $role->hasPermissionTo($permission->name) ? 'selected' : '' }}>
-                                        {{ $permission->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer d-flex align-items-center justify-content-between gap-1">
-                        <button type="button" class="btn btn-outline-white" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Assign Permissions</button>
-                    </div>
-                </form>
-
-            </div>
-        </div>
-    </div>
+   
 @endsection
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

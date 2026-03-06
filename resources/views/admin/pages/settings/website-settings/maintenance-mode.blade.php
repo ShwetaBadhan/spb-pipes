@@ -1,0 +1,111 @@
+@extends('admin.layout.master')
+@section('content')
+    <!-- ========================
+               Start Page Content
+              ========================= -->
+
+    <div class="page-wrapper">
+
+        <!-- Start Content -->
+        <div class="content">
+            @if (session('success'))
+                <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: '{{ session('success') }}',
+                        timer: 4000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                </script>
+            @endif
+
+            @if (session('error'))
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: '{{ session('error') }}',
+                        timer: 4000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                </script>
+            @endif
+            <!-- start row -->
+            <div class="row justify-content-center">
+
+                <div class="col-xl-12">
+
+                    <!-- start row -->
+                    <div class="row settings-wrapper d-flex">
+
+                        <!-- Start settings sidebar -->
+
+                        <div class="col-xl-3 col-lg-4">
+                        @include('admin.components.settings-sidebar')
+                          
+                        </div><!-- end col -->
+
+                        <!-- End settings sidebar -->
+
+                          <div class="col-xl-9 col-lg-8">
+                                <div class="mb-3 pb-3 border-bottom">
+                                    <h6 class="fw-bold mb-0">Maintenance Mode</h6>
+                                </div>
+                                <form action="https://kanakku.dreamstechnologies.com/html/template/maintenance-mode.html">
+                                    <div class="mb-3">
+                                        <label class="form-label">Image <span class="text-danger">*</span></label>
+                                        <div class="d-flex align-items-center flex-wrap row-gap-3 mb-3">
+                                            <div class="d-flex align-items-center bg-light justify-content-center avatar avatar-xxl border me-3 flex-shrink-0 text-dark frames">
+                                                <i class="isax isax-image text-gray-4 fs-12"></i>
+                                            </div>
+                                            <div class="profile-upload">
+                                                <div class="profile-uploader d-flex align-items-center">
+                                                    <div class="drag-upload-btn btn btn-md btn-primary">
+                                                        <i class="isax isax-image fs-14 me-1"></i> Upload Image
+                                                        <input type="file" class="form-control image-sign" multiple="">
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <p class="fs-12">JPG or PNG format, not exceeding 5MB.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Meta Description<span class="text-danger ms-1">*</span></label>
+                                        <div class="editor"></div>
+                                    </div>
+                                    <div class="form-check form-check-sm form-switch me-2">
+                                        <label class="form-check-label form-label mt-0 mb-0 fw-normal">
+                                            <input class="form-check-input form-label me-2" type="checkbox" role="switch" checked> Status
+                                        </label>
+                                    </div>
+                                    <div class="pt-4 mt-4 border-top mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <a href="javascript:void(0);" class="btn btn-outline-white me-3" data-bs-dismiss="modal">Cancel</a>
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- end Form -->
+                            </div><!-- end col -->
+                    </div>
+                    <!-- end row -->
+
+                </div><!-- end col -->
+            </div>
+            <!-- end row -->
+
+        </div>
+        <!-- End Content -->
+
+
+    </div>
+
+    <!-- ========================
+               End Page Content
+              ========================= -->
+@endsection

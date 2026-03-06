@@ -30,8 +30,11 @@ use App\Http\Controllers\GatePassController;
 use App\Http\Controllers\PaymentController; // ✅ IMPORT FROM ROOT CONTROLLERS
 use App\Http\Controllers\CaptchaSettingController;
 use App\Http\Controllers\SystemSettingController;
-
-
+use App\Models\Invoice;
+use App\Models\Order; // Add this
+use Carbon\Carbon;
+use App\Models\Product;
+use App\Models\Customer;
 // Route::get('/', function () {
 //     return view('admin.auth.login');
 // })-> name("login");
@@ -39,6 +42,179 @@ use App\Http\Controllers\SystemSettingController;
 Route::get('/auth/register', function () {
     return view('admin.auth.register');
 })->name("register");
+
+Route::get('/account-settings', function () {
+    return view('admin.pages.settings.account-settings');
+})->name("account-settings");
+
+Route::get('/security-settings', function () {
+    return view('admin.pages.settings.security-settings');
+})->name("security-settings");
+
+Route::get('/plans-billings', function () {
+    return view('admin.pages.settings.plans-billings');
+})->name("plans-billings");
+
+Route::get('/notifications-settings', function () {
+    return view('admin.pages.settings.notifications-settings');
+})->name("notifications-settings");
+
+Route::get('/integrations-settings', function () {
+    return view('admin.pages.settings.integrations-settings');
+})->name("integrations-settings");
+
+// website-settings
+
+Route::get('/ai-configuration', function () {
+    return view('admin.pages.settings.website-settings.ai-configuration');
+})->name("ai-configuration");
+
+Route::get('/appearance-settings', function () {
+    return view('admin.pages.settings.website-settings.appearance-settings');
+})->name("appearance-settings");
+
+
+Route::get('/authentication-settings', function () {
+    return view('admin.pages.settings.website-settings.authentication-settings');
+})->name("authentication-settings");
+
+
+
+
+
+Route::get('/language-settings', function () {
+    return view('admin.pages.settings.website-settings.language-settings');
+})->name("language-settings");
+
+Route::get('/localization-settings', function () {
+    return view('admin.pages.settings.website-settings.localization-settings');
+})->name("localization-settings");
+
+Route::get('/maintenance-mode', function () {
+    return view('admin.pages.settings.website-settings.maintenance-mode');
+})->name("maintenance-mode");
+
+Route::get('/plugin-manager', function () {
+    return view('admin.pages.settings.website-settings.plugin-manager');
+})->name("plugin-manager");
+
+Route::get('/preference-settings', function () {
+    return view('admin.pages.settings.website-settings.preference-settings');
+})->name("preference-settings");
+
+Route::get('/prefixes-settings', function () {
+    return view('admin.pages.settings.website-settings.prefixes-settings');
+})->name("prefixes-settings");
+
+Route::get('/seo-setup', function () {
+    return view('admin.pages.settings.website-settings.seo-setup');
+})->name("seo-setup");
+
+// app-settings
+
+Route::get('/barcode-settings', function () {
+    return view('admin.pages.settings.app-settings.barcode-settings');
+})->name("barcode-settings");
+
+Route::get('/custom-fields', function () {
+    return view('admin.pages.settings.app-settings.custom-fields');
+})->name("custom-fields");
+
+Route::get('/esignatures', function () {
+    return view('admin.pages.settings.app-settings.esignatures');
+})->name("esignatures");
+
+Route::get('/invoice-settings', function () {
+    return view('admin.pages.settings.app-settings.invoice-settings');
+})->name("invoice-settings");
+
+Route::get('/invoice-templates-settings', function () {
+    return view('admin.pages.settings.app-settings.invoice-templates-settings');
+})->name("invoice-templates-settings");
+
+Route::get('/sass-settings', function () {
+    return view('admin.pages.settings.app-settings.sass-settings');
+})->name("sass-settings");
+
+Route::get('/thermal-printer', function () {
+    return view('admin.pages.settings.app-settings.thermal-printer');
+})->name("thermal-printer");
+
+// finance settings
+
+Route::get('/bank-accounts-settings', function () {
+    return view('admin.pages.settings.finance-settings.bank-accounts-settings');
+})->name("bank-accounts-settings");
+
+Route::get('/currencies', function () {
+    return view('admin.pages.settings.finance-settings.currencies');
+})->name("currencies");
+
+Route::get('/payment-methods', function () {
+    return view('admin.pages.settings.finance-settings.payment-methods');
+})->name("payment-methods");
+
+Route::get('/tax-rates', function () {
+    return view('admin.pages.settings.finance-settings.tax-rates');
+})->name("tax-rates");
+
+// system-settings
+
+Route::get('/email-settings', function () {
+    return view('admin.pages.settings.system-settings.email-settings');
+})->name("email-settings");
+
+Route::get('/email-templates', function () {
+    return view('admin.pages.settings.system-settings.email-templates');
+})->name("email-templates");
+
+Route::get('/gdpr-cookies', function () {
+    return view('admin.pages.settings.system-settings.gdpr-cookies');
+})->name("gdpr-cookies");
+
+Route::get('/sms-gateways', function () {
+    return view('admin.pages.settings.system-settings.sms-gateways');
+})->name("sms-gateways");
+
+// other settings
+
+Route::get('/clear-cache', function () {
+    return view('admin.pages.settings.other-settings.clear-cache');
+})->name("clear-cache");
+
+Route::get('/cronjob', function () {
+    return view('admin.pages.settings.other-settings.cronjob');
+})->name("cronjob");
+
+Route::get('/custom-css', function () {
+    return view('admin.pages.settings.other-settings.custom-css');
+})->name("custom-css");
+
+Route::get('/custom-js', function () {
+    return view('admin.pages.settings.other-settings.custom-js');
+})->name("custom-js");
+
+Route::get('/database-backup', function () {
+    return view('admin.pages.settings.other-settings.database-backup');
+})->name("database-backup");
+
+Route::get('/sitemap', function () {
+    return view('admin.pages.settings.other-settings.sitemap');
+})->name("sitemap");
+
+Route::get('/storage-settings', function () {
+    return view('admin.pages.settings.other-settings.storage-settings');
+})->name("storage-settings");
+
+Route::get('/system-backup', function () {
+    return view('admin.pages.settings.other-settings.system-backup');
+})->name("system-backup");
+
+Route::get('/system-update', function () {
+    return view('admin.pages.settings.other-settings.system-update');
+})->name("system-update");
+
+
 
 // routes/web.php
 Route::get('/test-stock', function () {
@@ -48,13 +224,103 @@ Route::get('/test-stock', function () {
     $available = \App\Services\InventoryService::productAvailableQty($product->id);
     dd("Product: {$product->name}, Available: {$available}");
 });
+
 Route::get('/dashboard', function () {
+
+
     $lowStockProducts = InventoryService::getLowStockProducts();
     $lowStockRawMaterials = InventoryService::getLowStockRawMaterials();
+    $today = Carbon::today();
+    $lastMonth = Carbon::now()->subMonth();
 
-    return view('admin.pages.dashboard', compact('lowStockProducts', 'lowStockRawMaterials'));
+    // Get product counts - filter by status = 1 (active products)
+    $totalProducts = Product::where('status', 1)->count();
+
+    $productsThisMonth = Product::where('status', 1)
+        ->where('created_at', '>=', $lastMonth)
+        ->count();
+    // Get completed orders (confirmed, shipped, delivered)
+    $completedStatuses = ['confirmed', 'shipped', 'delivered'];
+
+    $totalSales = Order::where('status', 'delivered')
+        ->orWhereIn('status', $completedStatuses)
+        ->whereNull('deleted_at')
+        ->count();
+
+    $salesThisMonth = Order::whereIn('status', $completedStatuses)
+        ->whereNull('deleted_at')
+        ->where('created_at', '>=', $lastMonth)
+        ->count();
+    // Get customer counts
+    $totalCustomers = Customer::count();
+    $customersThisMonth = Customer::where('created_at', '>=', $lastMonth)->count();
+    $stats = [
+        // Products
+        'total_products' => $totalProducts,
+        'new_products_this_month' => $productsThisMonth,
+
+        // Orders/Sales
+        'total_sales' => $totalSales,
+        'sales_this_month' => $salesThisMonth,
+        // Customers
+        'total_customers' => $totalCustomers,
+        'new_customers_this_month' => $customersThisMonth,
+        // Total Orders Count
+        'total_orders' => Order::whereNull('deleted_at')->count(),
+
+        // Purchase (from invoices)
+        'purchase' => Invoice::whereNull('deleted_at')
+            ->where('status', 'paid')
+            ->sum('grand_total'),
+
+        // Expenses (you can customize this based on your needs)
+        'expenses' => Order::whereNull('deleted_at')
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->sum('total'),
+
+        // Credits (unpaid orders)
+        'credits' => Order::whereNull('deleted_at')
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->sum('total'),
+
+        // Keep your invoice stats if needed
+        'invoices' => Invoice::whereNull('deleted_at')->count(),
+        'customers' => Invoice::whereNull('deleted_at')
+            ->distinct('customer_id')
+            ->count('customer_id'),
+        'amount_due' => Invoice::whereNull('deleted_at')
+            ->whereIn('status', ['unpaid', 'pending', 'draft'])
+            ->sum('grand_total'),
+        'paid_invoices' => Invoice::whereNull('deleted_at')
+            ->where('status', 'paid')
+            ->count(),
+        // Total Invoiced Amount (all invoices)
+        'invoiced' => Invoice::whereNull('deleted_at')->sum('grand_total'),
+
+        // Total Received (paid invoices)
+        'received' => Invoice::whereNull('deleted_at')
+            ->where('status', 'paid')
+            ->sum('grand_total'),
+
+        // Outstanding (unpaid, pending, draft invoices)
+        'outstanding' => Invoice::whereNull('deleted_at')
+            ->whereIn('status', ['unpaid', 'pending', 'draft'])
+            ->sum('grand_total'),
+
+        // Overdue (past due date and not paid)
+        'overdue' => Invoice::whereNull('deleted_at')
+            ->whereIn('status', ['unpaid', 'pending'])
+            ->where('due_date', '<', $today)
+            ->sum('grand_total'),
+
+        // Additional stats you might want
+        'total_invoices' => Invoice::whereNull('deleted_at')->count(),
+        'paid_invoices' => Invoice::whereNull('deleted_at')->where('status', 'paid')->count(),
+        'pending_invoices' => Invoice::whereNull('deleted_at')->whereIn('status', ['unpaid', 'pending'])->count(),
+    ];
+
+    return view('admin.pages.dashboard', compact('lowStockProducts', 'lowStockRawMaterials', 'stats'));
 })->middleware('auth')->name('dashboard');
-
 
 
 Route::get('/products', function () {
@@ -422,7 +688,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 // Invoice Management Routes
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-    
+
     // ✅ Invoice routes with payment routes INSIDE
     Route::prefix('invoices')->name('admin.invoices.')->group(function () {
         Route::get('/', [InvoiceController::class, 'index'])->name('index');
@@ -434,16 +700,15 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
         Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
         Route::patch('/{invoice}/status', [InvoiceController::class, 'updateStatus'])->name('update-status');
         Route::get('/{invoice}/pdf', [InvoiceController::class, 'pdf'])->name('pdf');
-        
+
         // ✅ PAYMENT ROUTES - INSIDE the invoice group
         Route::get('/{invoice}/add-payment', [PaymentController::class, 'create'])->name('add-payment');
         Route::post('/{invoice}/record-payment', [PaymentController::class, 'store'])->name('record-payment');
         Route::get('/{invoice}/ledger', [PaymentController::class, 'getLedger'])->name('ledger');
         // ✅ CORRECTED FILTER ROUTE
         Route::post('/{invoice}/ledger/filter', [InvoiceController::class, 'filterLedger'])
-    ->name('ledger.filter');
+            ->name('ledger.filter');
     });
-    
 });
 
 // gate-passes
@@ -458,8 +723,6 @@ Route::name('admin.')->group(function () {
     // NEW: Generate Slip route (AFTER resource)
     Route::get('gate-passes/slip/{batchNumber}', [GatePassController::class, 'generateSlip'])
         ->name('gate-passes.slip');
-
-
 });
 
 
@@ -470,9 +733,9 @@ Route::get('/general-settings/check-domain', [CaptchaSettingController::class, '
 
 
 // System Settings
-Route::get('/admin/settings/system-settings', [SystemSettingController::class, 'index'])
-     ->name('settings.system-settings');
+Route::get('/system-settings', [SystemSettingController::class, 'index'])
+    ->name('settings.system-settings');
 Route::post('/admin/settings/system-settings', [SystemSettingController::class, 'update'])
-     ->name('settings.system-settings.update');
-Route::delete('/admin/settings/system-settings/remove-image/{type}', [SystemSettingController::class, 'removeImage'])
-     ->name('settings.system-settings.remove-image');
+    ->name('settings.system-settings.update');
+Route::delete('system-settings/remove-image/{type}', [SystemSettingController::class, 'removeImage'])
+    ->name('settings.system-settings.remove-image');

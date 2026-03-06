@@ -3,8 +3,8 @@
 @section('content')
 
     <!-- ========================
-         Start Page Content
-        ========================= -->
+             Start Page Content
+            ========================= -->
 
     <div class="page-wrapper">
 
@@ -124,21 +124,21 @@
                                     </span>
                                 </td>
                                 <td class="action-item">
-                                    
-                                        <a href="javascript:void(0);" data-bs-toggle="dropdown">
+
+                                    <a href="javascript:void(0);" data-bs-toggle="dropdown">
                                         <i class="isax isax-more"></i>
                                     </a>
-                                        <ul class="dropdown-menu">
-                                            <a class="dropdown-item" href="#" data-bs-toggle="modal"
-                                                data-bs-target="#edit_modal" onclick="editLaborType({{ $laborType->id }})">
-                                                <i class="isax isax-edit me-2"></i>Edit
-                                            </a>
-                                           
-                                            <a class="dropdown-item text-danger" href="#"
-                                                onclick="deleteLaborType({{ $laborType->id }})">
-                                                <i class="isax isax-trash me-2"></i>Delete
-                                            </a>
-                                   
+                                    <ul class="dropdown-menu">
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#edit_modal" onclick="editLaborType({{ $laborType->id }})">
+                                            <i class="isax isax-edit me-2"></i>Edit
+                                        </a>
+
+                                        <a class="dropdown-item text-danger" href="#"
+                                            onclick="deleteLaborType({{ $laborType->id }})">
+                                            <i class="isax isax-trash me-2"></i>Delete
+                                        </a>
+
             </div>
             </td>
             </tr>
@@ -165,8 +165,8 @@
     </div>
 
     <!-- ========================
-       End Page Content
-      ========================= -->
+           End Page Content
+          ========================= -->
 
     <!-- Start Add Modal -->
     <div id="add_modal" class="modal fade">
@@ -187,7 +187,8 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Name *</label>
-                                    <input type="text" name="name" placeholder="E.g. Mechanic" class="form-control" id="labor_name" required>
+                                    <input type="text" name="name" placeholder="E.g. Mechanic" class="form-control"
+                                        id="labor_name" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -256,8 +257,8 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Rate Amount *</label>
-                                    <input type="number" name="rate_amount" placeholder="E.g. 250/2.5" step="0.01" class="form-control"
-                                        min="0" required>
+                                    <input type="number" name="rate_amount" placeholder="E.g. 250/2.5" step="0.01"
+                                        class="form-control" min="0" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -289,109 +290,112 @@
     <!-- End Add Modal -->
 
     <!-- Start Edit Modal -->
-<div id="edit_modal" class="modal fade">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Edit Labor Type</h4>
-                <button type="button" class="btn-close btn-close-modal custom-btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-x"></i>
-                </button>
-            </div>
+    <div id="edit_modal" class="modal fade">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Labor Type</h4>
+                    <button type="button" class="btn-close btn-close-modal custom-btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">
+                        <i class="fa-solid fa-x"></i>
+                    </button>
+                </div>
 
-            <form id="editLaborTypeForm" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Name *</label>
-                                <input type="text" name="name" id="edit_name" class="form-control" required>
+                <form id="editLaborTypeForm" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Name *</label>
+                                    <input type="text" name="name" id="edit_name" class="form-control" required>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Code</label>
-                                <input type="text" name="code" id="edit_code" class="form-control">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Code</label>
+                                    <input type="text" name="code" id="edit_code" class="form-control">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Category *</label>
-                                <select name="category" id="edit_category" class="form-select" required>
-                                    <option value="">-- Select Category --</option>
-                                    <option value="production">Production</option>
-                                    <option value="logistics">Logistics</option>
-                                </select>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Category *</label>
+                                    <select name="category" id="edit_category" class="form-select" required>
+                                        <option value="">-- Select Category --</option>
+                                        <option value="production">Production</option>
+                                        <option value="logistics">Logistics</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Rate Type *</label>
-                                <select name="rate_type_id" id="edit_rate_type" class="form-select" disabled required>
-                                    <option value="">-- Select Rate Type --</option>
-                                    @foreach($rateTypes as $rateType)
-                                        <option value="{{ $rateType->id }}">{{ $rateType->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Rate Type *</label>
+                                    <select name="rate_type_id" id="edit_rate_type" class="form-select" disabled
+                                        required>
+                                        <option value="">-- Select Rate Type --</option>
+                                        @foreach ($rateTypes as $rateType)
+                                            <option value="{{ $rateType->id }}">{{ $rateType->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6" id="edit_work_type_container" style="display:none;">
-                            <div class="mb-3">
-                                <label class="form-label">Work Type *</label>
-                                <select name="work_type_id" id="edit_work_type" class="form-select" disabled>
-                                    <option value="">-- Select Work Type --</option>
-                                    @foreach($workTypes as $workType)
-                                        <option value="{{ $workType->id }}">{{ $workType->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-md-6" id="edit_work_type_container" style="display:none;">
+                                <div class="mb-3">
+                                    <label class="form-label">Work Type *</label>
+                                    <select name="work_type_id" id="edit_work_type" class="form-select" disabled>
+                                        <option value="">-- Select Work Type --</option>
+                                        @foreach ($workTypes as $workType)
+                                            <option value="{{ $workType->id }}">{{ $workType->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6" id="edit_unit_container" style="display:none;">
-                            <div class="mb-3">
-                                <label class="form-label">Unit *</label>
-                                <select name="unit_id" id="edit_unit" class="form-select" disabled>
-                                    <option value="">-- Select Unit --</option>
-                                    @foreach($units as $unit)
-                                        <option value="{{ $unit->id }}">{{ $unit->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-md-6" id="edit_unit_container" style="display:none;">
+                                <div class="mb-3">
+                                    <label class="form-label">Unit *</label>
+                                    <select name="unit_id" id="edit_unit" class="form-select" disabled>
+                                        <option value="">-- Select Unit --</option>
+                                        @foreach ($units as $unit)
+                                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Rate Amount *</label>
-                                <input type="number" name="rate_amount" id="edit_rate_amount" step="0.01" class="form-control" min="0" required>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Rate Amount *</label>
+                                    <input type="number" name="rate_amount" id="edit_rate_amount" step="0.01"
+                                        class="form-control" min="0" required>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Status *</label>
-                                <select name="status" id="edit_status" class="form-select" required>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
-                                </select>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Status *</label>
+                                    <select name="status" id="edit_status" class="form-select" required>
+                                        <option value="active">Active</option>
+                                        <option value="inactive">Inactive</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <textarea name="description" id="edit_description" class="form-control" rows="3"></textarea>
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Description</label>
+                                    <textarea name="description" id="edit_description" class="form-control" rows="3"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Labor Type</button>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Labor Type</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-<!-- End Edit Modal -->
+    <!-- End Edit Modal -->
 
 @endsection
 @push('scripts')

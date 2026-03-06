@@ -3,8 +3,8 @@
 @section('content')
 
     <!-- ========================
-                           Start Page Content
-                          ========================= -->
+                               Start Page Content
+                              ========================= -->
 
     <div class="page-wrapper">
 
@@ -31,9 +31,10 @@
                             </li>
                         </ul>
                     </div>
-
-                    <a href="javascript:void(0);" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal"
-                        data-bs-target="#add_expence"><i class="isax isax-add-circle5 me-1"></i>Add Production Rules</a>
+                    @can('add-production-rules')
+                        <a href="javascript:void(0);" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal"
+                            data-bs-target="#add_expence"><i class="isax isax-add-circle5 me-1"></i>Add Production Rules</a>
+                    @endcan
                 </div>
             </div>
             <!-- End Page Header -->
@@ -201,110 +202,107 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach ($rules as $rule)
-                        <tr>
-                    <td></td>
-                    <td>{{ $rule->product->name }}</td>
-                    <td>{{ $rule->min_output }}</td>
-                    <td>{{ $rule->max_output }}</td>
-                    
-                    <td class="action-item">
+                        @foreach ($rules as $rule)
+                            <tr>
+                                <td></td>
+                                <td>{{ $rule->product->name }}</td>
+                                <td>{{ $rule->min_output }}</td>
+                                <td>{{ $rule->max_output }}</td>
+
+                                <td class="action-item">
                                     <a href="javascript:void(0);" data-bs-toggle="dropdown">
                                         <i class="isax isax-more"></i>
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center"
-                                                data-bs-toggle="modal" data-bs-target="#editRule{{ $rule->id }}"><i
-                                                    class="isax isax-edit me-2"></i>Edit</a>
+                                            @can('edit-production-rules')
+                                                <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center"
+                                                    data-bs-toggle="modal" data-bs-target="#editRule{{ $rule->id }}"><i
+                                                        class="isax isax-edit me-2"></i>Edit</a>
+                                            @endcan
                                         </li>
                                         <li>
-                                            <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center"
-                                                data-bs-toggle="modal" data-bs-target="#deleteRule{{ $rule->id }}"><i
-                                                    class="isax isax-trash me-2"></i>Delete</a>
+                                            @can('delete-production-rules')
+                                                <a href="javascript:void(0);" class="dropdown-item d-flex align-items-center"
+                                                    data-bs-toggle="modal" data-bs-target="#deleteRule{{ $rule->id }}"><i
+                                                        class="isax isax-trash me-2"></i>Delete</a>
+                                            @endcan('add-production-rules')
                                         </li>
                                     </ul>
                                 </td>
-                    </tr> 
-                        <!-- Start Add Modal -->
-   <div id="editRule{{ $rule->id }}" class="modal fade">
-    <div class="modal-dialog modal-dialog-centered modal-md">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Edit Production Rule</h4>
-                <button type="button" class="btn-close btn-close-modal custom-btn-close"
-                        data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-x"></i>
-                </button>
-            </div>
+                            </tr>
+                            <!-- Start Add Modal -->
+                            <div id="editRule{{ $rule->id }}" class="modal fade">
+                                <div class="modal-dialog modal-dialog-centered modal-md">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Edit Production Rule</h4>
+                                            <button type="button" class="btn-close btn-close-modal custom-btn-close"
+                                                data-bs-dismiss="modal" aria-label="Close">
+                                                <i class="fa-solid fa-x"></i>
+                                            </button>
+                                        </div>
 
-            <form action="{{ route('production-rules.update', $rule->id) }}" method="POST">
-                @csrf
-                @method('PUT')
+                                        <form action="{{ route('production-rules.update', $rule->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
 
-                <div class="modal-body">
-                    <div class="row">
+                                            <div class="modal-body">
+                                                <div class="row">
 
-                        <!-- Product -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Product</label>
-                                <select name="product_id" class="form-select" required>
-                                    <option value="">Select Product</option>
-                                    @foreach ($products as $product)
-                                        <option value="{{ $product->id }}"
-                                            {{ $product->id == $rule->product_id ? 'selected' : '' }}>
-                                            {{ $product->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                                    <!-- Product -->
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Product</label>
+                                                            <select name="product_id" class="form-select" required>
+                                                                <option value="">Select Product</option>
+                                                                @foreach ($products as $product)
+                                                                    <option value="{{ $product->id }}"
+                                                                        {{ $product->id == $rule->product_id ? 'selected' : '' }}>
+                                                                        {{ $product->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Min Output -->
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Min Expected Output</label>
+                                                            <input type="number" name="min_output" class="form-control"
+                                                                min="0" value="{{ $rule->min_output }}" required>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Max Output -->
+                                                    <div class="col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Max Expected Output</label>
+                                                            <input type="number" name="max_output" class="form-control"
+                                                                min="1" value="{{ $rule->max_output }}" required>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-outline-white"
+                                                    data-bs-dismiss="modal">
+                                                    Cancel
+                                                </button>
+                                                <button type="submit" class="btn btn-primary">
+                                                    Update Rule
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Min Output -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Min Expected Output</label>
-                                <input type="number"
-                                       name="min_output"
-                                       class="form-control"
-                                       min="0"
-                                       value="{{ $rule->min_output }}"
-                                       required>
-                            </div>
-                        </div>
-
-                        <!-- Max Output -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Max Expected Output</label>
-                                <input type="number"
-                                       name="max_output"
-                                       class="form-control"
-                                       min="1"
-                                       value="{{ $rule->max_output }}"
-                                       required>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-white" data-bs-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        Update Rule
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-    <!-- End Add Modal -->
-        <!-- Start Delete -->
+                            <!-- End Add Modal -->
+                            <!-- Start Delete -->
                             <div class="modal fade" id="deleteRule{{ $rule->id }}">
                                 <div class="modal-dialog modal-dialog-centered modal-sm">
                                     <div class="modal-content">
@@ -314,9 +312,10 @@
                                             </div>
                                             <h6 class="mb-1">Delete Production Rule</h6>
                                             <p class="mb-3">Are you sure, you want to delete production?</p>
-<form action="{{ route('production-rules.destroy', $rule->id) }}" method="POST">
-    @csrf
-    @method('DELETE')
+                                            <form action="{{ route('production-rules.destroy', $rule->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                @method('DELETE')
                                                 <div class="d-flex justify-content-center">
                                                     <a href="javascript:void(0);" class="btn btn-outline-white me-3"
                                                         data-bs-dismiss="modal">Cancel</a>
@@ -329,11 +328,10 @@
                                 </div>
                             </div>
                             <!-- End Delete -->
-               
-                    @endforeach
-                        
-                  
-                   
+                        @endforeach
+
+
+
                     </tbody>
                 </table>
             </div>
@@ -347,8 +345,8 @@
     </div>
 
     <!-- ========================
-                           End Page Content
-                          ========================= -->
+                               End Page Content
+                              ========================= -->
 
 
     <!-- Start Add Modal -->
@@ -377,31 +375,23 @@
                                 </div>
                             </div>
 
-                             <!-- Min Output -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Min Expected Output</label>
-                                <input type="number" 
-                                       name="min_output" 
-                                       class="form-control" 
-                                       min="0"
-                                       placeholder="e.g. 950"
-                                       required>
+                            <!-- Min Output -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Min Expected Output</label>
+                                    <input type="number" name="min_output" class="form-control" min="0"
+                                        placeholder="e.g. 950" required>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Max Output -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Max Expected Output</label>
-                                <input type="number" 
-                                       name="max_output" 
-                                       class="form-control" 
-                                       min="1"
-                                       placeholder="e.g. 1050"
-                                       required>
+                            <!-- Max Output -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Max Expected Output</label>
+                                    <input type="number" name="max_output" class="form-control" min="1"
+                                        placeholder="e.g. 1050" required>
+                                </div>
                             </div>
-                        </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -415,4 +405,3 @@
     <!-- End Add Modal -->
 
 @endsection
-

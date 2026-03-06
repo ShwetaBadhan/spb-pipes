@@ -44,47 +44,7 @@
                         <!-- Start settings sidebar -->
 
                         <div class="col-xl-3 col-lg-4">
-                            <div class="card settings-card">
-                                <div class="card-header">
-                                    <h6 class="mb-0">Settings</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="sidebars settings-sidebar">
-                                        <div class="sidebar-inner">
-                                            <div class="sidebar-menu p-0">
-                                                <ul>
-                                                    <li class="submenu-open">
-                                                        <ul>
-                                                            <li>
-                                                                <a href="javascript:void(0);" class="active">
-                                                                    <i class="isax isax-setting-2 fs-18"></i>
-                                                                    <span class="fs-14 fw-medium ms-2">General
-                                                                        Settings</span>
-
-                                                                </a>
-
-                                                            </li>
-
-
-
-                                                            <li class="submenu">
-                                                                <a href="{{ route('settings.system-settings') }}">
-                                                                    <i class="isax isax-more-2 fs-18"></i>
-                                                                    <span class="fs-14 fw-medium ms-2">System
-                                                                        Settings</span>
-
-                                                                </a>
-
-                                                            </li>
-
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div><!-- end card body -->
-                            </div><!-- end card -->
+                            @include('admin.components.settings-sidebar')
                         </div><!-- end col -->
 
                         <!-- End settings sidebar -->

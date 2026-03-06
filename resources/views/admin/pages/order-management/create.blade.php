@@ -149,43 +149,20 @@
                                         <h5 class="mb-0">Order Summary</h5>
                                     </div>
                                     <div class="card-body">
-                                        {{-- <div class="mb-3">
-                                            <label class="form-label">Tax</label>
-                                            <input type="number" name="tax" class="form-control" step="0.01"
-                                                value="0" min="0" id="tax-input">
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Shipping Cost</label>
-                                            <input type="number" name="shipping_cost" class="form-control"
-                                                step="0.01" value="0" min="0" id="shipping-input">
-                                        </div> --}}
-
-                                        {{-- <div class="mb-3">
-                                            <label class="form-label">Notes</label>
-                                            <textarea name="notes" class="form-control" rows="3">{{ old('notes') }}</textarea>
-                                        </div> --}}
+                                       
+                                     
 
                                         <div class="mb-3 p-3 bg-light rounded">
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span>Subtotal:</span>
-                                                <strong>₹<span id="subtotal-amount">0.00</span></strong>
-                                            </div>
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span>Tax:</span>
-                                                <strong>₹<span id="tax-amount">0.00</span></strong>
-                                            </div>
-                                            <div class="d-flex justify-content-between mb-2">
-                                                <span>Shipping:</span>
-                                                <strong>₹<span id="shipping-amount">0.00</span></strong>
-                                            </div>
-                                            <hr>
-                                            <div class="d-flex justify-content-between">
-                                                <span><strong>Total:</strong></span>
-                                                <strong class="text-primary fs-5">₹<span
-                                                        id="order-total">0.00</span></strong>
-                                            </div>
-                                        </div>
+    <div class="d-flex justify-content-between mb-2">
+        <span>Subtotal:</span>
+        <strong>₹<span id="subtotal-amount">0.00</span></strong>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-between">
+        <span><strong>Total:</strong></span>
+        <strong class="text-primary fs-5">₹<span id="order-total">0.00</span></strong>
+    </div>
+</div>
 
                                         <button type="submit" class="btn btn-primary w-100">Create Order</button>
                                     </div>
@@ -466,10 +443,7 @@
                 calculateOrderTotal();
             }
 
-            // Recalculate on tax/shipping change
-            if (e.target.id === 'tax-input' || e.target.id === 'shipping-input') {
-                calculateOrderTotal();
-            }
+          
         });
 
         // Calculate single row amount
@@ -483,22 +457,19 @@
         }
 
         // Calculate order totals
-        function calculateOrderTotal() {
-            let subtotal = 0;
+       function calculateOrderTotal() {
+    let subtotal = 0;
 
-            document.querySelectorAll('.item-subtotal').forEach(function(input) {
-                subtotal += parseFloat(input.value) || 0;
-            });
+    document.querySelectorAll('.item-subtotal').forEach(function(input) {
+        subtotal += parseFloat(input.value) || 0;
+    });
 
-            const tax = parseFloat(document.getElementById('tax-input').value) || 0;
-            const shipping = parseFloat(document.getElementById('shipping-input').value) || 0;
-            const total = subtotal + tax + shipping;
+    // Total = Subtotal (no tax/shipping)
+    const total = subtotal;
 
-            document.getElementById('subtotal-amount').textContent = subtotal.toFixed(2);
-            document.getElementById('tax-amount').textContent = tax.toFixed(2);
-            document.getElementById('shipping-amount').textContent = shipping.toFixed(2);
-            document.getElementById('order-total').textContent = total.toFixed(2);
-        }
+    document.getElementById('subtotal-amount').textContent = subtotal.toFixed(2);
+    document.getElementById('order-total').textContent = total.toFixed(2);
+}
 
 
         // Remove item row

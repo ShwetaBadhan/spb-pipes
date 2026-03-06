@@ -41,29 +41,38 @@ class UserRegisterController extends Controller
         return back()->with('success', 'User created successfully!');
     }
 
-    public function update(Request $request, User $user) // For updating user details
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'password' => 'nullable|min:6',
-            'is_active' => 'required|boolean',
-        ]);
+   public function update(Request $request, User $user)
+{
+    $request->validate([
+        'name' => 'required|string|max:55',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'password' => 'nullable|min:6',
+        'is_active' => 'required|boolean',
+        'role' => 'nullable|exists:roles,name',  // ← Add this validation
+    ]);
 
-        $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'is_active' => $request->is_active,
-        ];
+    $data = [
+        'name' => $request->name,
+        'email' => $request->email,
+        'is_active' => $request->is_active,
+    ];
 
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
-        }
-
-        $user->update($data);
-
-        return back()->with('success', 'User updated successfully!');
+    if ($request->filled('password')) {
+        $data['password'] = Hash::make($request->password);
     }
+
+    $user->update($data);
+
+    // ← Role update logic add karein
+    if ($request->filled('role')) {
+        $user->syncRoles([$request->role]);
+    } elseif ($request->has('role')) {
+        // Agar role empty submit hua hai to roles remove karein
+        $user->syncRoles([]);
+    }
+
+    return back()->with('success', 'User updated successfully!');
+}
 
     public function updateRole(Request $request, User $user) // For changing role on existing user
     {
