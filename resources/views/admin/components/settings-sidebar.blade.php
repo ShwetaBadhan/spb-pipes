@@ -33,15 +33,15 @@
                                                                     <ul>
                                                                         <li><a href="{{ route('settings.system-settings') }}">Company Settings</a></li>
                                                                         <li><a href="{{ route('localization-settings') }}">Localization</a></li>
-                                                                        <li><a href="{{ route('prefixes-settings') }}">Prefixes</a></li>
-                                                                        <li><a href="{{ route('preference-settings') }}">Preference</a></li>
-                                                                        <li><a href="{{ route('seo-setup') }}">SEO Setup</a></li>
+                                                                        {{-- <li><a href="{{ route('prefixes-settings') }}">Prefixes</a></li> --}}
+                                                                        {{-- <li><a href="{{ route('preference-settings') }}">Preference</a></li> --}}
+                                                                        {{-- <li><a href="{{ route('seo-setup') }}">SEO Setup</a></li> --}}
                                                                         <li><a href="{{ route('language-settings') }}">Language</a></li>
                                                                         <li><a href="{{ route('maintenance-mode') }}">Maintenance Mode</a></li>
-                                                                        <li><a href="{{ route('authentication-settings') }}">Authentication</a></li>
-                                                                        <li><a href="{{ route('ai-configuration') }}">AI Configuration</a></li>
+                                                                        {{-- <li><a href="{{ route('authentication-settings') }}">Authentication</a></li> --}}
+                                                                        {{-- <li><a href="{{ route('ai-configuration') }}">AI Configuration</a></li> --}}
                                                                         <li><a href="{{ route('appearance-settings') }}">Appearance</a></li>
-                                                                        <li><a href="{{ route('plugin-manager') }}">Plugin Manager</a></li>
+                                                                        {{-- <li><a href="{{ route('plugin-manager') }}">Plugin Manager</a></li> --}}
                                                                     </ul>
                                                                 </li>
                                                                 <li class="submenu">
@@ -53,11 +53,11 @@
                                                                     <ul>
                                                                         <li><a href="{{ route('invoice-settings') }}">Invoice Settings</a></li>
                                                                         <li><a href="{{ route('invoice-templates-settings') }}">Invoice Templates</a></li>
-                                                                        <li><a href="{{ route('esignatures') }}">eSignatures</a></li>
+                                                                        {{-- <li><a href="{{ route('esignatures') }}">eSignatures</a></li>
                                                                         <li><a href="{{ route('barcode-settings') }}">Barcode</a></li>
                                                                         <li><a href="{{ route('thermal-printer') }}">Thermal Printer</a></li>
                                                                         <li><a href="{{ route('custom-fields') }}">Custom Fields</a></li>
-                                                                        <li><a href="{{ route('sass-settings') }}">SaaS Settings</a></li>
+                                                                        <li><a href="{{ route('sass-settings') }}">SaaS Settings</a></li> --}}
                                                                     </ul>
                                                                 </li>
                                                                 <li class="submenu">
@@ -90,7 +90,7 @@
                                                                     <ul>
                                                                         <li><a href="{{ route('email-settings') }}">Email Settings</a></li>
                                                                         <li><a href="{{ route('email-templates') }}">Email Templates</a></li>
-                                                                        <li><a href="{{ route('sms-gateways') }}">SMS Gateways</a></li>
+                                                                        {{-- <li><a href="{{ route('sms-gateways') }}">SMS Gateways</a></li> --}}
                                                                         <li><a href="{{ route('gdpr-cookies') }}">GDPR Cookies</a></li>
                                                                     </ul>
                                                                 </li>
