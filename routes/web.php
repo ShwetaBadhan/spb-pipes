@@ -30,6 +30,14 @@ use App\Http\Controllers\GatePassController;
 use App\Http\Controllers\PaymentController; // ✅ IMPORT FROM ROOT CONTROLLERS
 use App\Http\Controllers\CaptchaSettingController;
 use App\Http\Controllers\SystemSettingController;
+use App\Http\Controllers\AccountSettingsController;
+use App\Http\Controllers\SecuritySettingController;
+use App\Http\Controllers\NotificationSettingController;
+use App\Http\Controllers\IntegrationSettingController;
+use App\Http\Controllers\LocalizationSettingController;
+use App\Http\Controllers\Admin\LanguageSettingController;
+use App\Http\Controllers\MaintenanceModeController;
+
 use App\Models\Invoice;
 use App\Models\Order; // Add this
 use Carbon\Carbon;
@@ -43,25 +51,61 @@ Route::get('/auth/register', function () {
     return view('admin.auth.register');
 })->name("register");
 
-Route::get('/account-settings', function () {
-    return view('admin.pages.settings.account-settings');
-})->name("account-settings");
 
-Route::get('/security-settings', function () {
-    return view('admin.pages.settings.security-settings');
-})->name("security-settings");
+    
+   
+
+// routes/web.php
+Route::get('/security-settings', [SecuritySettingController::class, 'index'])->name('security-settings');
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/security-settings/update', [SecuritySettingController::class, 'updateSettings'])->name('security-settings.update');
+    Route::post('/security-settings/password', [SecuritySettingController::class, 'changePassword'])->name('security-settings.password');
+    Route::post('/security-settings/phone', [SecuritySettingController::class, 'updatePhone'])->name('security-settings.phone');
+    Route::delete('/security-settings/phone', [SecuritySettingController::class, 'removePhone'])->name('security-settings.phone.remove');
+    Route::post('/security-settings/email', [SecuritySettingController::class, 'updateEmail'])->name('security-settings.email');
+    Route::post('/security-settings/deactivate', [SecuritySettingController::class, 'deactivateAccount'])->name('security-settings.deactivate');
+    Route::post('/security-settings/delete', [SecuritySettingController::class, 'deleteAccount'])->name('security-settings.delete');
+    Route::delete('/security-settings/device/{id}', [SecuritySettingController::class, 'deleteDevice'])->name('security-settings.device.delete');
+});
 
 Route::get('/plans-billings', function () {
-    return view('admin.pages.settings.plans-billings');
+    return view('admin.pages.settings.general-settings.plans-billings');
 })->name("plans-billings");
 
-Route::get('/notifications-settings', function () {
-    return view('admin.pages.settings.notifications-settings');
-})->name("notifications-settings");
+Route::get('/notifications-settings', [NotificationSettingController::class, 'index'])
+    ->name("notifications-settings");
 
-Route::get('/integrations-settings', function () {
-    return view('admin.pages.settings.integrations-settings');
-})->name("integrations-settings");
+Route::middleware(['auth'])->group(function () {
+    Route::post('/notifications-settings/update', [NotificationSettingController::class, 'update'])
+        ->name('notifications-settings.update');
+});
+// Replace your closure route with controller
+Route::get('/integrations-settings', [IntegrationSettingController::class, 'index'])
+    ->name("integrations-settings");
+
+Route::middleware(['auth'])->group(function () {
+    // Toggle integration on/off
+    Route::post('/integrations-settings/{integrationKey}/toggle', [IntegrationSettingController::class, 'toggle'])
+        ->name('integrations-settings.toggle');
+    
+    // Remove integration
+    Route::delete('/integrations-settings/{integrationKey}/remove', [IntegrationSettingController::class, 'remove'])
+        ->name('integrations-settings.remove');
+    
+    // OAuth connect callback (optional)
+    Route::get('/integrations-settings/{integrationKey}/callback', [IntegrationSettingController::class, 'connectCallback'])
+        ->name('integrations-settings.callback');
+        // OAuth connection
+    Route::get('/integrations-settings/{integrationKey}/connect', [IntegrationSettingController::class, 'connect'])
+        ->name('integrations-settings.connect');
+    
+    Route::post('/integrations-settings/{integrationKey}/toggle', [IntegrationSettingController::class, 'toggle'])
+        ->name('integrations-settings.toggle');
+    
+    Route::delete('/integrations-settings/{integrationKey}/remove', [IntegrationSettingController::class, 'remove'])
+        ->name('integrations-settings.remove');
+});
 
 // website-settings
 
@@ -82,17 +126,47 @@ Route::get('/authentication-settings', function () {
 
 
 
-Route::get('/language-settings', function () {
-    return view('admin.pages.settings.website-settings.language-settings');
-})->name("language-settings");
+// routes/web.php
 
-Route::get('/localization-settings', function () {
-    return view('admin.pages.settings.website-settings.localization-settings');
-})->name("localization-settings");
 
-Route::get('/maintenance-mode', function () {
-    return view('admin.pages.settings.website-settings.maintenance-mode');
-})->name("maintenance-mode");
+
+Route::get('/language-settings', [LanguageSettingController::class, 'index'])
+    ->name('language-settings');
+
+Route::post('/language-settings', [LanguageSettingController::class, 'store'])
+    ->name('language-settings.store');
+
+Route::put('/language-settings/{id}', [LanguageSettingController::class, 'update'])
+    ->name('language-settings.update');
+
+Route::delete('/language-settings/{id}', [LanguageSettingController::class, 'destroy'])
+    ->name('language-settings.destroy');
+
+// AJAX Routes
+Route::post('/language-settings/{id}/toggle-status', [LanguageSettingController::class, 'toggleStatus'])
+    ->name('language-settings.toggle-status');
+
+Route::post('/language-settings/{id}/toggle-rtl', [LanguageSettingController::class, 'toggleRTL'])
+    ->name('language-settings.toggle-rtl');
+
+Route::post('/language-settings/{id}/set-default', [LanguageSettingController::class, 'setDefault'])
+    ->name('language-settings.set-default');
+
+Route::post('/language-settings/{id}/toggle-platform/{platform}', [LanguageSettingController::class, 'togglePlatform'])
+    ->name('language-settings.toggle-platform');
+
+
+// Show the page
+Route::get('/localization-settings', [LocalizationSettingController::class, 'index'])->name("localization-settings");
+
+// Handle form submission
+Route::post('/localization-settings', [LocalizationSettingController::class, 'update'])->name("localization-settings.update");
+
+Route::get('/maintenance-mode', [MaintenanceModeController::class, 'index'])
+    ->name('maintenance-mode');
+
+Route::put('/maintenance-mode', [MaintenanceModeController::class, 'update'])
+    ->name('maintenance-mode.update');
 
 Route::get('/plugin-manager', function () {
     return view('admin.pages.settings.website-settings.plugin-manager');
@@ -420,9 +494,19 @@ Route::get('/finances/money-transfer', function () {
 })->name("money-transfer");
 
 
-Route::get('/settings/account-setting', function () {
-    return view('admin.pages.settings.account-setting');
-})->name("account-settings");
+Route::middleware(['auth'])->group(function () {
+    Route::get('/general-settings/account-settings', [AccountSettingsController::class, 'index'])
+        ->name('account-settings');
+    
+    Route::put('/general-settings/account-settings', [AccountSettingsController::class, 'update'])
+    ->name('account-settings.update');
+    
+    Route::get('/account-settings/cities/{stateId}', [AccountSettingsController::class, 'getCitiesByState'])
+    ->name('account-settings.cities');
+    
+    Route::delete('/general-settings/account-settings/image', [AccountSettingsController::class, 'deleteProfileImage'])
+        ->name('account-settings.image.delete');
+});
 
 
 // controllers

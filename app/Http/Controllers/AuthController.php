@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\SystemSetting; //
 class AuthController extends Controller
 {
     // 👉 GET login page
     public function login()
     {
-        return view('admin.auth.login');
+         $settings = SystemSetting::getInstance(); 
+        return view('admin.auth.login', [
+            'system_favicon' => $settings?->favicon,
+            'system_white_logo' => $settings?->white_logo,
+            'cover_image' => $settings?->cover_image,
+        ]);
     }
 
     // 👉 POST login form

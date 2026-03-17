@@ -12,7 +12,7 @@ class CaptchaSettingController extends Controller
         $setting = CaptchaSetting::getInstance();
         $currentDomain = CaptchaSetting::getCurrentDomain();
 
-        return view('admin.pages.settings.general-settings', [
+        return view('admin.pages.settings.general-settings.general-settings', [
             'setting' => $setting,
             'current_domain' => $currentDomain,
             'provider' => $setting?->provider ?? 'google',

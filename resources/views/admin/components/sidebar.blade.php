@@ -1,67 +1,6 @@
 <!-- Sidenav Menu Start -->
 <div class="two-col-sidebar" id="two-col-sidebar">
-    <div class="twocol-mini">
-
-        <!-- Add -->
-        <div class="dropdown">
-            <a class="btn btn-primary bg-gradient btn-sm btn-icon rounded-circle d-flex align-items-center justify-content-center"
-                data-bs-toggle="dropdown" href="javascript:void(0);" role="button" data-bs-display="static"
-                data-bs-reference="parent">
-                <i class="isax isax-add"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-start">
-                @can('create-invoices')
-                <li>
-                    <a href="{{ route('admin.invoices.create') }}" class="dropdown-item d-flex align-items-center">
-                        <i class="isax isax-document-text-1 me-2"></i>Invoice
-                    </a>
-                </li>
-                @endcan
-
-                @can('create-expenses')
-                <li>
-                    <a href="{{ route('expenses') }}" class="dropdown-item d-flex align-items-center">
-                        <i class="isax isax-money-send me-2"></i>Expense
-                    </a>
-                </li>
-                @endcan
-
-                @can('create-purchase-orders')
-                <li>
-                    <a href="{{ route('add-purchase-orders') }}" class="dropdown-item d-flex align-items-center">
-                        <i class="isax isax-document me-2"></i>Purchase Order
-                    </a>
-                </li>
-                @endcan
-            </ul>
-        </div>
-        <!-- /Add -->
-
-        <ul class="menu-list">
-            @can('edit-general-settings')
-            <li>
-                <a href="{{ route('general-settings') }}" data-bs-toggle="tooltip" data-bs-placement="right"
-                    data-bs-title="Settings"><i class="isax isax-setting-25"></i></a>
-            </li>
-            @endcan
-
-            @can('view-documentation')
-            <li>
-                <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="right"
-                    data-bs-title="Documentation"><i class="isax isax-document-normal4"></i></a>
-            </li>
-            @endcan
-
-            <li>
-                <a href="javascript:void(0);" data-bs-toggle="tooltip" data-bs-placement="right"
-                    data-bs-title="Changelog"><i class="isax isax-cloud-change5"></i></a>
-            </li>
-
-            <li>
-                <a href="{{ route('login') }}"><i class="isax isax-login-15"></i></a>
-            </li>
-        </ul>
-    </div>
+   
     <div class="sidebar" id="sidebar-two">
 
         <!-- Start Logo -->
@@ -385,9 +324,9 @@
 												<a href="javascript:void(0);">General Settings<span class="menu-arrow"></span></a>
 												<ul>
 													<li><a href="{{ route ('account-settings')}}">Account Settings</a></li>
-													<li><a href="{{ route ('plans-billings')}}">Plans & Billing</a></li>
+													{{-- <li><a href="{{ route ('plans-billings')}}">Plans & Billing</a></li> --}}
 													<li><a href="{{ route ('notifications-settings')}}">Notifications</a></li>
-													<li><a href="{{ route ('integrations-settings')}}">Integrations</a></li>
+													<li><a href="{{ route ('general-settings')}}">Integrations</a></li>
 												</ul>
 											</li>
 											<li class="submenu submenu-two">

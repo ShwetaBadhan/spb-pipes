@@ -18,10 +18,10 @@
                                                                     <ul>
                                                                         <li><a href="{{ route('account-settings') }}" class="active">Account Settings</a></li>
                                                                         <li><a href="{{ route('security-settings') }}">Security</a></li>
-                                                                        <li><a href="{{ route('plans-billings') }}">Plans & Billing</a></li>
+                                                                        {{-- <li><a href="{{ route('plans-billings') }}">Plans & Billing</a></li> --}}
                                                                         <li><a href="{{ route('notifications-settings') }}">Notifications</a></li>
-                                                                        <li><a href="{{ route('integrations-settings') }}">Integrations</a></li>
-                                                                        <li><a href="{{ route('general-settings') }}">Captcha</a></li>
+                                                                        <li><a href="{{ route('general-settings') }}">Integrations</a></li>
+                                                                        {{-- <li><a href="{{ route('general-settings') }}">Captcha</a></li> --}}
                                                                     </ul>
                                                                 </li>
                                                                 <li class="submenu">
@@ -40,7 +40,7 @@
                                                                         <li><a href="{{ route('maintenance-mode') }}">Maintenance Mode</a></li>
                                                                         {{-- <li><a href="{{ route('authentication-settings') }}">Authentication</a></li> --}}
                                                                         {{-- <li><a href="{{ route('ai-configuration') }}">AI Configuration</a></li> --}}
-                                                                        <li><a href="{{ route('appearance-settings') }}">Appearance</a></li>
+                                                                        {{-- <li><a href="{{ route('appearance-settings') }}">Appearance</a></li> --}}
                                                                         {{-- <li><a href="{{ route('plugin-manager') }}">Plugin Manager</a></li> --}}
                                                                     </ul>
                                                                 </li>

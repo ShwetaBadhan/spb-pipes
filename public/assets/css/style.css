@@ -13586,8 +13586,8 @@ p:last-child {
   margin-bottom: 0;
 }
 .two-col-sidebar .sidebar {
-  left: 60px;
-  width: 216px;
+  /* left: 60px; */
+  width: 276px;
 }
 @media (max-width: 991.98px) {
   .two-col-sidebar .sidebar {
