@@ -94,7 +94,7 @@
                                                                         <li><a href="{{ route('gdpr-cookies') }}">GDPR Cookies</a></li>
                                                                     </ul>
                                                                 </li>
-                                                                <li class="submenu">
+                                                                {{-- <li class="submenu">
                                                                     <a href="javascript:void(0);">
                                                                         <i class="isax isax-document fs-18"></i>
                                                                         <span class="fs-14 fw-medium ms-2">Other Settings</span>
@@ -129,7 +129,7 @@
                                                                             <a href="{{ route('system-update') }}">System Update</a>
                                                                         </li>
                                                                     </ul>
-                                                                </li>
+                                                                </li> --}}
                                                             </ul>
                                                         </li>
                                                     </ul>

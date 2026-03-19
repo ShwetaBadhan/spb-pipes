@@ -17,7 +17,7 @@
                         <h6>Transactions</h6>
                     </div>
                     <div class="d-flex my-xl-auto right-content align-items-center flex-wrap gap-2">
-                        <div class="dropdown">
+                        {{-- <div class="dropdown">
                             <a href="javascript:void(0);" class="btn btn-outline-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
                                 <i class="isax isax-export-1 me-1"></i>Export
                             </a>
@@ -29,7 +29,7 @@
                                     <a class="dropdown-item" href="#">Download as Excel</a>
                                 </li>
                             </ul>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <!-- End Page Header -->

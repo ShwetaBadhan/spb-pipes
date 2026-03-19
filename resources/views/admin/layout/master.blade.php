@@ -75,6 +75,8 @@
 
 {{-- sidebar --}}
 @include("admin.components.sidebar")
+
+{{-- @include('admin.components.mobile-menu') --}}
  {{-- ✅ MAIN PAGE CONTENT YIELD HERE --}}
     @yield('content')
 {{-- copyright --}}

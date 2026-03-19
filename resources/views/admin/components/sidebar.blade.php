@@ -382,7 +382,7 @@
 													</li>
 												</ul>
 											</li>
-											<li class="submenu submenu-two">
+											{{-- <li class="submenu submenu-two">
 												<a href="javascript:void(0);">Other Settings<span class="menu-arrow"></span></a>
 												<ul>
 													<li>
@@ -410,7 +410,7 @@
 														<a href="{{ route ('database-backup')}}">Database Backup</a>
 													</li>
 												</ul>
-											</li>
+											</li> --}}
 										</ul>
                                
                             </li>

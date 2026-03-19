@@ -37,6 +37,15 @@ use App\Http\Controllers\IntegrationSettingController;
 use App\Http\Controllers\LocalizationSettingController;
 use App\Http\Controllers\Admin\LanguageSettingController;
 use App\Http\Controllers\MaintenanceModeController;
+use App\Http\Controllers\InvoiceSettingController;
+use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\BankAccountController;
+use App\Http\Controllers\TaxController;
+use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\EmailTemplateController;
+use App\Http\Controllers\EmailSettingController;
+use App\Http\Controllers\GdprCookieController;
+
 
 use App\Models\Invoice;
 use App\Models\Order; // Add this
@@ -198,13 +207,14 @@ Route::get('/esignatures', function () {
     return view('admin.pages.settings.app-settings.esignatures');
 })->name("esignatures");
 
-Route::get('/invoice-settings', function () {
-    return view('admin.pages.settings.app-settings.invoice-settings');
-})->name("invoice-settings");
+Route::get('/invoice-settings', [InvoiceSettingController::class, 'index'])
+    ->name('invoice-settings');
 
-Route::get('/invoice-templates-settings', function () {
-    return view('admin.pages.settings.app-settings.invoice-templates-settings');
-})->name("invoice-templates-settings");
+Route::post('/invoice-settings', [InvoiceSettingController::class, 'store'])
+    ->name('invoice-settings.store');
+
+Route::get('/invoice-templates', [InvoiceSettingController::class, 'templates'])
+    ->name('invoice-templates-settings');  
 
 Route::get('/sass-settings', function () {
     return view('admin.pages.settings.app-settings.sass-settings');
@@ -216,35 +226,132 @@ Route::get('/thermal-printer', function () {
 
 // finance settings
 
-Route::get('/bank-accounts-settings', function () {
-    return view('admin.pages.settings.finance-settings.bank-accounts-settings');
-})->name("bank-accounts-settings");
+Route::middleware(['auth'])->group(function () {
+    Route::get('/bank-accounts', [BankAccountController::class, 'index'])
+        ->name('bank-accounts-settings');
+    Route::post('/bank-accounts', [BankAccountController::class, 'store'])
+        ->name('bank-accounts.store');
+    Route::put('/bank-accounts/{id}', [BankAccountController::class, 'update'])
+        ->name('bank-accounts.update');
+    Route::delete('/bank-accounts/{id}', [BankAccountController::class, 'destroy'])
+        ->name('bank-accounts.destroy');
+});
 
-Route::get('/currencies', function () {
-    return view('admin.pages.settings.finance-settings.currencies');
-})->name("currencies");
+Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/currencies', [CurrencyController::class, 'index'])
+        ->name('currencies');
+    
+    Route::post('/currencies', [CurrencyController::class, 'store'])
+        ->name('currencies.store');
+    
+    Route::put('/currencies/{id}', [CurrencyController::class, 'update'])
+        ->name('currencies.update');
+    
+    Route::delete('/currencies/{id}', [CurrencyController::class, 'destroy'])
+        ->name('currencies.destroy');
+    
+    Route::patch('/currencies/{id}/toggle', [CurrencyController::class, 'toggleStatus'])
+        ->name('currencies.toggle');
+    
+    Route::post('/currencies/{id}/set-default', [CurrencyController::class, 'setDefault'])
+        ->name('currencies.default');
+});
 
-Route::get('/payment-methods', function () {
-    return view('admin.pages.settings.finance-settings.payment-methods');
-})->name("payment-methods");
+Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/payment-methods', [PaymentMethodController::class, 'index'])
+        ->name('payment-methods');
+    Route::post('/payment-methods', [PaymentMethodController::class, 'store'])
+        ->name('payment-methods.store');
+    Route::put('/payment-methods/{id}', [PaymentMethodController::class, 'update'])
+        ->name('payment-methods.update');
+    Route::patch('/payment-methods/{id}/toggle', [PaymentMethodController::class, 'toggleStatus'])
+        ->name('payment-methods.toggle');
+    Route::delete('/payment-methods/{id}', [PaymentMethodController::class, 'destroy'])
+        ->name('payment-methods.destroy');
+    Route::post('/payment-methods/{id}/test-connection', [PaymentMethodController::class, 'testConnection'])
+        ->name('payment-methods.test-connection');
+        
+});
 
-Route::get('/tax-rates', function () {
-    return view('admin.pages.settings.finance-settings.tax-rates');
-})->name("tax-rates");
+Route::middleware(['auth'])->group(function () {
+    
+    // Main page
+    Route::get('/tax-rates', [TaxController::class, 'index'])
+        ->name('tax-rates');
+    
+    // Tax Rates CRUD
+    Route::post('/tax-rates', [TaxController::class, 'storeRate'])
+        ->name('tax-rates.store');
+    Route::put('/tax-rates/{id}', [TaxController::class, 'updateRate'])
+        ->name('tax-rates.update');
+    Route::delete('/tax-rates/{id}', [TaxController::class, 'destroyRate'])
+        ->name('tax-rates.destroy');
+    
+    // Tax Groups CRUD
+    Route::post('/tax-groups', [TaxController::class, 'storeGroup'])
+        ->name('tax-groups.store');
+    Route::put('/tax-groups/{id}', [TaxController::class, 'updateGroup'])
+        ->name('tax-groups.update');
+    Route::delete('/tax-groups/{id}', [TaxController::class, 'destroyGroup'])
+        ->name('tax-groups.destroy');
+});
 
 // system-settings
 
-Route::get('/email-settings', function () {
-    return view('admin.pages.settings.system-settings.email-settings');
-})->name("email-settings");
+Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/email-settings', [EmailSettingController::class, 'index'])
+        ->name('email-settings');
+    
+    Route::post('/email-settings', [EmailSettingController::class, 'store'])
+        ->name('email-settings.store');
+    
+    Route::put('/email-settings/{id}', [EmailSettingController::class, 'update'])
+        ->name('email-settings.update');
+    
+    Route::patch('/email-settings/{id}/toggle', [EmailSettingController::class, 'toggleStatus'])
+        ->name('email-settings.toggle');
+    
+    Route::delete('/email-settings/{id}', [EmailSettingController::class, 'destroy'])
+        ->name('email-settings.destroy');
+    
+    Route::post('/email-settings/{id}/send-test', [EmailSettingController::class, 'sendTestEmail'])
+        ->name('email-settings.send-test');
+});
+Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/email-templates', [EmailTemplateController::class, 'index'])
+        ->name('email-templates');
+    
+    Route::post('/email-templates', [EmailTemplateController::class, 'store'])
+        ->name('email-templates.store');
+    
+    Route::put('/email-templates/{id}', [EmailTemplateController::class, 'update'])
+        ->name('email-templates.update');
+    
+    Route::delete('/email-templates/{id}', [EmailTemplateController::class, 'destroy'])
+        ->name('email-templates.destroy');
+    
+    Route::patch('/email-templates/{id}/toggle', [EmailTemplateController::class, 'toggleStatus'])
+        ->name('email-templates.toggle');
+    
+     Route::get('/email-templates/{id}/preview', [EmailTemplateController::class, 'preview'])
+        ->name('email-templates.preview');
+});
 
-Route::get('/email-templates', function () {
-    return view('admin.pages.settings.system-settings.email-templates');
-})->name("email-templates");
-
-Route::get('/gdpr-cookies', function () {
-    return view('admin.pages.settings.system-settings.gdpr-cookies');
-})->name("gdpr-cookies");
+Route::middleware(['auth'])->group(function () {
+    
+    Route::get('/gdpr-cookies', [GdprCookieController::class, 'index'])
+        ->name('gdpr-cookies');
+    
+    Route::post('/gdpr-cookies', [GdprCookieController::class, 'store'])
+        ->name('gdpr-cookies.store');
+    
+    Route::patch('/gdpr-cookies/toggle', [GdprCookieController::class, 'toggleStatus'])
+        ->name('gdpr-cookies.toggle');
+});
 
 Route::get('/sms-gateways', function () {
     return view('admin.pages.settings.system-settings.sms-gateways');
@@ -391,9 +498,10 @@ Route::get('/dashboard', function () {
         'total_invoices' => Invoice::whereNull('deleted_at')->count(),
         'paid_invoices' => Invoice::whereNull('deleted_at')->where('status', 'paid')->count(),
         'pending_invoices' => Invoice::whereNull('deleted_at')->whereIn('status', ['unpaid', 'pending'])->count(),
-    ];
 
-    return view('admin.pages.dashboard', compact('lowStockProducts', 'lowStockRawMaterials', 'stats'));
+    ];
+$orders = Order::latest()->take(5)->get(); 
+    return view('admin.pages.dashboard', compact('lowStockProducts', 'lowStockRawMaterials', 'stats','orders'));
 })->middleware('auth')->name('dashboard');
 
 

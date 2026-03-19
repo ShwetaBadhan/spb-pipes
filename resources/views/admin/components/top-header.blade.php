@@ -60,11 +60,13 @@
 
         <!-- Logo -->
         <div class="header-left">
-            <a href="{{ route('dashboard') }}" class="logo">
-                <img src="{{ url('assets/img/logo.svg') }}" alt="Logo">
+            <a href="{{ route('dashboard') }}" class="logo logo-normal">
+                <img src="{{ $system_white_logo ? asset('storage/' . $system_white_logo) : asset('assets/img/logo-spb.png') }} "
+                    alt="Logo">
             </a>
-            <a href="{{ route('dashboard') }}" class="dark-logo">
-                <img src="{{ url('assets/img/logo-white.svg') }}" alt="Logo">
+             <a href="{{ route('dashboard') }}" class="logo-small">
+                <img src="{{ $system_single_logo ? asset('storage/' . $system_single_logo) : asset('assets/img/logo-small.png') }} "
+                    alt="Logo">
             </a>
         </div>
 
@@ -85,7 +87,7 @@
                     <!-- Breadcrumb -->
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb breadcrumb-divide mb-0">
-                            <li class="breadcrumb-item d-flex align-items-center"><a href="index.html"><i
+                            <li class="breadcrumb-item d-flex align-items-center"><a href="{{ route('dashboard') }}"><i
                                         class="isax isax-home-2 me-1"></i>Home</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
                         </ol>
@@ -96,12 +98,12 @@
                 <div class="d-flex align-items-center">
 
                     <!-- Search -->
-                    <div class="input-icon-end position-relative me-2">
+                    {{-- <div class="input-icon-end position-relative me-2">
                         <input type="text" class="form-control" placeholder="Search">
                         <span class="input-icon-addon">
                             <i class="isax isax-search-normal"></i>
                         </span>
-                    </div>
+                    </div> --}}
                     <!-- /Search -->
 
                     {{-- resources/views/admin/components/top-header.blade.php --}}

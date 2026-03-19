@@ -2,8 +2,8 @@
 @section('title', 'Welcome to Admin Panel')
 @section('content')
     <!-- ========================
-           Start Page Content
-          ========================= -->
+               Start Page Content
+              ========================= -->
 
     <div class="page-wrapper">
 
@@ -25,10 +25,10 @@
                     <h6>Dashboard</h6>
                 </div>
                 <div class="d-flex my-xl-auto right-content align-items-center flex-wrap gap-2">
-                    <div id="reportrange" class="reportrange-picker d-flex align-items-center">
+                    {{-- <div id="reportrange" class="reportrange-picker d-flex align-items-center">
                         <i class="isax isax-calendar text-gray-5 fs-14 me-1"></i><span class="reportrange-picker-field">16
                             Apr 25 - 16 Apr 25</span>
-                    </div>
+                    </div> --}}
                     {{-- <div class="dropdown">
 							<a class="btn btn-primary d-flex align-items-center justify-content-center dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
 								Create New
@@ -410,10 +410,108 @@
             </div>
             <!-- end row -->
 
-          
 
-         
-          
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card overflow-hidden">
+                        <div class="card-header">
+                            <div class="d-flex align-items-center justify-content-between gap-2 flex-wrap">
+                                <h3 class="mb-0 fs-18">Recent Orders</h3>
+                                <a href="{{ route('admin.orders.index') }}" class="btn btn-primary">View all Orders</a>
+                            </div>
+                        </div>
+                        @php
+                            // Filter if needed, then limit to recent 5 orders
+                            // Note: It is better to limit this in your Controller (e.g., Order::latest()->take(5)->get())
+                            // but here we limit the collection directly for the dashboard view.
+                            $filteredOrders = isset($statusFilter) ? $orders->where('status', $statusFilter) : $orders;
+                            $dashboardOrders = $filteredOrders->sortByDesc('created_at')->take(5);
+                        @endphp
+
+                        @if ($dashboardOrders->count() > 0)
+                            <div class="table-responsive">
+                                <table class="table table-bordered custom-table-bordered table-nowrap mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Customer</th>
+                                            <th>Created On</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($dashboardOrders as $order)
+                                            <tr>
+                                                <!-- Order ID -->
+                                                <td>
+                                                    <a href="{{ route('admin.orders.show', $order->id) }}"
+                                                        class="link-default fw-medium">
+                                                        {{ $order->order_number }}
+                                                    </a>
+                                                </td>
+
+                                                <!-- Customer -->
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar avatar-sm rounded-circle me-2 flex-shrink-0 bg-light text-primary d-flex align-items-center justify-content-center"
+                                                            style="width: 32px; height: 32px;">
+                                                            <span
+                                                                class="fs-12 fw-bold">{{ strtoupper(substr($order->customer_name, 0, 1)) }}</span>
+                                                        </div>
+                                                        <div>
+                                                            <h3 class="fs-14 fw-medium mb-0 text-dark">
+                                                                {{ $order->customer_name }}</h3>
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                                <!-- Created On -->
+                                                <td class="text-muted fs-14">
+                                                    {{ $order->created_at->format('d M Y') }}
+                                                </td>
+
+                                                <!-- Amount -->
+                                                <td class="text-dark fw-medium">
+                                                    ₹{{ number_format($order->total, 2) }}
+                                                </td>
+
+                                                <!-- Status -->
+                                                <td>
+                                                    <span
+                                                        class="badge bg-{{ $order->status === 'pending'
+                                                            ? 'warning'
+                                                            : ($order->status === 'confirmed'
+                                                                ? 'info'
+                                                                : ($order->status === 'processing'
+                                                                    ? 'primary'
+                                                                    : (in_array($order->status, ['shipped', 'delivered'])
+                                                                        ? 'success'
+                                                                        : ($order->status === 'cancelled'
+                                                                            ? 'danger'
+                                                                            : 'secondary')))) }} rounded-pill px-3">
+                                                        {{ ucfirst($order->status) }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="text-center py-5">
+                                <div class="text-muted">
+                                    <i data-feather="inbox" class="mb-2" style="width: 64px; height: 64px;"></i>
+                                    <h5 class="mt-3">No recent orders</h5>
+                                    <p class="text-muted">There are no orders to display at the moment.</p>
+                                </div>
+                            </div>
+                        @endif
+                    </div> <!-- end card -->
+                </div> <!-- end col -->
+            </div>
+
+
 
         </div>
         <!-- End Content -->
@@ -422,5 +520,5 @@
 
     </div>
 
-    
+
 @endsection

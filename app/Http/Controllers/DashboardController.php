@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -24,8 +25,10 @@ class DashboardController extends Controller
             'paid_invoices' => Invoice::whereNull('deleted_at')
                 ->where('status', 'paid')
                 ->count(),
-        ];
 
-        return view('admin.pages.dashboard', compact('stats'));
+        ];
+                // Instead of passing all orders
+$orders = Order::latest()->take(5)->get(); 
+        return view('admin.pages.dashboard', compact('stats', 'orders'));
     }
 }

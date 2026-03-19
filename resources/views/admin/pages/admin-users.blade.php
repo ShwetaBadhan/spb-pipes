@@ -19,7 +19,7 @@
                         <h6>Users</h6>
                     </div>
                     <div class="d-flex my-xl-auto right-content align-items-center flex-wrap gap-2">
-                        <div class="dropdown">
+                        {{-- <div class="dropdown">
                             <a href="javascript:void(0);" class="btn btn-outline-white d-inline-flex align-items-center" data-bs-toggle="dropdown">
                                 <i class="isax isax-export-1 me-1"></i>Export
                             </a>
@@ -31,7 +31,7 @@
                                     <a class="dropdown-item" href="#">Download as Excel</a>
                                 </li>
                             </ul>
-                        </div>
+                        </div> --}}
                         <div>
                             <a href="javascript:void(0);" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#add_modal">
                                 <i class="isax isax-add-circle5 me-1"></i>New User
@@ -49,18 +49,18 @@
                                     <a href="javascript:void(0);" class="btn-searchset"><i class="isax isax-search-normal fs-12"></i></a>
                                 </div>
                             </div>
-                            <a class="btn btn-outline-white fw-normal d-inline-flex align-items-center" href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#customcanvas">
+                            {{-- <a class="btn btn-outline-white fw-normal d-inline-flex align-items-center" href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#customcanvas">
                                 <i class="isax isax-filter me-1"></i>Filter
-                            </a>
+                            </a> --}}
                         </div>
                       
                     </div>
-                    <div class="align-items-center gap-2 flex-wrap filter-info mt-3">
+                    {{-- <div class="align-items-center gap-2 flex-wrap filter-info mt-3">
                         <h6 class="fs-13 fw-semibold">Filters</h6>
                         <span class="tag bg-light border rounded-1 fs-12 text-dark badge"><span class="num-count d-inline-flex align-items-center justify-content-center bg-success fs-10 me-1">5</span>Users Selected<span class="ms-1 tag-close"><i class="fa-solid fa-x fs-10"></i></span></span>
                         <span class="tag bg-light border rounded-1 fs-12 text-dark badge"><span class="num-count d-inline-flex align-items-center justify-content-center bg-success fs-10 me-1">5</span>Status Selected<span class="ms-1 tag-close"><i class="fa-solid fa-x fs-10"></i></span></span>
                         <a href="#" class="link-danger fw-medium text-decoration-underline ms-md-1">Clear All</a>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <div class="table-responsive">

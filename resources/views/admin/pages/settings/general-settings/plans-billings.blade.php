@@ -204,7 +204,7 @@
 																</a>
 																<ul class="dropdown-menu">
 																	<li>
-																		<a class="dropdown-item" href="#">Download as PDF</a>
+																		<a class="dropdown-item" href="#"></a>
 																	</li>
 																	<li>
 																		<a class="dropdown-item" href="#">Download as Excel</a>
