@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -143,15 +144,24 @@
 
         <!-- Invoice Details & Customer Info -->
         <div class="info-section">
-            <div class="info-box">
-                <h3>Invoice Details</h3>
-                <p><strong>Invoice Number:</strong> {{ $invoice->invoice_number }}</p>
-                <p><strong>Issued On:</strong> {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d M Y') }}</p>
-                <p><strong>Due Date:</strong> {{ $invoice->due_date ? \Carbon\Carbon::parse($invoice->due_date)->format('d M Y') : 'N/A' }}</p>
-                @if($invoice->reference_number)
-                    <p><strong>Reference:</strong> {{ $invoice->reference_number }}</p>
-                @endif
-            </div>
+           <div class="info-box">
+    <h3>Billing To</h3>
+    @if($invoice->customer)
+        <p><strong>{{ $invoice->customer->name }}</strong></p>
+        <p>{{ $invoice->customer->address ?? 'Address not available' }}</p>
+        @if($invoice->customer->phone)
+            <p><strong>Phone:</strong> {{ $invoice->customer->phone }}</p>
+        @endif
+        @if($invoice->customer->email)
+            <p><strong>Email:</strong> {{ $invoice->customer->email }}</p>
+        @endif
+        @if($invoice->customer->gst_number)
+            <p><strong>GST:</strong> {{ $invoice->customer->gst_number }}</p>
+        @endif
+    @else
+        <p class="text-muted">Customer information not available</p>
+    @endif
+</div>
             <div class="info-box">
                 <h3>Billing To</h3>
                 <p><strong>{{ $invoice->customer->name ?? 'N/A' }}</strong></p>
@@ -204,12 +214,19 @@
                 <span>₹{{ number_format($invoice->subtotal, 2) }}</span>
             </div>
             
-            @foreach($invoice->taxes as $tax)
-            <div class="totals-row">
-                <span>{{ $tax->tax_name }}:</span>
-                <span>₹{{ number_format($tax->tax_amount, 2) }}</span>
-            </div>
-            @endforeach
+           @forelse($invoice->taxes ?? [] as $tax)
+<div class="totals-row">
+    <span>{{ $tax->tax_name }}:</span>
+    <span>₹{{ number_format($tax->tax_amount, 2) }}</span>
+</div>
+@empty
+    @if($invoice->enable_tax && $invoice->tax_type !== 'none')
+    <div class="totals-row">
+        <span>Tax:</span>
+        <span>₹{{ number_format($invoice->total_tax ?? 0, 2) }}</span>
+    </div>
+    @endif
+@endforelse
             
             @if($invoice->shipping_cost > 0)
             <div class="totals-row">
@@ -244,7 +261,7 @@
             
             <div class="totals-row">
                 <span>Total in Words:</span>
-                <span>{{ convertNumberToWords($invoice->grand_total) }} Rupees Only</span>
+                <span>{{ $amountInWords }} Rupees Only</span>
             </div>
         </div>
 
@@ -268,7 +285,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p>Dreams Technologies Pvt Ltd., 15 Hodges Mews, High Wycombe HP12 3JL, United Kingdom</p>
+            <p>SPB  Pipes., 15 Hodges Mews, High Wycombe HP12 3JL, United Kingdom</p>
             <p>Phone: +1 54664 75945 | Email: info@kanakku.com | GST: 243E45767889</p>
             <p style="margin-top: 10px; font-size: 9px; color: #999;">
                 Generated on: {{ \Carbon\Carbon::now()->format('d M Y H:i:s') }}

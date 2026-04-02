@@ -152,7 +152,7 @@
                                         </div>
                                         <div class="col-xl-8">
                                             <div>
-                                                <textarea name="cookie_content" class="form-control summernote @error('cookie_content') is-invalid @enderror" 
+                                                <textarea name="cookie_content" class="form-control @error('cookie_content') is-invalid @enderror" 
                                                           rows="5">{{ old('cookie_content', $gdprSettings->cookie_content) }}</textarea>
                                                 @error('cookie_content')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -193,6 +193,8 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
+
 
 @endsection
+

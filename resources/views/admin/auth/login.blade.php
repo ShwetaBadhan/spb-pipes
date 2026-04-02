@@ -41,7 +41,7 @@
 
       <!-- Start Content -->
 <div class="container-fluid p-0">
-    <div class="w-100 overflow-hidden position-relative flex-wrap d-block vh-100">
+    <div class="w-100  vh-100">
 
         <!-- start row -->
         <div class="row d-flex justify-content-center align-items-center min-vh-100">
@@ -51,7 +51,7 @@
                 <img src="{{ $cover_image ? asset('storage/' . $cover_image) : asset('assets/img/login-cover-default.jpg') }}" 
                      class="img-fluid w-100 h-100 object-fit-cover" 
                      alt="Cover Image"
-                     style="min-height: 100vh;">
+                     >
             </div>
 
             <!-- Right: Login Form -->

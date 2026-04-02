@@ -50,12 +50,12 @@
                                         class="isax isax-search-normal fs-12"></i></a>
                             </div>
                         </div>
-                        <a class="btn btn-outline-white fw-normal d-inline-flex align-items-center"
+                        {{-- <a class="btn btn-outline-white fw-normal d-inline-flex align-items-center"
                             href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#customcanvas">
                             <i class="isax isax-filter me-1"></i>Filter
-                        </a>
+                        </a> --}}
                     </div>
-                    <div class="d-flex align-items-center flex-wrap gap-2">
+                    {{-- <div class="d-flex align-items-center flex-wrap gap-2">
                         <div class="dropdown">
                             <a href="javascript:void(0);"
                                 class="dropdown-toggle btn btn-outline-white d-inline-flex align-items-center fw-medium"
@@ -136,7 +136,7 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <!-- Filter Info -->

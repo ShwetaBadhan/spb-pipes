@@ -53,6 +53,7 @@
         $lowStockNotifications = $lowStockNotifications->take(5);
     }
 @endphp
+<div class="main-wrapper">		
 
 <!-- Topbar Start -->
 <div class="header">
@@ -323,5 +324,6 @@
         <!-- /Mobile Menu -->
 
     </div>
+</div>
 </div>
 <!-- Topbar End -->

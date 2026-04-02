@@ -641,7 +641,9 @@ public function pdf(Invoice $invoice)
 {
     $invoice->load(['customer', 'createdBy', 'items', 'taxes']);
     
-    $pdf = PDF::loadView('admin.pages.invoices.invoice-pdf', compact('invoice'));
+    $amountInWords = $this->convertNumberToWords(round($invoice->grand_total));
+    
+    $pdf = PDF::loadView('admin.pages.invoices.invoice-pdf', compact('invoice', 'amountInWords'));
     $pdf->setPaper('a4', 'portrait');
     
     return $pdf->download($invoice->invoice_number . '.pdf');
@@ -662,5 +664,27 @@ public function filterLedger(Request $request, Invoice $invoice)
         ->get();
 
     return view('admin.pages.invoices.partials.ledger-table', compact('ledgers'));
+}
+private function convertNumberToWords($number)
+{
+    if ($number < 0) return 'Negative ' . $this->convertNumberToWords(abs($number));
+    if ($number == 0) return 'Zero';
+    
+    $words = [
+        0 => '', 1 => 'One', 2 => 'Two', 3 => 'Three', 4 => 'Four',
+        5 => 'Five', 6 => 'Six', 7 => 'Seven', 8 => 'Eight', 9 => 'Nine',
+        10 => 'Ten', 11 => 'Eleven', 12 => 'Twelve', 13 => 'Thirteen',
+        14 => 'Fourteen', 15 => 'Fifteen', 16 => 'Sixteen', 17 => 'Seventeen',
+        18 => 'Eighteen', 19 => 'Nineteen', 20 => 'Twenty', 30 => 'Thirty',
+        40 => 'Forty', 50 => 'Fifty', 60 => 'Sixty', 70 => 'Seventy',
+        80 => 'Eighty', 90 => 'Ninety', 100 => 'Hundred'
+    ];
+
+    if ($number < 21) return $words[$number];
+    if ($number < 100) return $words[floor($number / 10) * 10] . ($number % 10 ? ' ' . $words[$number % 10] : '');
+    if ($number < 1000) return $words[floor($number / 100)] . ' Hundred' . ($number % 100 ? ' ' . $this->convertNumberToWords($number % 100) : '');
+    if ($number < 100000) return $this->convertNumberToWords(floor($number / 1000)) . ' Thousand' . ($number % 1000 ? ' ' . $this->convertNumberToWords($number % 1000) : '');
+    if ($number < 10000000) return $this->convertNumberToWords(floor($number / 100000)) . ' Lakh' . ($number % 100000 ? ' ' . $this->convertNumberToWords($number % 100000) : '');
+    return $this->convertNumberToWords(floor($number / 10000000)) . ' Crore' . ($number % 10000000 ? ' ' . $this->convertNumberToWords($number % 10000000) : '');
 }
 }
