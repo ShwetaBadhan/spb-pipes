@@ -48,8 +48,5 @@ public function productionRule()
     {
         return $this->hasMany(ProductionRecipe::class);
     }
-     public function gatePasses()
-    {
-        return $this->hasMany(GatePass::class);
-    }
+   
 }

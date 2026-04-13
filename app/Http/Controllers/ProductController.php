@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\ProductsExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -68,69 +69,68 @@ class ProductController extends Controller
        Store Product
     ======================= */
     public function store(Request $request)
-    {
-        $request->validate([
-            'name'         => 'required|string|max:255',
-            'code'         => 'required|regex:/^[A-Z]{3}-\d+$/|unique:products,code',
-            'category_id'  => 'required|exists:categories,id',
-            'description'  => 'required|string',
-            'unit_id'      => 'required|string',
-            'status'       => 'required|boolean',
+{
+    // Add this to debug
+    Log::info('Request files:', $request->allFiles());
+    Log::info('Request data:', $request->except('image_path', 'gallery'));
+    
+    $validated = $request->validate([
+        'name'         => 'required|string|max:255',
+        'code'         => 'required|regex:/^[A-Z]{3}-\d+$/|unique:products,code',
+        'category_id'  => 'required|exists:categories,id',
+        'description'  => 'required|string',
+        'unit_id'      => 'required|string',
+        'status'       => 'required|boolean',
+        'image_path'   => 'required|image|mimes:jpg,png,jpeg|max:5120',
+        'gallery.*'    => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
+        'variants'     => 'required|array|min:1',
+        'variants.*.selling_price'  => 'required|numeric|min:0',
+        'variants.*.purchase_price' => 'nullable|numeric|min:0',
+        'variants.*.quantity'       => 'required|integer|min:1',
+        'variants.*.alert_quantity' => 'required|integer|min:0|lt:variants.*.quantity',
+    ], [
+        'image_path.required' => 'Product image is required.',
+        'variants.*.alert_quantity.lt' => 'Alert quantity must be less than quantity.',
+    ]);
 
-            'image_path'        => 'image|mimes:jpg,png,jpeg|max:5120',
-            'gallery.*'    => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
+    DB::transaction(function () use ($request) {
+        $imagePath = $request->file('image_path')->store('products', 'public');
 
-            'variants'     => 'required|array|min:1',
-            'variants.*.selling_price'  => 'required|numeric|min:0',
-            'variants.*.purchase_price' => 'nullable|numeric|min:0',
-            'variants.*.quantity'       => 'required|integer|min:1',
-            'variants.*.alert_quantity' => 'required|integer|min:0|lt:variants.*.quantity',
-        ], [
-            'variants.*.alert_quantity.lt' =>
-                'Alert quantity must be less than quantity.',
+        $product = Product::create([
+            'name'        => $request->name,
+            'code'        => $request->code,
+            'slug'        => Str::slug($request->name),
+            'category_id' => $request->category_id,
+            'description' => $request->description,
+            'unit_id'     => $request->unit_id,
+            'status'      => $request->status,
+            'image_path'  => $imagePath,
         ]);
 
-        DB::transaction(function () use ($request) {
-
-            $imagePath = $request->hasFile('image_path')
-                ? $request->file('image_path')->store('products', 'public')
-                : null;
-
-            $product = Product::create([
-                'name'        => $request->name,
-                'code'        => $request->code,
-                'slug'        => Str::slug($request->name),
-                'category_id' => $request->category_id,
-                'description' => $request->description,
-                'unit_id'     => $request->unit_id,
-                'status'      => $request->status, // ✅ FIXED
-                'image_path'       => $imagePath,
+        foreach ($request->variants as $variant) {
+            ProductVariant::create([
+                'product_id'     => $product->id,
+                'selling_price'  => $variant['selling_price'],
+                'purchase_price' => $variant['purchase_price'] ?? 0,
+                'quantity'       => $variant['quantity'],
+                'alert_quantity' => $variant['alert_quantity'],
             ]);
+        }
 
-            foreach ($request->variants as $variant) {
-                ProductVariant::create([
-                    'product_id'     => $product->id,
-                    'selling_price'  => $variant['selling_price'],
-                    'purchase_price' => $variant['purchase_price'] ?? 0,
-                    'quantity'       => $variant['quantity'],
-                    'alert_quantity' => $variant['alert_quantity'],
+        if ($request->hasFile('gallery')) {
+            foreach ($request->file('gallery') as $file) {
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $file->store('products/gallery', 'public'),
                 ]);
             }
+        }
+    });
 
-            if ($request->hasFile('gallery')) {
-                foreach ($request->file('gallery') as $file) {
-                    ProductImage::create([
-                        'product_id' => $product->id,
-                        'image_path' => $file->store('products/gallery', 'public'),
-                    ]);
-                }
-            }
-        });
-
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Product created successfully.');
-    }
+    return redirect()
+        ->route('products.index')
+        ->with('success', 'Product created successfully.');
+}
 
         /* =======================
        Edit Product

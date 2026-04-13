@@ -39,12 +39,12 @@
                                             <div class="d-inline-flex flex-column align-items-start">
                                                 <div class="drag-upload-btn btn btn-sm btn-primary position-relative mb-2">
                                                     <i class="isax isax-image me-1"></i>Upload Image
-                                                    <input type="file" name="image_path" class="form-control image-sign" />
+                                                    <input type="file" name="image_path" class="form-control image-sign"/>
                                                 </div>
                                                 <span class="text-gray-9 fs-12">JPG or PNG format, not exceeding 5MB.</span>
                                             </div>
                                         </div>
-                                        @error('image')
+                                        @error('image_path')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -296,7 +296,7 @@
                 });
         }
         document.addEventListener('DOMContentLoaded', function() {
-            const imageInput = document.querySelector('input[name="image"]');
+            const imageInput = document.querySelector('input[name="image_path"]');
             const previewContainer = document.getElementById('product-image-preview');
 
             if (!imageInput || !previewContainer) {
