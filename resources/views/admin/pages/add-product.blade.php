@@ -179,7 +179,8 @@
                                         <!-- Product Description -->
                                         <div class="col-lg-12">
                                             <div class="mb-3">
-                                                <label class="form-label">Product Description</label>
+                                                <label class="form-label"><span>Product Description <span
+                                                class="text-danger ms-1">*</span></span></label>
                                                 <textarea name="description" class="form-control editor">{{ old('description') }}</textarea>
                                             </div>
                                         </div>
