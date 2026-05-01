@@ -353,7 +353,7 @@
                                                 <li><a href="{{ route('maintenance-mode') }}">Maintenance Mode</a></li>
                                                 {{-- <li><a href="{{ route('authentication-settings') }}">Authentication</a></li> --}}
                                                 {{-- <li><a href="{{ route('ai-configuration') }}">AI Configuration</a></li> --}}
-                                                <li><a href="{{ route('appearance-settings') }}">Appearance</a></li>
+                                                {{-- <li><a href="{{ route('appearance-settings') }}">Appearance</a></li> --}}
                                                 {{-- <li><a href="{{ route('plugin-manager')}}">Plugin Manager</a></li> --}}
                                             </ul>
                                         </li>
