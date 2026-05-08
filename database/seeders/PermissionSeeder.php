@@ -109,6 +109,15 @@ class PermissionSeeder extends Seeder
             'view-transactions',
             'manage-bank-accounts',
             'create-money-transfer',
+            // dashboard
+            'view-alert-notifications',
+            'view-overview-stats', 
+            'view-invoice-stats',
+            'view-sales-stats',
+            'view-total-products', 
+            'view-total-sales', 
+            'view-total-customers',
+            'view-recent-orders',
         ];
 
         // Create all permissions
