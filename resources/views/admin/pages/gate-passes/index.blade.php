@@ -200,18 +200,30 @@
                                         <i class="isax isax-more"></i>
                                     </a>
                                      <ul class="dropdown-menu">
-                                     <li>
-                                    <a href="{{ route('admin.gate-passes.show', $gp->batch_number) }}"
-                                        class="dropdown-item d-flex align-items-center">
-                                        <i class="isax isax-eye me-2"></i>View</a>
-                                    </a>
-                                     </li>
-                                     <li>
-                                      <a href="{{ route('admin.gate-passes.slip', $gp->batch_number) }}" class="dropdown-item d-flex align-items-center"
-                            target="_blank">
-                            <i class="fas fa-file-pdf"></i> Generate Slip
-                        </a>
-                                     </li>
+                                        <li>
+                                            <a href="{{ route('admin.gate-passes.show', $gp->batch_number) }}"
+                                                class="dropdown-item d-flex align-items-center">
+                                                <i class="isax isax-eye me-2"></i>View</a>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('admin.gate-passes.slip', $gp->batch_number) }}" class="dropdown-item d-flex align-items-center"
+                                                target="_blank">
+                                                <i class="fas fa-file-pdf"></i> Generate Slip
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <form action="{{ route('admin.gate-passes.destroy', $gp->id) }}"
+                                                method="POST"
+                                                onsubmit="return confirm('Are you sure you want to delete this gate pass?');">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="submit" class="dropdown-item d-flex align-items-center text-danger">
+                                                    <i class="fas fa-trash-alt me-2"></i> Delete
+                                                </button>
+                                            </form>
+                                        </li>
                                      </ul>
 
 

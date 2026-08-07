@@ -12,7 +12,7 @@ class UserRegisterController extends Controller
 {
     public function index() // For user list page
 {
-    $users = User::with('roles')->latest()->paginate(15);
+    $users = User::with('roles')->latest()->get();
     $roles = Role::all(); // fetch all roles for dropdown
 
     return view('admin.pages.admin-users', compact('users', 'roles'));
@@ -26,13 +26,13 @@ class UserRegisterController extends Controller
             'role' => 'nullable|exists:roles,name',
             'is_active' => 'required|boolean',
         ]);
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'is_active' => $request->is_active,
         ]);
+
 
         if ($request->role) {
             $user->assignRole($request->role);

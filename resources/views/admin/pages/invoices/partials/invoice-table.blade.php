@@ -1,4 +1,4 @@
-<div class="table-responsive">
+<div class="table-responsive mb-3">
     <table class="table table-nowrap datatable">
         <thead class="thead-light">
             <tr>

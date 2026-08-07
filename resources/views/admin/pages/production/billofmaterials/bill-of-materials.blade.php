@@ -1,10 +1,7 @@
 @extends('admin.layout.master')
 @section('title', 'Production Batch')
 @section('content')
-    <!-- ========================
-                               Start Page Content
-                              ========================= -->
-
+   
     <div class="page-wrapper">
 
         <!-- Start Content -->
@@ -13,7 +10,7 @@
             <!-- Page Header -->
             <div class="d-flex d-block align-items-center justify-content-between flex-wrap gap-3 mb-3">
                 <div>
-                    <h6>Production Batchess</h6>
+                    <h6>Bill of Materials</h6>
                 </div>
                 <div class="my-xl-auto d-flex align-items-center gap-2">
                     {{-- <div class="dropdown">

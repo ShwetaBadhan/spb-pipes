@@ -145,23 +145,23 @@
         <!-- Invoice Details & Customer Info -->
         <div class="info-section">
            <div class="info-box">
-    <h3>Billing To</h3>
-    @if($invoice->customer)
-        <p><strong>{{ $invoice->customer->name }}</strong></p>
-        <p>{{ $invoice->customer->address ?? 'Address not available' }}</p>
-        @if($invoice->customer->phone)
-            <p><strong>Phone:</strong> {{ $invoice->customer->phone }}</p>
-        @endif
-        @if($invoice->customer->email)
-            <p><strong>Email:</strong> {{ $invoice->customer->email }}</p>
-        @endif
-        @if($invoice->customer->gst_number)
-            <p><strong>GST:</strong> {{ $invoice->customer->gst_number }}</p>
-        @endif
-    @else
-        <p class="text-muted">Customer information not available</p>
-    @endif
-</div>
+                <h3>Billing To</h3>
+                @if($invoice->customer)
+                    <p><strong>{{ $invoice->customer->name }}</strong></p>
+                    <p>{{ $invoice->customer->address ?? 'Address not available' }}</p>
+                    @if($invoice->customer->phone)
+                        <p><strong>Phone:</strong> {{ $invoice->customer->phone }}</p>
+                    @endif
+                    @if($invoice->customer->email)
+                        <p><strong>Email:</strong> {{ $invoice->customer->email }}</p>
+                    @endif
+                    @if($invoice->customer->gst_number)
+                        <p><strong>GST:</strong> {{ $invoice->customer->gst_number }}</p>
+                    @endif
+                @else
+                    <p class="text-muted">Customer information not available</p>
+                @endif
+            </div>
             <div class="info-box">
                 <h3>Billing To</h3>
                 <p><strong>{{ $invoice->customer->name ?? 'N/A' }}</strong></p>
@@ -215,18 +215,18 @@
             </div>
             
            @forelse($invoice->taxes ?? [] as $tax)
-<div class="totals-row">
-    <span>{{ $tax->tax_name }}:</span>
-    <span>₹{{ number_format($tax->tax_amount, 2) }}</span>
-</div>
-@empty
-    @if($invoice->enable_tax && $invoice->tax_type !== 'none')
-    <div class="totals-row">
-        <span>Tax:</span>
-        <span>₹{{ number_format($invoice->total_tax ?? 0, 2) }}</span>
-    </div>
-    @endif
-@endforelse
+            <div class="totals-row">
+                <span>{{ $tax->tax_name }}:</span>
+                <span>₹{{ number_format($tax->tax_amount, 2) }}</span>
+            </div>
+            @empty
+                @if($invoice->enable_tax && $invoice->tax_type !== 'none')
+                <div class="totals-row">
+                    <span>Tax:</span>
+                    <span>₹{{ number_format($invoice->total_tax ?? 0, 2) }}</span>
+                </div>
+                @endif
+            @endforelse
             
             @if($invoice->shipping_cost > 0)
             <div class="totals-row">

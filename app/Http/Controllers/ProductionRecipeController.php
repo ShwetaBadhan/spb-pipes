@@ -15,8 +15,7 @@ class ProductionRecipeController extends Controller
     $products = Product::all();
     $rawMaterials = RawMaterial::all(); // add this line
 
-    return view(
-        'admin.pages.production.billofmaterials.bill-of-materials',
+    return view('admin.pages.production.billofmaterials.bill-of-materials',
         compact('recipes','products','rawMaterials') // include it here
     );
 }

@@ -264,6 +264,7 @@
             
             <form action="{{ route('users.store') }}" method="POST">
                 @csrf
+                @method('POST')
                 <div class="modal-body pb-0">
                     <div class="row">
                         <!-- Name -->

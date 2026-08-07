@@ -128,7 +128,7 @@
         </div>
 
        
- @if (session('success'))
+            @if (session('success'))
                 <script>
                     Swal.fire({
                         icon: 'success',
@@ -161,7 +161,7 @@
         <!-- Tabs Navigation -->
         <ul class="nav nav-tabs nav-bordered mb-3">
             <li class="nav-item">
-                <a class="nav-link active" href="#tab1" data-bs-toggle="tab">All <span class="badge bg-primary ms-1">{{ $allInvoices->total() }}</span></a>
+                <a class="nav-link active" href="#tab1" data-bs-toggle="tab">All <span class="badge bg-primary ms-1">{{ $allInvoices->count() }}</span></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#tab2" data-bs-toggle="tab">Paid <span class="badge bg-success ms-1">{{ $paid->total() }}</span></a>

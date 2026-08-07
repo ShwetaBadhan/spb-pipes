@@ -364,7 +364,7 @@
                                             <i class="isax isax-document-text fs-16"></i>
                                         </span>
                                     </div>
-                                    <a href="javascript:void(0)" class="fw-medium text-decoration-underline">View Inventory</a>
+                                    <a href="{{ route('inventory.index') }}" class="fw-medium text-decoration-underline">View Inventory</a>
                                 </div> <!-- end card body -->
                                 <div class="position-absolute end-0 bottom-0 z-n1">
                                     <img src="{{ url('assets/img/bg/card-bg-01.svg') }}" alt="img">
@@ -393,7 +393,7 @@
                                             <i class="isax isax-document-text fs-16"></i>
                                         </span>
                                     </div>
-                                    <a href="" class="fw-medium text-decoration-underline">View Invoices</a>
+                                    <a href="{{ route('admin.invoices.index') }}" class="fw-medium text-decoration-underline">View Invoices</a>
                                 </div> <!-- end card body -->
                                 <div class="position-absolute end-0 bottom-0 z-n1">
                                     <img src="{{ url('assets/img/bg/card-bg-02.svg') }}" alt="img">
@@ -423,7 +423,7 @@
                                             <i class="isax isax-profile-2user fs-16"></i>
                                         </span>
                                     </div>
-                                    <a href="#" class="fw-medium text-decoration-underline">View All</a>
+                                    <a href="{{ route('customers.index') }}" class="fw-medium text-decoration-underline">View All</a>
                                 </div> <!-- end card body -->
                                 <div class="position-absolute end-0 bottom-0 z-n1">
                                     <img src="{{ url('assets/img/bg/card-bg-03.svg') }}" alt="img">

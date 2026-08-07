@@ -49,7 +49,7 @@ class InvoiceController extends Controller
             ->sum('grand_total');
 
         // ✅ Fetch invoices for each tab
-        $allInvoices = Invoice::with(['customer', 'createdBy'])->latest()->paginate(15, ['*'], 'all_page');
+        $allInvoices = Invoice::with(['customer', 'createdBy'])->latest()->get();
 
         $paid = Invoice::with(['customer', 'createdBy'])
             ->where('status', 'paid')

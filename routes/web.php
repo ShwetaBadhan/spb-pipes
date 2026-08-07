@@ -408,7 +408,6 @@ Route::get('/test-stock', function () {
 
 Route::get('/dashboard', function () {
 
-
     $lowStockProducts = InventoryService::getLowStockProducts();
     $lowStockRawMaterials = InventoryService::getLowStockRawMaterials();
     $today = Carbon::today();
