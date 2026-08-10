@@ -5,7 +5,7 @@
     <title>Labor Cost Report</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'DejaVu Sans', sans-serif;
             margin: 20px;
         }
         .header {
