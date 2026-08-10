@@ -71,7 +71,7 @@
 									<!-- end row -->
 
 									<!-- Table List -->
-									<div class="table-responsive table-nowrap">
+									<div class="table-responsive table-nowrap overflow-visible">
 										<table class="table border">
 											<thead class="table-light">
 												<tr>

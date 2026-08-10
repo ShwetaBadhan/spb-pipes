@@ -88,7 +88,7 @@
                             </form>
 
                             {{-- Table --}}
-                            <div class="table-responsive table-nowrap">
+                            <div class="table-responsive table-nowrap overflow-visible">
                                 <table class="table border mb-0">
                                     <thead class="table-light">
                                         <tr>

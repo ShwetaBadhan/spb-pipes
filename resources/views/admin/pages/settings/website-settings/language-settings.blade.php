@@ -69,7 +69,7 @@
                             </div>
 
                             <!-- Custom Data Table -->
-                            <div class="custom-datatable-filter table-nowrap table-responsive border rounded mb-3">
+                            <div class="custom-datatable-filter table-nowrap table-responsive border rounded mb-3 overflow-visible">
                                 <table class="table mb-0" id="languageTable">
                                     <thead class="table-light">
                                         <tr>

@@ -75,7 +75,7 @@
                             </form>
 
                             {{-- Table --}}
-                            <div class="table-responsive border border-bottom-0 rounded">
+                            <div class="table-responsive border border-bottom-0 rounded overflow-visible">
                                 <table class="table mb-0">
                                     <thead class="table-light">
                                         <tr>
