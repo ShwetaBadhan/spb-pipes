@@ -68,6 +68,15 @@ class TaxController extends Controller
         return redirect()->back()->with('success', 'Tax rate updated successfully!');
     }
 
+    public function toggleRateStatus($id)
+    {
+        $taxRate = TaxRate::findOrFail($id);
+        $taxRate->update(['is_active' => !$taxRate->is_active]);
+
+        $status = $taxRate->is_active ? 'activated' : 'deactivated';
+        return redirect()->back()->with('success', "Tax rate {$status}!");
+    }
+
     public function destroyRate($id)
     {
         TaxRate::findOrFail($id)->delete();
@@ -110,6 +119,15 @@ class TaxController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Tax group updated successfully!');
+    }
+
+    public function toggleGroupStatus($id)
+    {
+        $taxGroup = TaxGroup::findOrFail($id);
+        $taxGroup->update(['is_active' => !$taxGroup->is_active]);
+
+        $status = $taxGroup->is_active ? 'activated' : 'deactivated';
+        return redirect()->back()->with('success', "Tax group {$status}!");
     }
 
     public function destroyGroup($id)

@@ -279,6 +279,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('tax-rates.store');
     Route::put('/tax-rates/{id}', [TaxController::class, 'updateRate'])
         ->name('tax-rates.update');
+    Route::patch('/tax-rates/{id}/toggle', [TaxController::class, 'toggleRateStatus'])
+        ->name('tax-rates.toggle');
     Route::delete('/tax-rates/{id}', [TaxController::class, 'destroyRate'])
         ->name('tax-rates.destroy');
     
@@ -287,6 +289,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('tax-groups.store');
     Route::put('/tax-groups/{id}', [TaxController::class, 'updateGroup'])
         ->name('tax-groups.update');
+    Route::patch('/tax-groups/{id}/toggle', [TaxController::class, 'toggleGroupStatus'])
+        ->name('tax-groups.toggle');
     Route::delete('/tax-groups/{id}', [TaxController::class, 'destroyGroup'])
         ->name('tax-groups.destroy');
 });

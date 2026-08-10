@@ -95,17 +95,12 @@
                                                         <td>{{ number_format($rate->rate, 2) }}%</td>
                                                         <td>{{ $rate->created_at->format('d M Y') }}</td>
                                                         <td>
-                                                            <form action="{{ route('tax-rates.update', $rate->id) }}"
+                                                            <form action="{{ route('tax-rates.toggle', $rate->id) }}"
                                                                 method="POST" class="d-inline">
-                                                                @csrf @method('PUT')
-                                                                <input type="hidden" name="name"
-                                                                    value="{{ $rate->name }}">
-                                                                <input type="hidden" name="rate"
-                                                                    value="{{ $rate->rate }}">
-                                                                <input type="hidden" name="is_active" value="0">
+                                                                @csrf @method('PATCH')
                                                                 <div class="form-check form-switch">
                                                                     <input class="form-check-input" type="checkbox"
-                                                                        role="switch" name="is_active" value="1"
+                                                                        role="switch"
                                                                         {{ $rate->is_active ? 'checked' : '' }}
                                                                         onchange="this.form.submit()">
                                                                 </div>
@@ -288,17 +283,12 @@
                                                         </td>
                                                         <td>{{ $group->created_at->format('d M Y') }}</td>
                                                         <td>
-                                                            <form action="{{ route('tax-groups.update', $group->id) }}"
+                                                            <form action="{{ route('tax-groups.toggle', $group->id) }}"
                                                                 method="POST" class="d-inline">
-                                                                @csrf @method('PUT')
-                                                                <input type="hidden" name="name"
-                                                                    value="{{ $group->name }}">
-                                                                <input type="hidden" name="sub_taxes"
-                                                                    value='@json($group->sub_taxes)'>
-                                                                <input type="hidden" name="is_active" value="0">
+                                                                @csrf @method('PATCH')
                                                                 <div class="form-check form-switch">
                                                                     <input class="form-check-input" type="checkbox"
-                                                                        role="switch" name="is_active" value="1"
+                                                                        role="switch"
                                                                         {{ $group->is_active ? 'checked' : '' }}
                                                                         onchange="this.form.submit()">
                                                                 </div>
