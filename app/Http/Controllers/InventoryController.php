@@ -12,20 +12,20 @@ use App\Services\InventoryService;
 use App\Models\Order; 
 class InventoryController extends Controller
 {
-  public function index()
-{
-$allProducts = Product::with(['unit'])->get(); // fetch all products for dropdown
+    public function index()
+    {
+        $allProducts = Product::with(['unit'])->get();
 
-$products = Product::with(['variants', 'unit', 'inventoryLogs'])
-    ->get()
-    ->filter(fn($product) => $product->inventoryLogs->count() > 0);
-    
-$allRawMaterials = RawMaterial::with(['unit', 'inventoryLogs'])
-    ->whereHas('inventoryLogs')   // only raw materials with logs
-    ->get();
-   
-return view('admin.pages.inventory', compact('allProducts', 'products', 'allRawMaterials'));
-}
+        $products = Product::with(['variants', 'unit', 'inventoryLogs'])->get()
+            ->filter(fn($product) => $product->inventoryLogs->count() > 0);
+            
+        $allRawMaterials = RawMaterial::with(['unit', 'inventoryLogs'])
+            ->whereHas('inventoryLogs')
+            ->get();
+            
+        
+        return view('admin.pages.inventory', compact('allProducts', 'products', 'allRawMaterials'));
+    }   
 
 
 
