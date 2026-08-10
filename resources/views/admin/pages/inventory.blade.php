@@ -49,11 +49,14 @@
                         <a href="javascript:void(0);"
                             class="dropdown-toggle btn btn-outline-white d-inline-flex align-items-center"
                             data-bs-toggle="dropdown">
-                            <i class="isax isax-sort me-1"></i>Sort By : <span class="fw-normal ms-1">Latest</span>
+                            <i class="isax isax-sort me-1"></i>Sort By : <span class="fw-normal ms-1"
+                                id="sort-label">Latest</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a href="javascript:void(0);" class="dropdown-item">Latest</a></li>
-                            <li><a href="javascript:void(0);" class="dropdown-item">Oldest</a></li>
+                            <li><a href="javascript:void(0);" class="dropdown-item sort-option" data-sort="latest">Latest</a>
+                            </li>
+                            <li><a href="javascript:void(0);" class="dropdown-item sort-option" data-sort="oldest">Oldest</a>
+                            </li>
                         </ul>
                     </div>
                     <div class="dropdown">
@@ -66,50 +69,57 @@
                             <li>
                                 <label class="dropdown-item d-flex align-items-center form-switch">
                                     <i class="fa-solid fa-grip-vertical me-3 text-default"></i>
-                                    <input class="form-check-input m-0 me-2" type="checkbox" checked>
-                                    <span>Product/Service</span>
+                                    <input class="form-check-input m-0 me-2 column-toggle" type="checkbox" data-column="1" checked>
+                                    <span>Product/Raw Material</span>
                                 </label>
                             </li>
                             <li>
                                 <label class="dropdown-item d-flex align-items-center form-switch">
                                     <i class="fa-solid fa-grip-vertical me-3 text-default"></i>
-                                    <input class="form-check-input m-0 me-2" type="checkbox" checked>
+                                    <input class="form-check-input m-0 me-2 column-toggle" type="checkbox" data-column="2" checked>
                                     <span>Code</span>
                                 </label>
                             </li>
                             <li>
                                 <label class="dropdown-item d-flex align-items-center form-switch">
                                     <i class="fa-solid fa-grip-vertical me-3 text-default"></i>
-                                    <input class="form-check-input m-0 me-2" type="checkbox" checked>
+                                    <input class="form-check-input m-0 me-2 column-toggle" type="checkbox" data-column="3" checked>
                                     <span>Unit</span>
                                 </label>
                             </li>
                             <li>
                                 <label class="dropdown-item d-flex align-items-center form-switch">
                                     <i class="fa-solid fa-grip-vertical me-3 text-default"></i>
-                                    <input class="form-check-input m-0 me-2" type="checkbox" checked>
-                                    <span>Quantity</span>
+                                    <input class="form-check-input m-0 me-2 column-toggle" type="checkbox" data-column="4" checked>
+                                    <span>Original Quantity</span>
                                 </label>
                             </li>
                             <li>
                                 <label class="dropdown-item d-flex align-items-center form-switch">
                                     <i class="fa-solid fa-grip-vertical me-3 text-default"></i>
-                                    <input class="form-check-input m-0 me-2" type="checkbox" checked>
-                                    <span>Selling Price</span>
+                                    <input class="form-check-input m-0 me-2 column-toggle" type="checkbox" data-column="5" checked>
+                                    <span>Available Quantity</span>
                                 </label>
                             </li>
                             <li>
                                 <label class="dropdown-item d-flex align-items-center form-switch">
                                     <i class="fa-solid fa-grip-vertical me-3 text-default"></i>
-                                    <input class="form-check-input m-0 me-2" type="checkbox">
-                                    <span>Purchase Price</span>
+                                    <input class="form-check-input m-0 me-2 column-toggle" type="checkbox" data-column="6" checked>
+                                    <span>Source</span>
                                 </label>
                             </li>
                             <li>
                                 <label class="dropdown-item d-flex align-items-center form-switch">
                                     <i class="fa-solid fa-grip-vertical me-3 text-default"></i>
-                                    <input class="form-check-input m-0 me-2" type="checkbox">
+                                    <input class="form-check-input m-0 me-2 column-toggle" type="checkbox" data-column="7" checked>
                                     <span>Status</span>
+                                </label>
+                            </li>
+                            <li>
+                                <label class="dropdown-item d-flex align-items-center form-switch">
+                                    <i class="fa-solid fa-grip-vertical me-3 text-default"></i>
+                                    <input class="form-check-input m-0 me-2 column-toggle" type="checkbox" data-column="8" checked>
+                                    <span>Action</span>
                                 </label>
                             </li>
                         </ul>
@@ -161,6 +171,7 @@
                         <th>Source</th>
                         <th class="no-sort">Status</th>
                         <th class="no-sort">Action</th>
+                        <th class="d-none"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -234,6 +245,7 @@
                                     </li>
                                 </ul>
                             </td>
+                            <td class="d-none">{{ $product->created_at }}</td>
                         </tr>
                     @endforeach
 
@@ -301,6 +313,7 @@
                                     </li>
                                 </ul>
                             </td>
+                            <td class="d-none">{{ $raw->created_at }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -413,15 +426,15 @@
                 <div class="table-responsive border border-bottom-0">
                     <table class="table" id="inventory-history-table">
                         <thead class="thead-light">
-        <tr>
-            <th>Date</th>
-            <th>Unit</th>
-            <th>Adjustments</th>
-            <th>Stock</th>
-            <th>Reason</th>
-            <th>Notes</th>
-        </tr>
-    </thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Unit</th>
+                                <th>Adjustments</th>
+                                <th>Stock</th>
+                                <th>Reason</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
                         <tbody id="inventory-history-body">
                             <tr>
                                 <td colspan="6" class="text-center">Loading history...</td>
@@ -544,6 +557,32 @@ document.querySelectorAll('.view-history-btn').forEach(btn => {
                 tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger">Failed to load history.</td></tr>`;
             });
     });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const inventoryTable = $('.datatable').DataTable();
+    const sortCol = 9;
+
+    document.querySelectorAll('.column-toggle').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+            const colIndex = parseInt(this.dataset.column, 10);
+            inventoryTable.column(colIndex).visible(this.checked, false);
+            inventoryTable.columns.adjust().draw(false);
+        });
+    });
+
+    document.querySelectorAll('.sort-option').forEach(function (option) {
+        option.addEventListener('click', function (e) {
+            e.preventDefault();
+            const direction = this.dataset.sort === 'oldest' ? 'asc' : 'desc';
+            inventoryTable.order([sortCol, direction]).draw();
+            document.getElementById('sort-label').textContent = this.textContent.trim();
+        });
+    });
+
+    inventoryTable.order([sortCol, 'desc']).draw();
 });
 </script>
 @endpush
