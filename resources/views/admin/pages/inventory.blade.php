@@ -43,6 +43,10 @@
                         href="javascript:void(0);" data-bs-toggle="offcanvas" data-bs-target="#customcanvas">
                         <i class="isax isax-filter me-1"></i>Filter
                     </a>
+                    <a class="btn btn-outline-white fw-normal d-inline-flex align-items-center" href="javascript:void(0);"
+                        id="reset-filters-btn">
+                        <i class="isax isax-refresh me-1"></i>Reset
+                    </a>
                 </div>
                 <div class="d-flex align-items-center flex-wrap gap-2">
                     <div class="dropdown">
@@ -180,10 +184,13 @@
                         @php
                             $available = \App\Services\InventoryService::productAvailableQty($product->id);
                             $latestLog = $product->inventoryLogs->sortByDesc('id')->first();
+                            $sourceType = $latestLog
+                                ? (str_contains($latestLog->notes ?? '', 'Order #') ? 'order' : 'manual')
+                                : 'none';
                         @endphp
                         <tr>
                             <td><input type="checkbox" class="form-check-input"></td>
-                            <td>
+                            <td data-type="product">
                                 <div class="d-flex align-items-center">
                                     <img src="{{ $product->image_path ? asset('storage/' . $product->image_path) : asset('assets/img/products/default.jfif') }}"
                                         alt="" class="me-2" width="30">
@@ -193,9 +200,9 @@
                             <td>{{ $product->code ?? '—' }}</td>
                             <td>{{ optional($product->unit)->name ?? '—' }}</td>
                             <td>{{ $product->variants->sum('quantity') }}</td>
-                            <td>{{ $available }}</td>
+                            <td data-qty="{{ $available }}">{{ $available }}</td>
                             {{-- Source Column --}}
-                            <td>
+                            <td data-source="{{ $sourceType }}">
                                 @if($latestLog)
                                     @if(str_contains($latestLog->notes ?? '', 'Order #'))
                                         <span class="badge bg-primary">
@@ -224,8 +231,9 @@
                                     $statusClass = 'success';
                                     $statusText = 'In Stock';
                                 }
+                                $statusKey = strtolower(str_replace(' ', '-', $statusText));
                             @endphp
-                            <td>
+                            <td data-status="{{ $statusKey }}">
                                 <span class="badge bg-{{ $statusClass }}">{{ $statusText }}</span>
                             </td>
                             <td class="action-item">
@@ -254,16 +262,19 @@
                         @php
                             $latestLog = $raw->inventoryLogs->sortByDesc('id')->first();
                             $available = \App\Services\InventoryService::rawAvailableQty($raw->id);
+                            $sourceType = $latestLog
+                                ? (str_contains($latestLog->notes ?? '', 'Order #') ? 'order' : 'manual')
+                                : 'none';
                         @endphp
                         <tr>
                             <td><input type="checkbox" class="form-check-input"></td>
-                            <td><span class="badge bg-info">Raw</span> {{ $raw->material_name }}</td>
+                            <td data-type="raw"><span class="badge bg-info">Raw</span> {{ $raw->material_name }}</td>
                             <td>—</td>
                             <td>{{ optional($raw->unit)->name ?? '—' }}</td>
                             <td>—</td>
-                            <td>{{ $available }}</td>
+                            <td data-qty="{{ $available }}">{{ $available }}</td>
                             {{-- Source Column --}}
-                            <td>
+                            <td data-source="{{ $sourceType }}">
                                 @if($latestLog)
                                     @if(str_contains($latestLog->notes ?? '', 'Order #'))
                                         <span class="badge bg-primary">
@@ -292,8 +303,9 @@
                                     $statusClass = 'success';
                                     $statusText = 'In Stock';
                                 }
+                                $statusKey = strtolower(str_replace(' ', '-', $statusText));
                             @endphp
-                            <td>
+                            <td data-status="{{ $statusKey }}">
                                 <span class="badge bg-{{ $statusClass }}">{{ $statusText }}</span>
                             </td>
                             <td class="action-item">
@@ -446,6 +458,68 @@
         </div>
     </div>
 </div>
+
+<!-- Start Filter -->
+<div class="offcanvas offcanvas-offset offcanvas-end" tabindex="-1" id="customcanvas">
+    <div class="offcanvas-header d-block pb-0">
+        <div class="border-bottom d-flex align-items-center justify-content-between pb-3">
+            <h6 class="offcanvas-title">Filter</h6>
+            <button type="button" class="btn-close btn-close-modal custom-btn-close" data-bs-dismiss="offcanvas"
+                aria-label="Close"><i class="fa-solid fa-x"></i></button>
+        </div>
+    </div>
+    <div class="offcanvas-body pt-3">
+        <form id="inventory-filter-form">
+            <div class="mb-3">
+                <label class="form-label">Item Type</label>
+                <select class="form-select" id="filter-item-type">
+                    <option value="all">All</option>
+                    <option value="product">Products</option>
+                    <option value="raw">Raw Materials</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select class="form-select" id="filter-status">
+                    <option value="all">All</option>
+                    <option value="in-stock">In Stock</option>
+                    <option value="low-stock">Low Stock</option>
+                    <option value="out-of-stock">Out of Stock</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Source</label>
+                <select class="form-select" id="filter-source">
+                    <option value="all">All</option>
+                    <option value="order">Order</option>
+                    <option value="manual">Manual</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Available Quantity</label>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <input type="number" class="form-control" id="filter-qty-min" min="0" placeholder="Min">
+                    </div>
+                    <div class="col-6">
+                        <input type="number" class="form-control" id="filter-qty-max" min="0" placeholder="Max">
+                    </div>
+                </div>
+            </div>
+            <div class="offcanvas-footer">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <button type="button" class="btn btn-outline-white w-100" id="filter-reset">Reset</button>
+                    </div>
+                    <div class="col-6">
+                        <button type="submit" class="btn btn-primary w-100" data-bs-dismiss="offcanvas">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- End Filter -->
 @endsection
 
 @push('scripts')
@@ -583,6 +657,75 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     inventoryTable.order([sortCol, 'desc']).draw();
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const inventoryTable = $('.datatable').DataTable();
+    const filterForm = document.getElementById('inventory-filter-form');
+
+    const filterState = {
+        itemType: 'all',
+        status: 'all',
+        source: 'all',
+        qtyMin: null,
+        qtyMax: null
+    };
+
+    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+        const tr = settings.aoData[dataIndex].nTr;
+        if (!tr) return true;
+        const $tr = $(tr);
+
+        const type = $tr.find('td').eq(1).attr('data-type') || '';
+        const status = $tr.find('td').eq(7).attr('data-status') || '';
+        const source = $tr.find('td').eq(6).attr('data-source') || '';
+        const qty = parseFloat($tr.find('td').eq(5).attr('data-qty')) || 0;
+
+        if (filterState.itemType !== 'all' && type !== filterState.itemType) return false;
+        if (filterState.status !== 'all' && status !== filterState.status) return false;
+        if (filterState.source !== 'all' && source !== filterState.source) return false;
+        if (filterState.qtyMin !== null && qty < filterState.qtyMin) return false;
+        if (filterState.qtyMax !== null && qty > filterState.qtyMax) return false;
+        return true;
+    });
+
+    function applyFilters() {
+        inventoryTable.draw();
+    }
+
+    filterForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        filterState.itemType = document.getElementById('filter-item-type').value;
+        filterState.status = document.getElementById('filter-status').value;
+        filterState.source = document.getElementById('filter-source').value;
+
+        const qtyMin = document.getElementById('filter-qty-min').value;
+        const qtyMax = document.getElementById('filter-qty-max').value;
+        filterState.qtyMin = qtyMin === '' ? null : parseFloat(qtyMin);
+        filterState.qtyMax = qtyMax === '' ? null : parseFloat(qtyMax);
+
+        applyFilters();
+    });
+
+    document.getElementById('filter-reset').addEventListener('click', function () {
+        resetFilters();
+    });
+
+    document.getElementById('reset-filters-btn').addEventListener('click', function () {
+        resetFilters();
+    });
+
+    function resetFilters() {
+        filterForm.reset();
+        filterState.itemType = 'all';
+        filterState.status = 'all';
+        filterState.source = 'all';
+        filterState.qtyMin = null;
+        filterState.qtyMax = null;
+        applyFilters();
+    }
 });
 </script>
 @endpush
