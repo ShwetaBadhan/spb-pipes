@@ -77,19 +77,22 @@
                                         <ul>
                                             @can('manage-products')
                                                 <li>
-                                                    <a href="{{ route('products.index') }}">Products</a>
+                                                    <a href="{{ route('products.index') }}"
+                                                        class="{{ request()->routeIs('products.*') ? 'active' : '' }}">Products</a>
                                                 </li>
                                             @endcan
 
                                             @can('manage-category')
                                                 <li>
-                                                    <a href="{{ route('category') }}">Category</a>
+                                                    <a href="{{ route('category') }}"
+                                                        class="{{ request()->routeIs('category*') ? 'active' : '' }}">Category</a>
                                                 </li>
                                             @endcan
 
                                             @can('manage-units')
                                                 <li>
-                                                    <a href="{{ route('units') }}">Units</a>
+                                                    <a href="{{ route('units') }}"
+                                                        class="{{ request()->routeIs('units*') ? 'active' : '' }}">Units</a>
                                                 </li>
                                             @endcan
                                         </ul>
@@ -108,15 +111,15 @@
                                         @endcan
                                         <ul>
                                             @can('manage-production-rules')
-                                                <li><a href="{{ route('production-rules.index') }}">Add Rules</a></li>
+                                                <li><a href="{{ route('production-rules.index') }}" class="{{ request()->routeIs('production-rules.*') ? 'active' : '' }}">Add Rules</a></li>
                                             @endcan
 
                                             @can('manage-production-batches')
-                                                <li><a href="{{ route('production-batches.index') }}">Add Batches</a></li>
+                                                <li><a href="{{ route('production-batches.index') }}" class="{{ request()->routeIs('production-batches.*') ? 'active' : '' }}">Add Batches</a></li>
                                             @endcan
 
                                             @can('manage-bom')
-                                                <li><a href="{{ route('bill-of-materials.index') }}">Bill of Materials (BOM)</a>
+                                                <li><a href="{{ route('bill-of-materials.index') }}" class="{{ request()->routeIs('bill-of-materials.*') ? 'active' : '' }}">Bill of Materials (BOM)</a>
                                                 </li>
                                             @endcan
                                         </ul>
@@ -126,7 +129,7 @@
                                 <!-- Raw Material -->
                                 @can('manage-raw-materials')
                                     <li>
-                                        <a href="{{ route('raw-materials.index') }}">
+                                        <a href="{{ route('raw-materials.index') }}" class="{{ request()->routeIs('raw-materials.*') ? 'active' : '' }}">
                                             <i class="isax isax-layer5"></i>
                                             <span>Raw Material</span>
                                         </a>
@@ -136,7 +139,7 @@
                                 <!-- Inventory -->
                                 @can('view-inventory')
                                     <li>
-                                        <a href="{{ route('inventory.index') }}">
+                                        <a href="{{ route('inventory.index') }}" class="{{ request()->routeIs('inventory.*') ? 'active' : '' }}">
                                             <i class="isax isax-lifebuoy5"></i><span>Inventory</span>
                                         </a>
                                     </li>
@@ -153,11 +156,11 @@
                                         @endcan
                                         <ul>
                                             @can('view-invoices')
-                                                <li><a href="{{ route('admin.invoices.index') }}">Invoices</a></li>
+                                                <li><a href="{{ route('admin.invoices.index') }}" class="{{ request()->routeIs('admin.invoices.index') ? 'active' : '' }}">Invoices</a></li>
                                             @endcan
 
                                             @can('create-invoices')
-                                                <li><a href="{{ route('admin.invoices.create') }}">Create Invoice</a></li>
+                                                <li><a href="{{ route('admin.invoices.create') }}" class="{{ request()->routeIs('admin.invoices.create') ? 'active' : '' }}">Create Invoice</a></li>
                                             @endcan
                                         </ul>
                                     </li>
@@ -174,7 +177,7 @@
                                         @endcan
                                         <ul>
                                             @can('view-customers')
-                                                <li><a href="{{ route('customers.index') }}">Customers</a></li>
+                                                <li><a href="{{ route('customers.index') }}" class="{{ request()->routeIs('customers.*', 'add-customer') ? 'active' : '' }}">Customers</a></li>
                                             @endcan
 
                                         </ul>
@@ -199,11 +202,11 @@
                                     @endcan
                                     <ul>
                                         @can('view-orders')
-                                            <li><a href="{{ route('admin.orders.index') }}">All Orders</a></li>
+                                            <li><a href="{{ route('admin.orders.index') }}" class="{{ request()->routeIs('admin.orders.index') ? 'active' : '' }}">All Orders</a></li>
                                         @endcan
 
                                         @can('create-orders')
-                                            <li><a href="{{ route('admin.orders.create') }}">Create New Order</a></li>
+                                            <li><a href="{{ route('admin.orders.create') }}" class="{{ request()->routeIs('admin.orders.create') ? 'active' : '' }}">Create New Order</a></li>
                                         @endcan
                                     </ul>
                                 </li>
@@ -226,11 +229,11 @@
                                     @endcan
                                     <ul>
                                         @can('view-gate-passes')
-                                            <li><a href="{{ route('admin.gate-passes.index') }}">All Passes</a></li>
+                                            <li><a href="{{ route('admin.gate-passes.index') }}" class="{{ request()->routeIs('admin.gate-passes.index') ? 'active' : '' }}">All Passes</a></li>
                                         @endcan
 
                                         @can('create-gate-passes')
-                                            <li><a href="{{ route('admin.gate-passes.create') }}">Create Pass</a></li>
+                                            <li><a href="{{ route('admin.gate-passes.create') }}" class="{{ request()->routeIs('admin.gate-passes.create') ? 'active' : '' }}">Create Pass</a></li>
                                         @endcan
                                     </ul>
                                 </li>
@@ -255,28 +258,28 @@
                                     @endcan
                                     <ul>
                                         @can('manage-work-types')
-                                            <li><a href="{{ route('work-types.index') }}">Manage Work Types</a></li>
+                                            <li><a href="{{ route('work-types.index') }}" class="{{ request()->routeIs('work-types.*') ? 'active' : '' }}">Manage Work Types</a></li>
                                         @endcan
 
                                         @can('manage-rate-types')
-                                            <li><a href="{{ route('rate-types.index') }}">Manage Rate Types</a></li>
+                                            <li><a href="{{ route('rate-types.index') }}" class="{{ request()->routeIs('rate-types.*') ? 'active' : '' }}">Manage Rate Types</a></li>
                                         @endcan
 
                                         @can('manage-labor-types')
-                                            <li><a href="{{ route('labor-types.index') }}">Manage Labor Types</a></li>
+                                            <li><a href="{{ route('labor-types.index') }}" class="{{ request()->routeIs('labor-types.*') ? 'active' : '' }}">Manage Labor Types</a></li>
                                         @endcan
 
                                         @can('manage-labor-assignments')
-                                            <li><a href="{{ route('labor-cost-assignments.index') }}">Labor Cost Assignment</a>
+                                            <li><a href="{{ route('labor-cost-assignments.index') }}" class="{{ request()->routeIs('labor-cost-assignments.*') ? 'active' : '' }}">Labor Cost Assignment</a>
                                             </li>
                                         @endcan
 
                                         @can('view-labor-history')
-                                            <li><a href="{{ route('labor-history.index') }}">Labor History</a></li>
+                                            <li><a href="{{ route('labor-history.index') }}" class="{{ request()->routeIs('labor-history.*') ? 'active' : '' }}">Labor History</a></li>
                                         @endcan
 
                                         @can('view-labor-reports')
-                                            <li><a href="{{ route('labor-cost-reports.index') }}">Labor Cost Reports</a></li>
+                                            <li><a href="{{ route('labor-cost-reports.index') }}" class="{{ request()->routeIs('labor-cost-reports.*') ? 'active' : '' }}">Labor Cost Reports</a></li>
                                         @endcan
                                     </ul>
                                 </li>
@@ -301,15 +304,15 @@
                                     @endcan
                                     <ul>
                                         @can('view-users')
-                                            <li><a href="{{ route('users.index') }}">Admin Users</a></li>
+                                            <li><a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">Admin Users</a></li>
                                         @endcan
 
                                         @can('manage-roles')
-                                            <li><a href="{{ route('roles.index') }}">Roles</a></li>
+                                            <li><a href="{{ route('roles.index') }}" class="{{ request()->routeIs('roles.*') ? 'active' : '' }}">Roles</a></li>
                                         @endcan
 
                                         @can('manage-permissions')
-                                            <li><a href="{{ route('permissions.index') }}">Permissions</a></li>
+                                            <li><a href="{{ route('permissions.index') }}" class="{{ request()->routeIs('permissions.*') ? 'active' : '' }}">Permissions</a></li>
                                         @endcan
                                     </ul>
                                 </li>
@@ -333,24 +336,24 @@
                                             <a href="javascript:void(0);">General Settings<span
                                                     class="menu-arrow"></span></a>
                                             <ul>
-                                                <li><a href="{{ route('account-settings') }}">Account Settings</a></li>
+                                                <li><a href="{{ route('account-settings') }}" class="{{ request()->routeIs('account-settings*') ? 'active' : '' }}">Account Settings</a></li>
                                                 {{-- <li><a href="{{ route ('plans-billings')}}">Plans & Billing</a></li> --}}
-                                                <li><a href="{{ route('notifications-settings') }}">Notifications</a>
+                                                <li><a href="{{ route('notifications-settings') }}" class="{{ request()->routeIs('notifications-settings*') ? 'active' : '' }}">Notifications</a>
                                                 </li>
-                                                <li><a href="{{ route('general-settings') }}">Integrations</a></li>
+                                                <li><a href="{{ route('general-settings') }}" class="{{ request()->routeIs('general-settings*') ? 'active' : '' }}">Integrations</a></li>
                                             </ul>
                                         </li>
                                         <li class="submenu submenu-two">
                                             <a href="javascript:void(0);">Website Settings<span
                                                     class="menu-arrow"></span></a>
                                             <ul>
-                                                <li><a href="{{ route('settings.system-settings') }}">Company
+                                                <li><a href="{{ route('settings.system-settings') }}" class="{{ request()->routeIs('settings.system-settings*') ? 'active' : '' }}">Company
                                                         Settings</a></li>
-                                                <li><a href="{{ route('localization-settings') }}">Localization</a></li>
+                                                <li><a href="{{ route('localization-settings') }}" class="{{ request()->routeIs('localization-settings*') ? 'active' : '' }}">Localization</a></li>
                                                 {{-- <li><a href="{{ route ('preference-settings')}}">Preference</a></li> --}}
                                                 {{-- <li><a href="{{ route ('seo-setup')}}">SEO Setup</a></li> --}}
-                                                <li><a href="{{ route('language-settings') }}">Language</a></li>
-                                                <li><a href="{{ route('maintenance-mode') }}">Maintenance Mode</a></li>
+                                                <li><a href="{{ route('language-settings') }}" class="{{ request()->routeIs('language-settings*') ? 'active' : '' }}">Language</a></li>
+                                                <li><a href="{{ route('maintenance-mode') }}" class="{{ request()->routeIs('maintenance-mode*') ? 'active' : '' }}">Maintenance Mode</a></li>
                                                 {{-- <li><a href="{{ route('authentication-settings') }}">Authentication</a></li> --}}
                                                 {{-- <li><a href="{{ route('ai-configuration') }}">AI Configuration</a></li> --}}
                                                 {{-- <li><a href="{{ route('appearance-settings') }}">Appearance</a></li> --}}
@@ -360,8 +363,8 @@
                                         <li class="submenu submenu-two">
                                             <a href="javascript:void(0);">App Settings<span class="menu-arrow"></span></a>
                                             <ul>
-                                                <li><a href="{{ route('invoice-settings') }}">Invoice Settings</a></li>
-                                                <li><a href="{{ route('invoice-templates-settings') }}">Invoice
+                                                <li><a href="{{ route('invoice-settings') }}" class="{{ request()->routeIs('invoice-settings*') ? 'active' : '' }}">Invoice Settings</a></li>
+                                                <li><a href="{{ route('invoice-templates-settings') }}" class="{{ request()->routeIs('invoice-templates-settings*') ? 'active' : '' }}">Invoice
                                                         Templates</a></li>
                                                 {{-- <li><a href="{{ route ('esignatures')}}">eSignatures</a></li>
 													<li><a href="{{ route ('barcode-settings')}}">Barcode</a></li>
@@ -374,10 +377,10 @@
                                             <a href="javascript:void(0);">System Settings<span
                                                     class="menu-arrow"></span></a>
                                             <ul>
-                                                <li><a href="{{ route('email-settings') }}">Email Settings</a></li>
-                                                <li><a href="{{ route('email-templates') }}">Email Templates</a></li>
+                                                <li><a href="{{ route('email-settings') }}" class="{{ request()->routeIs('email-settings*') ? 'active' : '' }}">Email Settings</a></li>
+                                                <li><a href="{{ route('email-templates') }}" class="{{ request()->routeIs('email-templates*') ? 'active' : '' }}">Email Templates</a></li>
                                                 {{-- <li><a href="{{ route ('sms-gateways')}}">SMS Gateways</a></li> --}}
-                                                <li><a href="{{ route('gdpr-cookies') }}">GDPR Cookies</a></li>
+                                                <li><a href="{{ route('gdpr-cookies') }}" class="{{ request()->routeIs('gdpr-cookies*') ? 'active' : '' }}">GDPR Cookies</a></li>
                                             </ul>
                                         </li>
                                         <li class="submenu submenu-two">
@@ -385,16 +388,16 @@
                                                     class="menu-arrow"></span></a>
                                             <ul>
                                                 <li>
-                                                    <a href="{{ route('payment-methods') }}">Payment Methods</a>
+                                                    <a href="{{ route('payment-methods') }}" class="{{ request()->routeIs('payment-methods*') ? 'active' : '' }}">Payment Methods</a>
                                                 </li>
                                                 <li>
-                                                    <a href="{{ route('bank-accounts') }}">Bank Accounts</a>
+                                                    <a href="{{ route('bank-accounts') }}" class="{{ request()->routeIs('bank-accounts*') ? 'active' : '' }}">Bank Accounts</a>
                                                 </li>
                                                 <li>
-                                                    <a href="{{ route('tax-rates') }}">Tax Rates</a>
+                                                    <a href="{{ route('tax-rates') }}" class="{{ request()->routeIs('tax-rates*') ? 'active' : '' }}">Tax Rates</a>
                                                 </li>
                                                 <li>
-                                                    <a href="{{ route('currencies') }}">Currencies</a>
+                                                    <a href="{{ route('currencies') }}" class="{{ request()->routeIs('currencies*') ? 'active' : '' }}">Currencies</a>
                                                 </li>
                                             </ul>
                                         </li>
@@ -443,3 +446,18 @@
 </div>
 </div>
 <!-- Sidenav Menu End -->
+
+@push('scripts')
+<script>
+    $(function () {
+        $('.sidebar-menu li.submenu a.active').each(function () {
+            $(this).parents('li.submenu').each(function () {
+                var $head = $(this).children('a:first');
+                var $sub = $(this).children('ul:first');
+                if (!$head.hasClass('subdrop')) $head.addClass('subdrop');
+                if ($sub.length) $sub.show();
+            });
+        });
+    });
+</script>
+@endpush
