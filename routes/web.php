@@ -226,6 +226,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bank-accounts', [BankAccountController::class, 'index'])->name('bank-accounts-settings');
     Route::post('/bank-accounts', [BankAccountController::class, 'store'])->name('bank-accounts.store');
     Route::put('/bank-accounts/{id}', [BankAccountController::class, 'update'])->name('bank-accounts.update');
+    Route::patch('/bank-accounts/{id}/toggle', [BankAccountController::class, 'toggleStatus'])->name('bank-accounts.toggle');
     Route::delete('/bank-accounts/{id}', [BankAccountController::class, 'destroy'])->name('bank-accounts.destroy');
 });
 

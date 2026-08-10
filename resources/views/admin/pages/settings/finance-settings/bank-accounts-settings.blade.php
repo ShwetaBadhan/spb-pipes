@@ -104,18 +104,12 @@
                                                     <td>**** {{ substr($account->account_number, -4) }}</td>
                                                     <td>{{ $account->aba_number ?? '-' }}</td>
                                                     <td>
-                                                        <form action="{{ route('bank-accounts.update', $account->id) }}"
+                                                        <form action="{{ route('bank-accounts.toggle', $account->id) }}"
                                                             method="POST" class="d-inline">
                                                             @csrf
-                                                            @method('PUT')
-                                                            <input type="hidden" name="account_holder_name" value="{{ $account->account_holder_name }}">
-                                                            <input type="hidden" name="bank_name" value="{{ $account->bank_name }}">
-                                                            <input type="hidden" name="branch_name" value="{{ $account->branch_name }}">
-                                                            <input type="hidden" name="account_number" value="{{ $account->account_number }}">
-                                                            <input type="hidden" name="aba_number" value="{{ $account->aba_number }}">
-                                                            <input type="hidden" name="is_active" value="0">
+                                                            @method('PATCH')
                                                             <div class="form-check form-switch">
-                                                                <input class="form-check-input" type="checkbox" role="switch" name="is_active" value="1"
+                                                                <input class="form-check-input" type="checkbox" role="switch"
                                                                     {{ $account->is_active ? 'checked' : '' }}
                                                                     onchange="this.form.submit()">
                                                             </div>

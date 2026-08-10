@@ -63,6 +63,15 @@ class BankAccountController extends Controller
         return redirect()->back()->with('success', 'Bank account updated successfully!');
     }
 
+    public function toggleStatus($id)
+    {
+        $bankAccount = BankAccount::findOrFail($id);
+        $bankAccount->update(['is_active' => !$bankAccount->is_active]);
+
+        $status = $bankAccount->is_active ? 'activated' : 'deactivated';
+        return redirect()->back()->with('success', "Bank account {$status}!");
+    }
+
     public function destroy($id)
     {
         $bankAccount = BankAccount::findOrFail($id);
