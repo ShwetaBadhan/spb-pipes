@@ -9,6 +9,7 @@ use Database\Seeders\StateSeeder;
 use Database\Seeders\CitySeeder;
 use Database\Seeders\WorkTypeSeeder;
 use Database\Seeders\RateTypeSeeder;
+use Database\Seeders\UnitSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -26,7 +27,8 @@ class DatabaseSeeder extends Seeder
         CitySeeder::class,
         RateTypeSeeder::class,
         WorkTypeSeeder::class,
-         PermissionSeeder::class,
+        UnitSeeder::class,
+        PermissionSeeder::class,
     ]);
        
     }
