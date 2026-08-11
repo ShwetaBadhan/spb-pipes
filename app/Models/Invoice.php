@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use App\Traits\BelongsToTenant;
 
 use App\Models\Ledger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +14,7 @@ use Exception;
 
 class Invoice extends Model
 {
+    use BelongsToTenant;
     use HasFactory;
 
     // app/Models/Invoice.php

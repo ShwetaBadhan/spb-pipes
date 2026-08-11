@@ -75,7 +75,7 @@ class ProductController extends Controller
     Log::info('Request data:', $request->except('image_path', 'gallery'));
     
     $validated = $request->validate([
-        'name'         => 'required|string|max:255',
+        'name'         => ['required', 'string', 'max:255', new \App\Rules\WithinPlanLimit('products')],
         'code'         => 'required|regex:/^[A-Z]{3}-\d+$/|unique:products,code',
         'category_id'  => 'required|exists:categories,id',
         'description'  => 'required|string',
@@ -92,6 +92,7 @@ class ProductController extends Controller
         'image_path.required' => 'Product image is required.',
         'variants.*.alert_quantity.lt' => 'Alert quantity must be less than quantity.',
     ]);
+
 
     DB::transaction(function () use ($request) {
         $imagePath = $request->file('image_path')->store('products', 'public');

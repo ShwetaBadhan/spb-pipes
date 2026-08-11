@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Models;
+use App\Traits\BelongsToTenant;
 
 use Illuminate\Database\Eloquent\Model;
 
 class GdprCookie extends Model
 {
+    use BelongsToTenant;
     protected $fillable = [
         'cookie_position',
         'agree_button_text',

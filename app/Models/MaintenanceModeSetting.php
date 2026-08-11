@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Models;
+use App\Traits\BelongsToTenant;
 
 use Illuminate\Database\Eloquent\Model;
 
 class MaintenanceModeSetting extends Model
 {
+    use BelongsToTenant;
     protected $fillable = [
         'image_path',
         'meta_description',

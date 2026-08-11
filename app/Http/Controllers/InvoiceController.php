@@ -133,7 +133,7 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
+            'customer_id' => ['required', 'exists:customers,id', new \App\Rules\WithinPlanLimit('invoices')],
             'invoice_date' => 'required|date',
             'due_date' => 'required|date|after_or_equal:invoice_date',
             'reference_number' => 'nullable|string|max:255',

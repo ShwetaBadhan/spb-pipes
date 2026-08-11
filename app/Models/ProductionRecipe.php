@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Models;
+use App\Traits\BelongsToTenant;
 
 use Illuminate\Database\Eloquent\Model;
 
 class ProductionRecipe extends Model
 {
+    use BelongsToTenant;
     protected $fillable = [
         'product_id',
         'raw_material_id',

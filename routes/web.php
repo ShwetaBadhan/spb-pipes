@@ -74,9 +74,33 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/security-settings/device/{id}', [SecuritySettingController::class, 'deleteDevice'])->name('security-settings.device.delete');
 });
 
-Route::get('/plans-billings', function () {
-    return view('admin.pages.settings.general-settings.plans-billings');
-})->name("plans-billings");
+Route::middleware(['auth'])->group(function () {
+    Route::get('/plans-billings', [App\Http\Controllers\Tenant\SubscriptionController::class, 'index'])
+        ->name('tenant.billing');
+    Route::post('/plans-billings/change', [App\Http\Controllers\Tenant\SubscriptionController::class, 'change'])
+        ->name('tenant.billing.change');
+    Route::post('/plans-billings/cancel', [App\Http\Controllers\Tenant\SubscriptionController::class, 'cancel'])
+        ->name('tenant.billing.cancel');
+    Route::post('/plans-billings/resume', [App\Http\Controllers\Tenant\SubscriptionController::class, 'resume'])
+        ->name('tenant.billing.resume');
+
+    Route::get('/billing/transactions', [App\Http\Controllers\Tenant\BillingController::class, 'index'])
+        ->name('tenant.billing.transactions');
+    Route::get('/billing/invoices/{invoice}/download', [App\Http\Controllers\Tenant\BillingController::class, 'download'])
+        ->name('tenant.billing.invoice.download');
+
+    Route::post('/billing/payment-methods', [App\Http\Controllers\Tenant\PaymentMethodController::class, 'store'])
+        ->name('tenant.billing.payment-methods.store');
+    Route::patch('/billing/payment-methods/{paymentMethodId}/default', [App\Http\Controllers\Tenant\PaymentMethodController::class, 'setDefault'])
+        ->name('tenant.billing.payment-methods.default');
+    Route::delete('/billing/payment-methods/{paymentMethodId}', [App\Http\Controllers\Tenant\PaymentMethodController::class, 'destroy'])
+        ->name('tenant.billing.payment-methods.destroy');
+
+    Route::get('/settings/branding', [App\Http\Controllers\Tenant\BrandingController::class, 'index'])
+        ->name('tenant.branding');
+    Route::post('/settings/branding', [App\Http\Controllers\Tenant\BrandingController::class, 'update'])
+        ->name('tenant.branding.update');
+});
 
 Route::get('/notifications-settings', [NotificationSettingController::class, 'index'])
     ->name("notifications-settings");
@@ -590,96 +614,101 @@ Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->n
 
 // List all products
 
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+Route::middleware(['tenant.feature:products'])->group(function () {
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 
-// Show Add Product form (using your add-product.blade.php)
-Route::get('/add-product', [ProductController::class, 'create'])->name('add-product');
+    // Show Add Product form (using your add-product.blade.php)
+    Route::get('/add-product', [ProductController::class, 'create'])->name('add-product');
 
-// Store new product
-Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+    // Store new product
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 
-// Show Edit Product form (using your edit-product.blade.php)
-Route::get('/edit-product/{product}', [ProductController::class, 'edit'])->name('edit-product');
+    // Show Edit Product form (using your edit-product.blade.php)
+    Route::get('/edit-product/{product}', [ProductController::class, 'edit'])->name('edit-product');
 
-// Update product
-Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+    // Update product
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
 
-// Delete product
-Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    // Delete product
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-Route::post('/products/generate-code', [ProductController::class, 'generateCode'])
-    ->name('products.generate-code');
+    Route::post('/products/generate-code', [ProductController::class, 'generateCode'])
+        ->name('products.generate-code');
+});
 
 
 // customers
 // List all customers
-Route::get('/customers', [CustomerController::class, 'index'])
-    ->name('customers.index');
+Route::middleware(['tenant.feature:customers'])->group(function () {
+    Route::get('/customers', [CustomerController::class, 'index'])
+        ->name('customers.index');
 
-// Show Add Customer form
-Route::get('/customers/add-customer', [CustomerController::class, 'create'])
-    ->name('add-customer');
+    // Show Add Customer form
+    Route::get('/customers/add-customer', [CustomerController::class, 'create'])
+        ->name('add-customer');
 
-// Store new customer
-Route::post('/customers', [CustomerController::class, 'store'])
-    ->name('customers.store');
+    // Store new customer
+    Route::post('/customers', [CustomerController::class, 'store'])
+        ->name('customers.store');
 
-// Show Edit Customer form
-Route::get('/edit-customer/{customer}', [CustomerController::class, 'edit'])
-    ->name('edit-customer');
+    // Show Edit Customer form
+    Route::get('/edit-customer/{customer}', [CustomerController::class, 'edit'])
+        ->name('edit-customer');
 
 
-// Update customer
-Route::put('/customers/{customer}', [CustomerController::class, 'update'])
-    ->name('customers.update');
+    // Update customer
+    Route::put('/customers/{customer}', [CustomerController::class, 'update'])
+        ->name('customers.update');
 
-// Delete customer
-Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])
-    ->name('customers.destroy');
+    // Delete customer
+    Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])
+        ->name('customers.destroy');
+});
 
 Route::get('/get-cities/{state}', [LocationController::class, 'getCities'])
     ->name('get.cities');
 
 
 // inventory
-Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
-Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
-Route::get('/inventory/history', [InventoryController::class, 'getHistory'])
-    ->name('inventory.history');
+Route::middleware(['tenant.feature:inventory'])->group(function () {
+    Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+    Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
+    Route::get('/inventory/history', [InventoryController::class, 'getHistory'])
+        ->name('inventory.history');
 
+    Route::delete('/inventory/{log}', [InventoryController::class, 'destroy'])
+        ->name('inventory.destroy');
 
-Route::delete('/inventory/{log}', [InventoryController::class, 'destroy'])
-    ->name('inventory.destroy');
-
-
-
-Route::resource('/rawmaterials/raw-materials', RawMaterialController::class);
+    Route::resource('/rawmaterials/raw-materials', RawMaterialController::class);
+});
 
 
 // This creates all 7 RESTful routes for production rules
-Route::resource('production-rules', ProductionRuleController::class);
-// routes/web.php
-Route::get('/admin/production-rules/raw-materials/{productId}', [ProductionRuleController::class, 'getRawMaterialsForProduct']);
-// This creates all 7 RESTful routes for production batches
-Route::resource('production-batches', controller: ProductionBatchController::class);
+Route::middleware(['tenant.feature:production'])->group(function () {
+    Route::resource('production-rules', ProductionRuleController::class);
+    // routes/web.php
+    Route::get('/admin/production-rules/raw-materials/{productId}', [ProductionRuleController::class, 'getRawMaterialsForProduct']);
+    // This creates all 7 RESTful routes for production batches
+    Route::resource('production-batches', controller: ProductionBatchController::class);
 
-Route::resource('bill-of-materials', ProductionRecipeController::class);
+    Route::resource('bill-of-materials', ProductionRecipeController::class);
 
-Route::get('bill-of-materials/by-product/{product}', function ($productId) {
-    $recipes = \App\Models\ProductionRecipe::with('rawMaterial')
-        ->where('product_id', $productId)->get();
+    Route::get('bill-of-materials/by-product/{product}', function ($productId) {
+        $recipes = \App\Models\ProductionRecipe::with('rawMaterial')
+            ->where('product_id', $productId)->get();
 
-    return response()->json($recipes);
+        return response()->json($recipes);
+    });
+
+    Route::get(
+        'production-batches/consumptions/{batch}', // must be {batch}, not {batchId}
+        [ProductionConsumptionController::class, 'consumptions']
+    )->name('production-batches.consumptions');
+    Route::put(
+        '/production-batches/{batch}/consumptions',
+        [ProductionConsumptionController::class, 'update']
+    )->name('production-consumptions.update');
 });
-
-Route::get(
-    'production-batches/consumptions/{batch}', // must be {batch}, not {batchId}
-    [ProductionConsumptionController::class, 'consumptions']
-)->name('production-batches.consumptions');
-Route::put(
-    '/production-batches/{batch}/consumptions',
-    [ProductionConsumptionController::class, 'update']
-)->name('production-consumptions.update');
 
 // Store consumption for that batch
 
@@ -728,47 +757,49 @@ Route::put(
 
 
 // Rate Types
-Route::resource('rate-types', RateTypeController::class)->names('rate-types');
-Route::post('rate-types/{rate_type}/toggle-status', [RateTypeController::class, 'toggleStatus'])->name('rate-types.toggle-status');
+Route::middleware(['tenant.feature:labor_tracking'])->group(function () {
+    Route::resource('rate-types', RateTypeController::class)->names('rate-types');
+    Route::post('rate-types/{rate_type}/toggle-status', [RateTypeController::class, 'toggleStatus'])->name('rate-types.toggle-status');
 
-// Work Types
-Route::resource('work-types', WorkTypeController::class)->names('work-types');
-Route::post('work-types/{work_type}/toggle-status', [WorkTypeController::class, 'toggleStatus'])->name('work-types.toggle-status');
+    // Work Types
+    Route::resource('work-types', WorkTypeController::class)->names('work-types');
+    Route::post('work-types/{work_type}/toggle-status', [WorkTypeController::class, 'toggleStatus'])->name('work-types.toggle-status');
 
-// ✅ Labor Types Routes
-Route::resource('labor-types', LaborTypeController::class)->names('labor-types');
-// ✅ Auto-generate code route
-Route::post('labor-types/generate-code', [LaborTypeController::class, 'generateCode'])->name('labor-types.generate-code');
+    // ✅ Labor Types Routes
+    Route::resource('labor-types', LaborTypeController::class)->names('labor-types');
+    // ✅ Auto-generate code route
+    Route::post('labor-types/generate-code', [LaborTypeController::class, 'generateCode'])->name('labor-types.generate-code');
 
-// Additional routes
-Route::post('labor-types/{id}/activate', [LaborTypeController::class, 'activate'])->name('labor-types.activate');
-Route::post('labor-types/{id}/deactivate', [LaborTypeController::class, 'deactivate'])->name('labor-types.deactivate');
-Route::post('labor-types/{id}/toggle-status', [LaborTypeController::class, 'toggleStatus'])->name('labor-types.toggle-status');
+    // Additional routes
+    Route::post('labor-types/{id}/activate', [LaborTypeController::class, 'activate'])->name('labor-types.activate');
+    Route::post('labor-types/{id}/deactivate', [LaborTypeController::class, 'deactivate'])->name('labor-types.deactivate');
+    Route::post('labor-types/{id}/toggle-status', [LaborTypeController::class, 'toggleStatus'])->name('labor-types.toggle-status');
 
 
-// Labor Cost Assignments
-// ✅ Correct route definition
-Route::resource('labor-cost-assignments', LaborCostAssignmentController::class)
-    ->names('labor-cost-assignments');
+    // Labor Cost Assignments
+    // ✅ Correct route definition
+    Route::resource('labor-cost-assignments', LaborCostAssignmentController::class)
+        ->names('labor-cost-assignments');
 
-// ✅ Additional route for index (if needed)
-Route::get('labor-cost-assignments', [LaborCostAssignmentController::class, 'index'])
-    ->name('labor-cost-assignments.index');
-Route::get('labor-cost-assignments/labor-type/{id}/details', [LaborCostAssignmentController::class, 'getLaborTypeDetails'])->name('labor-cost-assignments.labor-type-details');
+    // ✅ Additional route for index (if needed)
+    Route::get('labor-cost-assignments', [LaborCostAssignmentController::class, 'index'])
+        ->name('labor-cost-assignments.index');
+    Route::get('labor-cost-assignments/labor-type/{id}/details', [LaborCostAssignmentController::class, 'getLaborTypeDetails'])->name('labor-cost-assignments.labor-type-details');
 
-// Labor History
-Route::get('labor-history', [LaborHistoryController::class, 'index'])->name('labor-history.index');
-Route::get('labor-history/export', [LaborHistoryController::class, 'export'])->name('labor-history.export');
+    // Labor History
+    Route::get('labor-history', [LaborHistoryController::class, 'index'])->name('labor-history.index');
+    Route::get('labor-history/export', [LaborHistoryController::class, 'export'])->name('labor-history.export');
 
-// Labor Cost Reports
-Route::get('labor-cost-reports', [LaborCostReportController::class, 'index'])->name('labor-cost-reports.index');
-Route::get('labor-cost-reports/generate', [LaborCostReportController::class, 'generate'])->name('labor-cost-reports.generate');
-Route::get('labor-cost-reports/export-pdf', [LaborCostReportController::class, 'exportPdf'])->name('labor-cost-reports.export-pdf');
-Route::get('labor-cost-reports/export-excel', [LaborCostReportController::class, 'exportExcel'])->name('labor-cost-reports.export-excel');
+    // Labor Cost Reports
+    Route::get('labor-cost-reports', [LaborCostReportController::class, 'index'])->name('labor-cost-reports.index');
+    Route::get('labor-cost-reports/generate', [LaborCostReportController::class, 'generate'])->name('labor-cost-reports.generate');
+    Route::get('labor-cost-reports/export-pdf', [LaborCostReportController::class, 'exportPdf'])->name('labor-cost-reports.export-pdf');
+    Route::get('labor-cost-reports/export-excel', [LaborCostReportController::class, 'exportExcel'])->name('labor-cost-reports.export-excel');
+});
 
 
 // Order Management - Salesman focused
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['tenant.feature:orders'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('orders', OrderController::class)->except(['edit', 'update']);
     Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
     // Status update route
@@ -780,7 +811,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 
 // Invoice Management Routes
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'tenant.feature:invoices'])->prefix('admin')->group(function () {
 
     // ✅ Invoice routes with payment routes INSIDE
     Route::prefix('invoices')->name('admin.invoices.')->group(function () {
@@ -805,7 +836,7 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 });
 
 // gate-passes
-Route::name('admin.')->group(function () {
+Route::middleware(['tenant.feature:gate_passes'])->name('admin.')->group(function () {
     // Custom route MUST be BEFORE resource
     Route::get('gate-passes/labor-rate/{id}', [GatePassController::class, 'getLaborRate'])
         ->name('gate-passes.labor-rate');

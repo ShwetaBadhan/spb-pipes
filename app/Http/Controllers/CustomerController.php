@@ -30,7 +30,7 @@ class CustomerController extends Controller
     public function store(Request $request)
 {
     $data = $request->validate([
-        'name' => 'required|string|max:255',
+        'name' => ['required', 'string', 'max:255', new \App\Rules\WithinPlanLimit('customers')],
         'email' => 'required|email|unique:customers,email',
         'phone' => 'required|digits_between:8,15|unique:customers,phone',
 

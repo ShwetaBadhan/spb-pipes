@@ -20,6 +20,7 @@
                                                                         <li><a href="{{ route('security-settings') }}" class="{{ request()->routeIs('security-settings*') ? 'active' : '' }}">Security</a></li>
                                                                         {{-- <li><a href="{{ route('plans-billings') }}">Plans & Billing</a></li> --}}
                                                                         <li><a href="{{ route('notifications-settings') }}" class="{{ request()->routeIs('notifications-settings*') ? 'active' : '' }}">Notifications</a></li>
+                                                                        <li><a href="{{ route('tenant.billing') }}" class="{{ request()->routeIs('tenant.billing*') ? 'active' : '' }}">Plans & Billing</a></li>
                                                                         <li><a href="{{ route('general-settings') }}" class="{{ request()->routeIs('general-settings*') ? 'active' : '' }}">Integrations</a></li>
                                                                         {{-- <li><a href="{{ route('general-settings') }}">Captcha</a></li> --}}
                                                                     </ul>
@@ -38,7 +39,7 @@
                                                                         {{-- <li><a href="{{ route('seo-setup') }}">SEO Setup</a></li> --}}
                                                                         <li><a href="{{ route('language-settings') }}" class="{{ request()->routeIs('language-settings*') ? 'active' : '' }}">Language</a></li>
                                                                         <li><a href="{{ route('maintenance-mode') }}" class="{{ request()->routeIs('maintenance-mode*') ? 'active' : '' }}">Maintenance Mode</a></li>
-                                                                        {{-- <li><a href="{{ route('authentication-settings') }}">Authentication</a></li> --}}
+                                                                        <li><a href="{{ route('tenant.branding') }}" class="{{ request()->routeIs('tenant.branding*') ? 'active' : '' }}">Branding</a></li>
                                                                         {{-- <li><a href="{{ route('ai-configuration') }}">AI Configuration</a></li> --}}
                                                                         {{-- <li><a href="{{ route('appearance-settings') }}">Appearance</a></li> --}}
                                                                         {{-- <li><a href="{{ route('plugin-manager') }}">Plugin Manager</a></li> --}}

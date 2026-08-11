@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Models;
+use App\Traits\BelongsToTenant;
 
 use Illuminate\Database\Eloquent\Model;
 
 class CaptchaSetting extends Model
 {
+    use BelongsToTenant;
     protected $table = 'captcha_settings';
 
     protected $fillable = [

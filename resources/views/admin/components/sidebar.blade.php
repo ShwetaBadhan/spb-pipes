@@ -7,12 +7,13 @@
 
         <!-- Start Logo -->
         <div class="sidebar-logo">
+            @php($tenantBrand = currentTenant())
             <a href="{{ route('dashboard') }}" class="logo logo-normal">
-                <img src="{{ $system_white_logo ? asset('storage/' . $system_white_logo) : asset('assets/img/logo-spb.png') }} "
+                <img src="{{ $tenantBrand?->logo_path ? asset('storage/' . $tenantBrand->logo_path) : ($system_white_logo ? asset('storage/' . $system_white_logo) : asset('assets/img/logo-spb.png')) }} "
                     alt="Logo">
             </a>
             <a href="{{ route('dashboard') }}" class="logo-small">
-                <img src="{{ $system_single_logo ? asset('storage/' . $system_single_logo) : asset('assets/img/logo-small.png') }} "
+                <img src="{{ $tenantBrand?->logo_path ? asset('storage/' . $tenantBrand->logo_path) : ($system_single_logo ? asset('storage/' . $system_single_logo) : asset('assets/img/logo-small.png')) }} "
                     alt="Logo">
             </a>
             <a href="{{ route('dashboard') }}" class="dark-logo">

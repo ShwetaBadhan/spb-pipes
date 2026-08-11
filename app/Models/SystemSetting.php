@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Models;
+use App\Traits\BelongsToTenant;
 
 use Illuminate\Database\Eloquent\Model;
 
 class SystemSetting extends Model
 {
+    use BelongsToTenant;
     protected $table = 'system_settings';
 
     protected $fillable = [

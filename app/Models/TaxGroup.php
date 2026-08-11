@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Models;
+use App\Traits\BelongsToTenant;
 
 use Illuminate\Database\Eloquent\Model;
 
 class TaxGroup extends Model
 {
+    use BelongsToTenant;
     protected $fillable = ['name', 'sub_taxes', 'is_active'];
     
     protected $casts = [

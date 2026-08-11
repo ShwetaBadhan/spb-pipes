@@ -59,6 +59,15 @@
 	<!-- Main CSS -->
 	<link rel="stylesheet" href="{{ url('assets/css/style.css')}}">
 
+@php($tenantBrand = currentTenant())
+@if ($tenantBrand?->primary_color)
+<style>
+    :root {
+        --primary: {{ $tenantBrand->primary_color }};
+    }
+</style>
+@endif
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <meta name="csrf-token" content="{{ csrf_token() }}">

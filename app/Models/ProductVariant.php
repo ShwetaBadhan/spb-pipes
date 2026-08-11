@@ -1,10 +1,12 @@
 <?php
 namespace App\Models;
+use App\Traits\BelongsToTenant;
 
 use Illuminate\Database\Eloquent\Model;
 
 class ProductVariant extends Model
 {
+    use BelongsToTenant;
     protected $fillable = [
         'product_id','size','color','type',
         'selling_price','purchase_price',
