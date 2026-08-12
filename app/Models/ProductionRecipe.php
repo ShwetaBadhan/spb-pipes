@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+
 use Illuminate\Database\Eloquent\Model;
 
 class ProductionRecipe extends Model
 {
+    use BelongsToTenant;
     protected $fillable = [
         'product_id',
         'raw_material_id',

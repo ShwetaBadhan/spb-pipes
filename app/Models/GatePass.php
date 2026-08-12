@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+
 use Illuminate\Database\Eloquent\Model;
 
 class GatePass extends Model
 {
+    use BelongsToTenant;
     protected $fillable = [
         'customer_id',
         'invoice_id',

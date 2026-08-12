@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+
 use Illuminate\Database\Eloquent\Model;
 
 class CaptchaSetting extends Model
 {
+    use BelongsToTenant;
     protected $table = 'captcha_settings';
 
     protected $fillable = [

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+
 use App\Models\Ledger;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +15,7 @@ use Exception;
 
 class Invoice extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToTenant;
 
     // app/Models/Invoice.php
     protected $fillable = [

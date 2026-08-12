@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 class ProductionBatch extends Model
 {
+    use BelongsToTenant;
     protected $fillable = [
         'batch_id',
         'product_id',

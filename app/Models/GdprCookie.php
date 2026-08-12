@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Stancl\Tenancy\Database\Concerns\BelongsToTenant;
+
 use Illuminate\Database\Eloquent\Model;
 
 class GdprCookie extends Model
 {
+    use BelongsToTenant;
     protected $fillable = [
         'cookie_position',
         'agree_button_text',
