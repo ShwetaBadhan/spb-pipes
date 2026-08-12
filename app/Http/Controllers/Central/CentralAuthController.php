@@ -40,7 +40,7 @@ class CentralAuthController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->route('central.tenants.index');
+            return redirect()->route('central.dashboard');
         }
 
         return back()->withErrors(['email' => 'Invalid credentials.']);

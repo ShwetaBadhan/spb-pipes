@@ -23,6 +23,9 @@ class TenantController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'id' => ['required', 'alpha_dash', 'max:32', 'unique:tenants,id'],
             'subdomain' => ['required', 'regex:/^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$/', 'max:32'],
+            'admin_name' => ['required', 'string', 'max:255'],
+            'admin_email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'admin_password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
         $domain = $data['subdomain'] . '.localhost';
@@ -33,7 +36,11 @@ class TenantController extends Controller
 
         $tenant = Tenant::create([
             'id' => $data['id'],
-            'data' => ['name' => $data['name']],
+            'name' => $data['name'],
+            'domain' => $domain,
+            'admin_name' => $data['admin_name'],
+            'admin_email' => $data['admin_email'],
+            'admin_password' => $data['admin_password'],
         ]);
 
         $tenant->domains()->create(['domain' => $domain]);

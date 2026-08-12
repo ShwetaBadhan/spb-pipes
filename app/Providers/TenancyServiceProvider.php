@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Listeners\ProvisionTenantAdmin;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -25,6 +26,7 @@ class TenancyServiceProvider extends ServiceProvider
             Events\CreatingTenant::class => [],
             Events\TenantCreated::class => [
                 // Single-database tenancy: no separate tenant DBs are created or migrated.
+                ProvisionTenantAdmin::class,
             ],
             Events\SavingTenant::class => [],
             Events\TenantSaved::class => [],

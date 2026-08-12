@@ -25,6 +25,27 @@
                                 <span class="input-group-text">.localhost</span>
                             </div>
                         </div>
+
+                        <hr>
+
+                        <h6 class="fw-semibold mb-2">Tenant Admin</h6>
+
+                        <div class="mb-3">
+                            <label for="admin_name" class="form-label">Admin Name</label>
+                            <input type="text" name="admin_name" id="admin_name" class="form-control" value="{{ old('admin_name') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="admin_email" class="form-label">Admin Email</label>
+                            <input type="email" name="admin_email" id="admin_email" class="form-control" value="{{ old('admin_email') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="admin_password" class="form-label">Admin Password</label>
+                            <input type="password" name="admin_password" id="admin_password" class="form-control" required minlength="8">
+                        </div>
+                        <div class="mb-3">
+                            <label for="admin_password_confirmation" class="form-label">Confirm Password</label>
+                            <input type="password" name="admin_password_confirmation" id="admin_password_confirmation" class="form-control" required>
+                        </div>
                         <button type="submit" class="btn btn-primary w-100">Create Tenant</button>
                     </form>
                 </div>
@@ -47,7 +68,7 @@
                             @forelse ($tenants as $tenant)
                                 <tr>
                                     <td><code>{{ $tenant->id }}</code></td>
-                                    <td>{{ data_get($tenant->data, 'name') }}</td>
+                                    <td>{{ $tenant->name }}</td>
                                     <td>
                                         @forelse ($tenant->domains as $domain)
                                             <a href="http://{{ $domain->domain }}:8000" target="_blank">{{ $domain->domain }}</a>

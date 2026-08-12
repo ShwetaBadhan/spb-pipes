@@ -27,6 +27,7 @@
                 <div>
                     <h6>Dashboard</h6>
                 </div>
+                {{-- @dump(Auth::user()->roleName()->first()) --}}
                 <div class="d-flex my-xl-auto right-content align-items-center flex-wrap gap-2">
                     {{-- <div id="reportrange" class="reportrange-picker d-flex align-items-center">
                         <i class="isax isax-calendar text-gray-5 fs-14 me-1"></i><span class="reportrange-picker-field">16
