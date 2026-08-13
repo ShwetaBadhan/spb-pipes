@@ -75,7 +75,7 @@
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-xxl border border-dashed bg-light me-3 flex-shrink-0">
                                                 <div class="position-relative d-flex align-items-center">
-                                                    <img src="{{ $accountSetting?->profile_image ? asset('storage/' . $accountSetting->profile_image) : asset('assets/img/users/user-01.jpg') }}"
+                                                    <img src="{{ tenant_storage_url($accountSetting?->profile_image) ?? asset('assets/img/users/user-01.jpg') }}"
                                                         class="avatar avatar-xl" alt="User Profile" id="profilePreview">
                                                     @if ($accountSetting?->profile_image)
                                                         <a href="javascript:void(0);"

@@ -174,7 +174,7 @@
                             <td><input type="checkbox" class="form-check-input"></td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <img src="{{ $product->image_path ? asset('storage/' . $product->image_path) : asset('assets/img/products/default.jfif') }}"
+                                    <img src="{{ tenant_storage_url($product->image_path) ?? asset('assets/img/products/default.jfif') }}"
                                         alt="" class="me-2" width="30">
                                     {{ $product->name }}
                                 </div>

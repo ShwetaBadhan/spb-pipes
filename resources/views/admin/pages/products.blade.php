@@ -97,7 +97,7 @@
                                         <a href="javascript:void(0);"
                                             class="avatar avatar-sm rounded-circle me-2 flex-shrink-0">
                                             @if ($product->image_path)
-                                                <img src="{{ asset('storage/' . $product->image_path) }}"
+                                                <img src="{{ tenant_storage_url($product->image_path) }}"
                                                     alt="{{ $product->name }}">
                                             @else
                                                 <img src="{{ asset('assets/img/products/default.jfif') }}" alt="Default">

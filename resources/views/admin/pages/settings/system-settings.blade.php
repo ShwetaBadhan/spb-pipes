@@ -83,7 +83,7 @@
                                                     </div>
                                                     <div class="col-md-4 text-end">
                                                         @if ($white_logo)
-                                                            <img src="{{ asset('storage/' . $white_logo) }}"
+                                                            <img src="{{ tenant_storage_url($white_logo) }}"
                                                                 alt="White Logo" class="img-thumbnail"
                                                                 style="max-height: 60px;">
                                                             <button type="button" class="btn btn-sm btn-danger ms-2"
@@ -107,7 +107,7 @@
                                                     </div>
                                                     <div class="col-md-4 text-end">
                                                         @if ($black_logo)
-                                                            <img src="{{ asset('storage/' . $black_logo) }}"
+                                                            <img src="{{ tenant_storage_url($black_logo) }}"
                                                                 alt="Black Logo" class="img-thumbnail"
                                                                 style="max-height: 60px;">
                                                             <button type="button" class="btn btn-sm btn-danger ms-2"
@@ -131,7 +131,7 @@
                                                     </div>
                                                     <div class="col-md-4 text-end">
                                                         @if ($single_logo)
-                                                            <img src="{{ asset('storage/' . $single_logo) }}"
+                                                            <img src="{{ tenant_storage_url($single_logo) }}"
                                                                 alt="Single Logo" class="img-thumbnail"
                                                                 style="max-height: 60px;">
                                                             <button type="button" class="btn btn-sm btn-danger ms-2"
@@ -155,7 +155,7 @@
                                                     </div>
                                                     <div class="col-md-4 text-end">
                                                         @if ($favicon)
-                                                            <img src="{{ asset('storage/' . $favicon) }}" alt="Favicon"
+                                                            <img src="{{ tenant_storage_url($favicon) }}" alt="Favicon"
                                                                 class="img-thumbnail" style="max-height: 40px;">
                                                             <button type="button" class="btn btn-sm btn-danger ms-2"
                                                                 onclick="removeImage('favicon')">
@@ -180,7 +180,7 @@
                                                     </div>
                                                     <div class="col-md-4 text-end">
                                                         @if ($cover_image)
-                                                            <img src="{{ asset('storage/' . $cover_image) }}"
+                                                            <img src="{{ tenant_storage_url($cover_image) }}"
                                                                 alt="Cover Image" class="img-thumbnail"
                                                                 style="max-height: 80px;">
                                                         @endif

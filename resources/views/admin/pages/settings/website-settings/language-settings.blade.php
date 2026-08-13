@@ -175,7 +175,7 @@
                         <!-- Show current flag if exists -->
                         @if($language->flag)
                             <div class="mb-2">
-                                <img src="{{ asset('storage/' . $language->flag) }}" alt="Current Flag" style="height: 40px; width: auto;">
+                                <img src="{{ tenant_storage_url($language->flag) }}" alt="Current Flag" style="height: 40px; width: auto;">
                             </div>
                         @endif
                         <input type="file" name="flag" class="form-control" accept="image/*">

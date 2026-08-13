@@ -8,12 +8,10 @@
         <!-- Start Logo -->
         <div class="sidebar-logo">
             <a href="{{ route('dashboard') }}" class="logo logo-normal">
-                <img src="{{ $system_white_logo ? asset('storage/' . $system_white_logo) : asset('assets/img/logo-spb.png') }} "
-                    alt="Logo">
+                <img src="{{ tenant_storage_url($system_white_logo) ?? asset('assets/img/logo-spb.png') }} " width="150" alt="Logo">
             </a>
             <a href="{{ route('dashboard') }}" class="logo-small">
-                <img src="{{ $system_single_logo ? asset('storage/' . $system_single_logo) : asset('assets/img/logo-small.png') }} "
-                    alt="Logo">
+                <img src="{{ tenant_storage_url($system_single_logo) ?? asset('assets/img/logo-small.png') }} " width="150" alt="Logo">
             </a>
             <a href="{{ route('dashboard') }}" class="dark-logo">
                 <img src="{{ url('assets/img/logo-white.svg') }}" alt="Logo">

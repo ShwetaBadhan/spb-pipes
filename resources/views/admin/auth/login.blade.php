@@ -14,11 +14,11 @@
 
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon"
-        href="{{ $system_favicon ? asset('storage/' . $system_favicon) : asset('assets/img/favicon.png') }}">
+        href="{{ tenant_storage_url($system_favicon) ?? asset('assets/img/favicon.png') }}">
 
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" sizes="180x180"
-        href="{{ $system_favicon ? asset('storage/' . $system_favicon) : asset('assets/img/favicon.png') }}">
+        href="{{ tenant_storage_url($system_favicon) ?? asset('assets/img/favicon.png') }}">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url('assets/css/bootstrap.min.css') }}">
@@ -48,7 +48,7 @@
             
             <!-- Left: Cover Image -->
             <div class="col-lg-8 position-relative">
-                <img src="{{ $cover_image ? asset('storage/' . $cover_image) : asset('assets/img/login-cover-default.jpg') }}" 
+                <img src="{{ tenant_storage_url($cover_image) ?? asset('assets/img/login-cover-default.jpg') }}" 
                      class="img-fluid w-100 h-100 object-fit-cover" 
                      alt="Cover Image"
                      >
@@ -62,7 +62,7 @@
 
                     <div class="d-flex flex-column justify-content-lg-center pb-0 flex-fill">
                         <div class="mx-auto mb-4 text-center">
-                            <img src="{{ $system_white_logo ? asset('storage/' . $system_white_logo) : asset('assets/img/logo-spb.png') }}" 
+                            <img src="{{ tenant_storage_url($system_white_logo) ?? asset('assets/img/logo-spb.png') }}" 
                                 class="img-fluid" alt="Logo">
                         </div>
 

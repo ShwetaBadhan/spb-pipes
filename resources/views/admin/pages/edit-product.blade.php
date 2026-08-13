@@ -36,7 +36,7 @@
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-xxl border border-dashed bg-light me-3 flex-shrink-0">
                                                 <div class="position-relative d-flex align-items-center">
-                                                    <img src="{{ asset('storage/' . $product->image_path) }}" 
+                                                    <img src="{{ tenant_storage_url($product->image_path) }}" 
                                                         class="avatar avatar-xl " alt="User Img">
 
                                                 </div>
@@ -203,7 +203,7 @@
                                                     @forelse ($product->gallery as $image)
                                                         <div
                                                             class="avatar avatar-xl border gallery-img p-1 position-relative">
-                                                            <img src="{{ asset('storage/' . $image->image_path) }}"
+                                                            <img src="{{ tenant_storage_url($image->image_path) }}"
                                                                 alt="Gallery Image">
 
                                                             <!-- delete button -->

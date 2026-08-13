@@ -8,6 +8,8 @@ use Spatie\Permission\PermissionRegistrar;
 
 class TenantPermissionSeeder
 {
+    private const GUARD = 'web';
+
     public function run(): void
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
@@ -19,18 +21,18 @@ class TenantPermissionSeeder
     private function createPermissions(): void
     {
         foreach ($this->permissions() as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => self::GUARD]);
         }
     }
 
     private function createRoles(): void
     {
         // Super Admin - All Permissions
-        $superAdmin = Role::firstOrCreate(['name' => 'Super Admin']);
+        $superAdmin = Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => self::GUARD]);
         $superAdmin->syncPermissions(Permission::all());
 
         // Admin - Most Permissions (except system settings)
-        $admin = Role::firstOrCreate(['name' => 'Admin']);
+        $admin = Role::firstOrCreate(['name' => 'Admin', 'guard_name' => self::GUARD]);
         $adminPermissions = Permission::whereNotIn('name', [
             'edit-system-settings',
             'manage-permissions',
@@ -38,7 +40,7 @@ class TenantPermissionSeeder
         $admin->syncPermissions($adminPermissions);
 
         // Manager - Operational Permissions
-        $manager = Role::firstOrCreate(['name' => 'Manager']);
+        $manager = Role::firstOrCreate(['name' => 'Manager', 'guard_name' => self::GUARD]);
         $managerPermissions = Permission::whereIn('name', [
             'view-dashboard',
             'view-products',
@@ -76,7 +78,7 @@ class TenantPermissionSeeder
         $manager->syncPermissions($managerPermissions);
 
         // Inventory Staff - Inventory Related Only
-        $inventoryStaff = Role::firstOrCreate(['name' => 'Inventory Staff']);
+        $inventoryStaff = Role::firstOrCreate(['name' => 'Inventory Staff', 'guard_name' => self::GUARD]);
         $inventoryPermissions = Permission::whereIn('name', [
             'view-dashboard',
             'view-products',
@@ -92,7 +94,7 @@ class TenantPermissionSeeder
         $inventoryStaff->syncPermissions($inventoryPermissions);
 
         // Sales Staff - Sales & Orders Related
-        $salesStaff = Role::firstOrCreate(['name' => 'Sales Staff']);
+        $salesStaff = Role::firstOrCreate(['name' => 'Sales Staff', 'guard_name' => self::GUARD]);
         $salesPermissions = Permission::whereIn('name', [
             'view-dashboard',
             'view-products',
@@ -109,7 +111,7 @@ class TenantPermissionSeeder
         $salesStaff->syncPermissions($salesPermissions);
 
         // Labor Staff - Labor Management Only
-        $laborStaff = Role::firstOrCreate(['name' => 'Labor Staff']);
+        $laborStaff = Role::firstOrCreate(['name' => 'Labor Staff', 'guard_name' => self::GUARD]);
         $laborPermissions = Permission::whereIn('name', [
             'view-dashboard',
             'manage-labor',
@@ -123,7 +125,7 @@ class TenantPermissionSeeder
         $laborStaff->syncPermissions($laborPermissions);
 
         // Viewer - Read Only Access
-        $viewer = Role::firstOrCreate(['name' => 'Viewer']);
+        $viewer = Role::firstOrCreate(['name' => 'Viewer', 'guard_name' => self::GUARD]);
         $viewerPermissions = Permission::whereIn('name', [
             'view-dashboard',
             'view-products',

@@ -35,7 +35,7 @@
                     <div class="d-flex align-items-center">
                         @if($invoice->customer && $invoice->customer->avatar)
                         <a href="javascript:void(0);" class="avatar avatar-sm rounded-circle me-2 flex-shrink-0">
-                            <img src="{{ asset('storage/' . $invoice->customer->avatar) }}" class="rounded-circle" alt="{{ $invoice->customer->name }}">
+                            <img src="{{ tenant_storage_url($invoice->customer->avatar) }}" class="rounded-circle" alt="{{ $invoice->customer->name }}">
                         </a>
                         @else
                         <span class="avatar avatar-sm bg-primary text-white rounded-circle me-2 flex-shrink-0">

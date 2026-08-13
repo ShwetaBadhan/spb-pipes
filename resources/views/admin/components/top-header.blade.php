@@ -63,10 +63,10 @@
             <!-- Logo -->
             <div class="header-left">
                 <a href="{{ route('dashboard') }}" class="logo logo-normal">
-                    <img src="{{ $system_white_logo ? asset('storage/' . $system_white_logo) : asset('assets/img/logo-spb.png') }}" alt="Logo">
+                    <img src="{{ tenant_storage_url($system_white_logo) ?? asset('assets/img/logo-spb.png') }}" alt="Logo">
                 </a>
                 <a href="{{ route('dashboard') }}" class="logo-small">
-                    <img src="{{ $system_single_logo ? asset('storage/' . $system_single_logo) : asset('assets/img/logo-small.png') }}" alt="Logo">
+                    <img src="{{ tenant_storage_url($system_single_logo) ?? asset('assets/img/logo-small.png') }}" alt="Logo">
                 </a>
             </div>
 
@@ -135,7 +135,7 @@
                                                     <div class="avatar-sm">
                                                         <span class="avatar-title bg-soft-warning text-warning fs-18 rounded-circle">
                                                             @if (!empty($item['image']))
-                                                                <img src="{{ asset('storage/' . $item['image']) }}"
+                                                                <img src="{{ tenant_storage_url($item['image']) }}"
                                                                     alt="{{ $item['name'] }}" class="rounded-circle"
                                                                     width="36" height="36">
                                                             @else
