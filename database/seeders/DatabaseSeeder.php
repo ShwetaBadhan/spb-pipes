@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
- $this->call([
-     UsersTableSeeder::class,
-     CentralAdminSeeder::class,
+    $this->call([
+        UsersTableSeeder::class,
+        CentralAdminSeeder::class,
         StateSeeder::class,
         CitySeeder::class,
         RateTypeSeeder::class,

@@ -67,7 +67,9 @@ class ProvisionTenantAdmin
         }
 
         try {
-            $tenantUrl = 'http://' . $domain . ':8000';
+            $scheme = app()->environment('production') ? 'https' : 'http';
+            $port = app()->environment('production') ? '' : ':8000';
+            $tenantUrl = $scheme . '://' . $domain . $port;
             $loginUrl = $tenantUrl . '/login';
 
             Mail::to($email)->send(new TenantAdminWelcome(
