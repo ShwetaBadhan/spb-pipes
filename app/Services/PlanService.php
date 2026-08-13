@@ -78,6 +78,10 @@ class PlanService
             return true;
         }
 
+        if ($this->subscription->status === Subscription::STATUS_PENDING) {
+            return true;
+        }
+
         if ($this->subscription->isTrialing()) {
             if ($this->subscription->ends_at) {
                 return $this->subscription->ends_at->isPast();

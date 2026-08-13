@@ -4,6 +4,7 @@ use App\Http\Controllers\Central\CentralAdminController;
 use App\Http\Controllers\Central\CentralAuthController;
 use App\Http\Controllers\Central\CentralSettingController;
 use App\Http\Controllers\Central\DashboardController;
+use App\Http\Controllers\Central\LandingController;
 use App\Http\Controllers\Central\PlanController;
 use App\Http\Controllers\Central\TenantController;
 use App\Http\Controllers\Central\WebhookController;
@@ -27,13 +28,10 @@ use Illuminate\Support\Facades\Route;
 //     return view('central.landing');
 // })->name('home');
 
-Route::get('/', function () {
-    if (! in_array(request()->getHost(), config('tenancy.central_domains'))) {
-        return redirect('/login');
-    }
+Route::get('/', [LandingController::class, 'index'])->name('home');
 
-    return view('central.landing');
-})->name('home');
+Route::get('/register', [LandingController::class, 'register'])->name('central.register');
+Route::post('/register', [LandingController::class, 'store'])->name('central.register.submit');
 
 Route::get('/admin/login', [CentralAuthController::class, 'showLoginForm'])->name('central.login');
 Route::post('/admin/login', [CentralAuthController::class, 'login'])->name('central.login.submit');

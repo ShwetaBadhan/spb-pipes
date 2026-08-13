@@ -19,12 +19,19 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#about">About</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#testimonials">Testimonials</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#pricing">Pricing</a>
+                </li>
             </ul>
-            <div class="d-flex">
+            <div class="d-flex align-items-center gap-2">
                 @if (auth('central')->check())
                     <a href="{{ route('central.dashboard') }}" class="btn btn-outline-primary">Dashboard</a>
                 @else
-                    <a href="{{ route('central.login') }}" class="btn btn-primary">Admin Login</a>
+                    <a href="{{ route('central.login') }}" class="btn btn-outline-primary">Admin Login</a>
+                    <a href="{{ route('central.register') }}" class="btn btn-primary">Get Started</a>
                 @endif
             </div>
         </div>

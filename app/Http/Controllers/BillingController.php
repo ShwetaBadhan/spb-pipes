@@ -30,7 +30,10 @@ class BillingController extends Controller
 
         $availablePlans = Plan::query()
             ->active()
-            ->when($plan, fn ($query) => $query->whereKeyNot($plan->id))
+            ->when(
+                $plan && $planService->status() !== Subscription::STATUS_PENDING,
+                fn ($query) => $query->whereKeyNot($plan->id),
+            )
             ->ordered()
             ->get();
 

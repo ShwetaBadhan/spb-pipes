@@ -29,11 +29,15 @@
             @endif
 
             @if ($planService->isExpired())
-                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                <div class="alert alert-{{ $planService->status() === 'pending' ? 'warning' : 'danger' }} d-flex align-items-center gap-2" role="alert">
                     <i class="isax isax-warning-2"></i>
                     <div>
-                        Your subscription is <strong>{{ ucfirst($planService->status() ?? 'expired') }}</strong> and create actions are
-                        blocked. Upgrade below to continue using the workspace.
+                        @if ($planService->status() === 'pending')
+                            Your subscription is <strong>pending</strong> and the workspace is locked. Complete your payment below to activate it.
+                        @else
+                            Your subscription is <strong>{{ ucfirst($planService->status() ?? 'expired') }}</strong> and create actions are
+                            blocked. Upgrade below to continue using the workspace.
+                        @endif
                     </div>
                 </div>
             @endif
@@ -72,12 +76,14 @@
                                                                 Legacy / No Plan
                                                             @endif
                                                         </h5>
-                                                        <span class="badge badge-soft-{{ $planService->isExpired() ? 'danger' : 'success' }}">
+                                                        <span class="badge badge-soft-{{ $planService->status() === 'pending' ? 'warning' : ($planService->isExpired() ? 'danger' : 'success') }}">
                                                             {{ ucfirst($planService->status() ?? 'active') }}
                                                         </span>
                                                     </div>
                                                     <div class="fs-14 text-muted">
-                                                        @if ($planService->isExpired())
+                                                        @if ($planService->status() === 'pending')
+                                                            Payment pending — complete payment below to activate your workspace.
+                                                        @elseif ($planService->isExpired())
                                                             Subscription ended
                                                         @elseif ($plan && $plan->isFree() && $planService->status() === 'trialing')
                                                             Trial {{ $plan->trial_days }} days · started {{ $planService->subscription()?->created_at?->format('d M Y') }}
@@ -88,9 +94,13 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                                @if (!$planService->isExpired())
-                                                    <button type="button" class="btn btn-primary btn-md d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#upgradeModal">
-                                                        <i class="isax isax-crown me-1"></i>Upgrade
+                                                @if (!$planService->isExpired() || $planService->status() === 'pending')
+                                                    <button type="button" class="btn btn-{{ $planService->status() === 'pending' ? 'warning' : 'primary' }} btn-md d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#upgradeModal">
+                                                        @if ($planService->status() === 'pending')
+                                                            <i class="isax isax-card me-1"></i>Complete Payment
+                                                        @else
+                                                            <i class="isax isax-crown me-1"></i>Upgrade
+                                                        @endif
                                                     </button>
                                                 @endif
                                             </div>
@@ -184,7 +194,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="upgradeModalLabel">Choose a Plan</h5>
+                    <h5 class="modal-title" id="upgradeModalLabel">{{ $planService->status() === 'pending' ? 'Complete Your Payment' : 'Choose a Plan' }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

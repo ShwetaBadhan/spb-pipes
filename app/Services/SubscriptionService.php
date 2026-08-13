@@ -19,6 +19,14 @@ class SubscriptionService
             ->latest('id')
             ->first();
 
+        if (! $subscription) {
+            $subscription = Subscription::query()
+                ->forTenant($tenantId)
+                ->where('status', Subscription::STATUS_PENDING)
+                ->latest('id')
+                ->first();
+        }
+
         $period = $plan->billing_period === 'yearly' ? 365 : 30;
         $endsAt = Carbon::now()->addDays($period);
 

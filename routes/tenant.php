@@ -74,6 +74,9 @@ Route::middleware([
         return view('admin.auth.register');
     })->name("register");
 
+    Route::get('/auth/login-as/{token}', [AuthController::class, 'loginAs'])
+        ->name('auth.login-as');
+
     // routes/web.php
     Route::get('/security-settings', [SecuritySettingController::class, 'index'])->name('security-settings');
 

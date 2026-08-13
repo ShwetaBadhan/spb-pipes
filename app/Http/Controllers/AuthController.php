@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use App\Models\SystemSetting; //
 class AuthController extends Controller
 {
@@ -51,5 +54,47 @@ class AuthController extends Controller
     {
         Auth::logout();
         return redirect()->route('login');
+    }
+
+    // 👉 Auto-login from a one-time signed token (issued after landing-page signup)
+    public function loginAs(string $token)
+    {
+        try {
+            $payload = json_decode(Crypt::decryptString($token), true) ?? [];
+        } catch (\Throwable $e) {
+            $payload = [];
+        }
+
+        if (empty($payload['uid']) || (int) ($payload['exp'] ?? 0) < now()->timestamp) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'This login link is invalid or has expired.',
+            ]);
+        }
+
+        $cachedUid = Cache::store()->pull("auth.login.{$token}");
+
+        if ($cachedUid !== null && (int) $cachedUid !== (int) $payload['uid']) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'This login link is invalid or has expired.',
+            ]);
+        }
+
+        $user = User::query()->find((int) $payload['uid']);
+
+        if (! $user) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Account not found.',
+            ]);
+        }
+
+        Auth::login($user);
+
+        $next = $payload['next'] ?? '/dashboard';
+
+        if (! is_string($next) || ! str_starts_with($next, '/') || str_starts_with($next, '//')) {
+            $next = '/dashboard';
+        }
+
+        return redirect()->to($next);
     }
 }
