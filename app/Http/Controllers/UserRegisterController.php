@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,7 +35,7 @@ class UserRegisterController extends Controller
         ]);
 
         if ($request->role) {
-            $user->assignRole($request->role);
+            $this->syncRole($user, $request->role);
         }
 
         return back()->with('success', 'User created successfully!');
@@ -64,11 +64,8 @@ class UserRegisterController extends Controller
     $user->update($data);
 
     // ← Role update logic add karein
-    if ($request->filled('role')) {
-        $user->syncRoles([$request->role]);
-    } elseif ($request->has('role')) {
-        // Agar role empty submit hua hai to roles remove karein
-        $user->syncRoles([]);
+    if ($request->has('role')) {
+        $this->syncRole($user, $request->filled('role') ? $request->role : null);
     }
 
     return back()->with('success', 'User updated successfully!');
@@ -77,8 +74,23 @@ class UserRegisterController extends Controller
     public function updateRole(Request $request, User $user) // For changing role on existing user
     {
         $request->validate(['role' => 'nullable|exists:roles,name']);
-        $user->syncRoles($request->role ?? []);
+        $this->syncRole($user, $request->role ?? null);
         return back()->with('success', 'Role updated successfully!');
+    }
+
+    private function syncRole(User $user, ?string $roleName): void
+    {
+        if ($roleName) {
+            $role = Role::where('name', $roleName)->first();
+
+            if ($role) {
+                $user->roles()->sync([$role->id => ['tenant_id' => tenant()->getTenantKey()]]);
+
+                return;
+            }
+        }
+
+        $user->roles()->sync([]);
     }
 
     public function destroy(User $user) // For deleting user

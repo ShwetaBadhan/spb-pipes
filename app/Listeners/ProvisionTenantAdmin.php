@@ -35,8 +35,13 @@ class ProvisionTenantAdmin
                     'is_active' => true,
                 ]);
 
-                $adminRole = Role::firstOrCreate(['name' => 'Admin']);
-                $user->assignRole($adminRole);
+                $adminRole = Role::where('name', 'Admin')->first();
+
+                if ($adminRole) {
+                    $user->roles()->syncWithoutDetaching([
+                        $adminRole->id => ['tenant_id' => tenant()->getTenantKey()],
+                    ]);
+                }
 
                 $provisioned = true;
             }

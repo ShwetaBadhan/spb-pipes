@@ -86,7 +86,7 @@
                                         <td>{{ $tenant->name }}</td>
                                         <td>
                                             @forelse ($tenant->domains as $domain)
-                                                <a href="http://{{ $domain->domain }}:8000" target="_blank" class="text-primary">{{ $domain->domain }}</a>
+                                                <a href="http://{{ $domain->domain }}:8000" target="_blank" class="text-primary">{{ $domain->domain }} <i class="fa-solid fa-arrow-up-right-from-square"></i></a> 
                                             @empty
                                                 <span class="text-muted">—</span>
                                             @endforelse
@@ -96,7 +96,7 @@
                                             <form action="{{ route('central.tenants.destroy', $tenant) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this tenant and its domains?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="btn btn-sm btn-soft-danger">Delete</button>
+                                                <button class="btn btn-sm btn-soft-danger"><i class="fa-solid fa-trash-can"></i> Delete</button>
                                             </form>
                                         </td>
                                     </tr>
