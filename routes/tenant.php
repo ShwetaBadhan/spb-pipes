@@ -30,6 +30,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\GatePassController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\CaptchaSettingController;
 use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\AccountSettingsController;
@@ -87,9 +88,19 @@ Route::middleware([
         Route::delete('/security-settings/device/{id}', [SecuritySettingController::class, 'deleteDevice'])->name('security-settings.device.delete');
     });
 
-    Route::get('/plans-billings', function () {
-        return view('admin.pages.settings.general-settings.plans-billings');
-    })->name("plans-billings");
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/plans-billings', [BillingController::class, 'index'])
+            ->name('billing.plans-billings');
+
+        Route::post('/billing/checkout', [BillingController::class, 'checkout'])
+            ->name('billing.checkout');
+
+        Route::get('/billing/return', [BillingController::class, 'return'])
+            ->name('billing.return');
+
+        Route::post('/billing/razorpay/verify', [BillingController::class, 'verifyRazorpay'])
+            ->name('billing.razorpay.verify');
+    });
 
     Route::get('/notifications-settings', [NotificationSettingController::class, 'index'])
         ->name("notifications-settings");

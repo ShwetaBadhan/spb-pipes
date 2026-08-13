@@ -46,6 +46,12 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('central.plans.index') }}"
+                                    class="{{ request()->routeIs('central.plans.*') ? 'active' : '' }}">
+                                    <i class="isax isax-crown"></i><span>Plans</span>
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('central.admins.index') }}"
                                     class="{{ request()->routeIs('central.admins.*') ? 'active' : '' }}">
                                     <i class="isax isax-profile-2user5"></i><span>Admin Users</span>

@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'central' => \App\Http\Middleware\EnsureCentralRequest::class,
             'superadmin' => \App\Http\Middleware\EnsureSuperAdmin::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'billing/webhook/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

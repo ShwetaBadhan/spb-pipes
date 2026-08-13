@@ -3,13 +3,13 @@
 @section('title', 'Manage Tenants')
 
 @section('content')
-    <!-- Page Header -->
-    {{-- <div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-        <div>
-            <h6 class="mb-1">Manage Tenants</h6>
-            <p class="text-muted fs-14 mb-0">Create new tenants with their own database and subdomain, or delete existing ones.</p>
-        </div>
-    </div> --}}
+    @if (session('status'))
+        <div class="alert alert-success py-2 fs-14">{{ session('status') }}</div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger py-2 fs-14">{{ $errors->first() }}</div>
+    @endif
 
     <div class="row g-3">
         <div class="col-xl-12">
@@ -65,6 +65,27 @@
                                     <input type="password" name="admin_password_confirmation" id="admin_password_confirmation" class="form-control" required>
                                 </div>
                             </div>
+
+                            <hr>
+
+                            <h6 class="fw-semibold mb-2">Plan</h6>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="plan_id" class="form-label">Plan</label>
+                                    <select name="plan_id" id="plan_id" class="form-select" required>
+                                        @foreach ($plans as $plan)
+                                            <option value="{{ $plan->id }}" @selected(old('plan_id', $defaultPlan?->id) == $plan->id)>
+                                                {{ $plan->name }} @if (!$plan->isFree()) - {{ $plan->currency }} {{ number_format($plan->price) }} ({{ $plan->billing_period }}) @endif
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="trial_days" class="form-label">Trial Days</label>
+                                    <input type="number" name="trial_days" id="trial_days" class="form-control" min="0" max="365" value="{{ old('trial_days', $defaultPlan?->trial_days ?? 14) }}">
+                                </div>
+                            </div>
                             <div class="text-end">
                                 <button class="btn btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">Close</button>
                                 <button type="submit" class="btn btn-primary ">Create Tenant</button>
@@ -90,6 +111,8 @@
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Domain</th>
+                                    <th>Plan</th>
+                                    <th>Status</th>
                                     <th>Created</th>
                                     <th class="text-end">Actions</th>
                                 </tr>
@@ -106,8 +129,26 @@
                                                 <span class="text-muted">—</span>
                                             @endforelse
                                         </td>
+                                        <td>
+                                            @if ($tenant->plan)
+                                                <span class="badge bg-primary-subtle text-primary">{{ $tenant->plan->name }}</span>
+                                            @else
+                                                <span class="text-muted">—</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @php $planStatus = $tenant->subscription_status; @endphp
+                                            @if (in_array($planStatus, ['trialing', 'active']))
+                                                <span class="badge bg-success-subtle text-success">{{ ucfirst($planStatus) }}</span>
+                                            @elseif ($planStatus)
+                                                <span class="badge bg-danger-subtle text-danger">{{ ucfirst($planStatus) }}</span>
+                                            @else
+                                                <span class="text-muted">—</span>
+                                            @endif
+                                        </td>
                                         <td>{{ $tenant->created_at?->format('d M Y') }}</td>
                                         <td class="text-end">
+                                            <a href="{{ route('central.tenants.edit', $tenant) }}" class="btn btn-sm btn-soft-primary">Edit</a>
                                             <form action="{{ route('central.tenants.destroy', $tenant) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this tenant and its domains?');">
                                                 @csrf
                                                 @method('DELETE')
@@ -116,7 +157,7 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr><td colspan="5" class="text-center text-muted py-4">No tenants yet.</td></tr>
+                                    <tr><td colspan="7" class="text-center text-muted py-4">No tenants yet.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>

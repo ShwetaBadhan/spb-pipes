@@ -247,6 +247,19 @@
         </script>
     @endif
 
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                html: '{{ session('error') }}',
+                timer: 5000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+        </script>
+    @endif
+
     @if ($errors->any())
         <script>
             let errorMessages = [];

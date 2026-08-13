@@ -18,7 +18,9 @@
                                                                     <ul>
                                                                         <li><a href="{{ route('account-settings') }}" class="active">Account Settings</a></li>
                                                                         <li><a href="{{ route('security-settings') }}">Security</a></li>
-                                                                        {{-- <li><a href="{{ route('plans-billings') }}">Plans & Billing</a></li> --}}
+                                                                        @can('view-plans-billing')
+                                                                            <li><a href="{{ route('billing.plans-billings') }}">Plans & Billing</a></li>
+                                                                        @endcan
                                                                         <li><a href="{{ route('notifications-settings') }}">Notifications</a></li>
                                                                         <li><a href="{{ route('general-settings') }}">Integrations</a></li>
                                                                         {{-- <li><a href="{{ route('general-settings') }}">Captcha</a></li> --}}

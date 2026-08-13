@@ -37,6 +37,30 @@
                         </div>
                     @endforeach
                 </div>
+
+                <hr class="my-4">
+
+                @foreach ($gateways as $gateway)
+                    <div class="mb-3">
+                        <h6 class="fw-semibold text-capitalize mb-3">{{ $gateway }} Gateway</h6>
+                        <div class="row g-3">
+                            @php $gatewaySettings = $settings[$gateway] ?? []; @endphp
+                            <div class="col-md-4">
+                                <label for="{{ $gateway }}_key" class="form-label">Key / Publishable Key</label>
+                                <input type="text" name="{{ $gateway }}[key]" id="{{ $gateway }}_key" class="form-control" value="{{ old($gateway . '.key', $gatewaySettings['key'] ?? '') }}">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ $gateway }}_secret" class="form-label">Secret Key</label>
+                                <input type="password" name="{{ $gateway }}[secret]" id="{{ $gateway }}_secret" class="form-control" value="{{ old($gateway . '.secret', $gatewaySettings['secret'] ?? '') }}">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="{{ $gateway }}_webhook_secret" class="form-label">Webhook Secret</label>
+                                <input type="password" name="{{ $gateway }}[webhook_secret]" id="{{ $gateway }}_webhook_secret" class="form-control" value="{{ old($gateway . '.webhook_secret', $gatewaySettings['webhook_secret'] ?? '') }}">
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+
                 <div class="mt-4">
                     <button type="submit" class="btn btn-primary">Save Settings</button>
                 </div>

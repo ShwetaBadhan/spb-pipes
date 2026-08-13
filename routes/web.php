@@ -4,7 +4,9 @@ use App\Http\Controllers\Central\CentralAdminController;
 use App\Http\Controllers\Central\CentralAuthController;
 use App\Http\Controllers\Central\CentralSettingController;
 use App\Http\Controllers\Central\DashboardController;
+use App\Http\Controllers\Central\PlanController;
 use App\Http\Controllers\Central\TenantController;
+use App\Http\Controllers\Central\WebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,12 +44,25 @@ Route::post('/admin/forgot-password', [CentralAuthController::class, 'sendResetL
 Route::get('/admin/reset-password/{token}', [CentralAuthController::class, 'showResetPasswordForm'])->name('central.password.reset');
 Route::post('/admin/reset-password', [CentralAuthController::class, 'resetPassword'])->name('central.password.update');
 
+Route::post('/billing/webhook/stripe', [WebhookController::class, 'stripe'])->name('billing.webhook.stripe');
+Route::post('/billing/webhook/razorpay', [WebhookController::class, 'razorpay'])->name('billing.webhook.razorpay');
+
 Route::middleware(['auth:central', 'central', 'superadmin'])->prefix('admin')->name('central.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/tenants', [TenantController::class, 'index'])->name('tenants.index');
     Route::post('/tenants', [TenantController::class, 'store'])->name('tenants.store');
+    Route::get('/tenants/{tenant}/edit', [TenantController::class, 'edit'])->name('tenants.edit');
+    Route::put('/tenants/{tenant}', [TenantController::class, 'update'])->name('tenants.update');
     Route::delete('/tenants/{tenant}', [TenantController::class, 'destroy'])->name('tenants.destroy');
+
+    Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
+    Route::get('/plans/create', [PlanController::class, 'create'])->name('plans.create');
+    Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
+    Route::get('/plans/{plan}/edit', [PlanController::class, 'edit'])->name('plans.edit');
+    Route::put('/plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
+    Route::patch('/plans/{plan}/toggle', [PlanController::class, 'toggle'])->name('plans.toggle');
+    Route::delete('/plans/{plan}', [PlanController::class, 'destroy'])->name('plans.destroy');
 
     Route::get('/admins', [CentralAdminController::class, 'index'])->name('admins.index');
     Route::post('/admins', [CentralAdminController::class, 'store'])->name('admins.store');

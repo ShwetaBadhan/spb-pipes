@@ -25,6 +25,7 @@ class CentralSettingController extends Controller
         return view('central.settings', [
             'fields' => self::FIELDS,
             'settings' => $settings,
+            'gateways' => ['stripe', 'razorpay'],
         ]);
     }
 
@@ -36,6 +37,20 @@ class CentralSettingController extends Controller
             $request->validate([$key => $rule]);
 
             CentralSetting::set($key, $request->input($key));
+        }
+
+        foreach (['stripe', 'razorpay'] as $gateway) {
+            $request->validate([
+                "{$gateway}.key" => ['nullable', 'string'],
+                "{$gateway}.secret" => ['nullable', 'string'],
+                "{$gateway}.webhook_secret" => ['nullable', 'string'],
+            ]);
+
+            CentralSetting::set($gateway, array_filter([
+                'key' => $request->input("{$gateway}.key"),
+                'secret' => $request->input("{$gateway}.secret"),
+                'webhook_secret' => $request->input("{$gateway}.webhook_secret"),
+            ]));
         }
 
         return back()->with('status', 'Central settings updated.');

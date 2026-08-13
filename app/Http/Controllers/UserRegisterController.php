@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Concerns\EnforcesPlanLimits;
 
 class UserRegisterController extends Controller
 {
+    use EnforcesPlanLimits;
+
     public function index() // For user list page
 {
     $users = User::with('roles')->latest()->paginate(15);
@@ -19,6 +22,10 @@ class UserRegisterController extends Controller
 }
     public function store(Request $request) // For adding new user
     {
+        if ($guard = $this->ensurePlanLimit('users', 'user')) {
+            return $guard;
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',

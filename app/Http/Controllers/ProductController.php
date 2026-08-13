@@ -15,9 +15,12 @@ use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\ProductsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\Concerns\EnforcesPlanLimits;
 
 class ProductController extends Controller
 {
+    use EnforcesPlanLimits;
+
     /* =======================
        Generate Product Code
     ======================= */
@@ -70,6 +73,10 @@ class ProductController extends Controller
     ======================= */
     public function store(Request $request)
 {
+    if ($guard = $this->ensurePlanLimit('products', 'product')) {
+        return $guard;
+    }
+
     // Add this to debug
     Log::info('Request files:', $request->allFiles());
     Log::info('Request data:', $request->except('image_path', 'gallery'));

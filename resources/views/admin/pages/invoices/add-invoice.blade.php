@@ -6,6 +6,11 @@
         <div class="content">
             <div class="row">
                 <div class="col-md-11 mx-auto">
+                    @if (session('error'))
+                        <div class="alert alert-danger">
+                            {!! session('error') !!}
+                        </div>
+                    @endif
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <strong>Validation Errors:</strong>

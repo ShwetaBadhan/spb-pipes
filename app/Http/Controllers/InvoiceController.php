@@ -16,10 +16,12 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\InvoiceCreatedMail;
 use App\Traits\ConfiguresMail;
 use Exception;
+use App\Http\Controllers\Concerns\EnforcesPlanLimits;
 
 class InvoiceController extends Controller
 {
     use ConfiguresMail;
+    use EnforcesPlanLimits;
     // public function __construct()
     // {
     //     $this->middleware('auth');
@@ -132,6 +134,10 @@ class InvoiceController extends Controller
 
     public function store(Request $request)
     {
+        if ($guard = $this->ensurePlanLimit('invoices', 'invoice')) {
+            return $guard;
+        }
+
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'invoice_date' => 'required|date',

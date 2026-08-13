@@ -1,19 +1,13 @@
 @extends('admin.layout.master')
 @section('content')
-    <!-- ========================
-               Start Page Content
-              ========================= -->
-
     <div class="page-wrapper">
-
-        <!-- Start Content -->
         <div class="content">
-            @if (session('success'))
+            @if (session('billing_success'))
                 <script>
                     Swal.fire({
                         icon: 'success',
                         title: 'Success!',
-                        text: '{{ session('success') }}',
+                        text: '{{ session('billing_success') }}',
                         timer: 4000,
                         timerProgressBar: true,
                         showConfirmButton: false
@@ -21,396 +15,235 @@
                 </script>
             @endif
 
-            @if (session('error'))
+            @if (session('billing_error'))
                 <script>
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
-                        text: '{{ session('error') }}',
+                        text: '{{ session('billing_error') }}',
                         timer: 4000,
                         timerProgressBar: true,
                         showConfirmButton: false
                     });
                 </script>
             @endif
-            <!-- start row -->
+
+            @if ($planService->isExpired())
+                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                    <i class="isax isax-warning-2"></i>
+                    <div>
+                        Your subscription is <strong>{{ ucfirst($planService->status() ?? 'expired') }}</strong> and create actions are
+                        blocked. Upgrade below to continue using the workspace.
+                    </div>
+                </div>
+            @endif
+
             <div class="row justify-content-center">
-
                 <div class="col-xl-12">
-
-                    <!-- start row -->
                     <div class="row settings-wrapper d-flex">
-
-                        <!-- Start settings sidebar -->
-
                         <div class="col-xl-3 col-lg-4">
-                        @include('admin.components.settings-sidebar')
-                            {{-- <div class="card settings-card">
-                                <div class="card-header">
-                                    <h6 class="mb-0">Settings</h6>
+                            @include('admin.components.settings-sidebar')
+                        </div>
+
+                        <div class="col-xl-9 col-lg-8">
+                            <div class="mb-3">
+                                <div class="pb-3 border-bottom mb-3">
+                                    <h6 class="mb-0">Plans & Billing</h6>
                                 </div>
-                                <div class="card-body">
-                                    <div class="sidebars settings-sidebar">
-                                        <div class="sidebar-inner">
-                                            <div class="sidebar-menu p-0">
-                                                <ul>
-                                                    <li class="submenu-open">
-                                                        <ul>
-                                                            <li>
-                                                                <a href="javascript:void(0);" class="active">
-                                                                    <i class="isax isax-setting-2 fs-18"></i>
-                                                                    <span class="fs-14 fw-medium ms-2">General
-                                                                        Settings</span>
 
-                                                                </a>
-
-                                                            </li>
-
-
-
-                                                            <li class="submenu">
-                                                                <a href="{{ route('settings.system-settings') }}">
-                                                                    <i class="isax isax-more-2 fs-18"></i>
-                                                                    <span class="fs-14 fw-medium ms-2">System
-                                                                        Settings</span>
-
-                                                                </a>
-
-                                                            </li>
-
-                                                        </ul>
-                                                    </li>
-                                                </ul>
+                                {{-- Current Plan --}}
+                                <div class="d-flex align-items-center mb-3">
+                                    <span class="bg-dark avatar avatar-sm me-2 flex-shrink-0"><i class="isax isax-info-circle fs-14"></i></span>
+                                    <h6 class="fs-16 fw-semibold mb-0">Current Plan</h6>
+                                </div>
+                                <div class="mb-3 border-bottom">
+                                    <div class="card shadow-none bg-light">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                                <div>
+                                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                                        <h5 class="fw-bold mb-0">
+                                                            @if ($plan)
+                                                                {{ $plan->name }}
+                                                                @if (!$plan->isFree())
+                                                                    <span class="fs-14 text-muted fw-normal">· {{ $plan->currency }} {{ number_format($plan->price) }}/{{ $plan->billing_period }}</span>
+                                                                @endif
+                                                            @else
+                                                                Legacy / No Plan
+                                                            @endif
+                                                        </h5>
+                                                        <span class="badge badge-soft-{{ $planService->isExpired() ? 'danger' : 'success' }}">
+                                                            {{ ucfirst($planService->status() ?? 'active') }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="fs-14 text-muted">
+                                                        @if ($planService->isExpired())
+                                                            Subscription ended
+                                                        @elseif ($plan && $plan->isFree() && $planService->status() === 'trialing')
+                                                            Trial {{ $plan->trial_days }} days · started {{ $planService->subscription()?->created_at?->format('d M Y') }}
+                                                        @elseif ($planService->subscription()?->ends_at)
+                                                            Valid until {{ $planService->subscription()->ends_at->format('d M Y') }}
+                                                        @else
+                                                            Unlimited access
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                @if (!$planService->isExpired())
+                                                    <button type="button" class="btn btn-primary btn-md d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#upgradeModal">
+                                                        <i class="isax isax-crown me-1"></i>Upgrade
+                                                    </button>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
-                                </div><!-- end card body -->
-                            </div><!-- end card --> --}}
-                        </div><!-- end col -->
-
-                        <!-- End settings sidebar -->
-
-                      <div class="col-xl-9 col-lg-8">
-								<div class="mb-3">
-                                    <div class="pb-3 border-bottom mb-3">
-                                        <h6 class="mb-0">Plans & Billings</h6>
-                                    </div>
-									<div class="d-flex align-items-center mb-3">
-										<span class="bg-dark avatar avatar-sm me-2 flex-shrink-0"><i class="isax isax-info-circle fs-14"></i></span>
-										<h6 class="fs-16 fw-semibold mb-0">Current Plan Information</h6>
-									</div>
-									<form action="https://kanakku.dreamstechnologies.com/html/template/account-settings.html">
-										<div class="mb-3 border-bottom">
-											<div class="card shadow-none bg-light">
-												<div class="card-body">
-													<div class="mb-0">		
-														<div class="d-flex align-items-center justify-content-between">
-															<div class="">
-																<h6 class="fw-bold mb-2 fs-14">Basic Plan</h6>
-																<div class="progress-container">
-																	<svg class="progress-circle me-2" viewBox="0 0 36 36">
-																		<circle class="progress-bar" cx="18" cy="18" r="16"></circle>
-																		<circle class="progress-bar-fill" cx="18" cy="18" r="16"></circle>
-																	</svg>		
-																	<span class="fs-14">20 Days Left</span>													
-																</div>															
-															</div>	
-															<div>														
-																<button type="button" class="btn btn-primary btn-md d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#upgrade"> <i class="isax isax-crown me-1"></i>Upgrade</button>
-															</div>		
-														</div>																							
-													</div>
-													
-												</div><!-- end card body -->
-											</div><!-- end card -->
-										</div>
-										<div class="mb-0">
-											<div class="d-flex align-items-center mb-3">
-												<span class="bg-dark avatar avatar-sm me-2 flex-shrink-0"><i class="isax isax-card fs-14"></i></span>
-												<h6 class="fs-16 fw-semibold mb-0">Saved Cards</h6>
-											</div>
-
-											<!-- start row -->
-											<div class="row">
-												<div class="col-xl-6">
-													<div class="card shadow-none">
-														<div class="card-body">
-															<div class="d-flex align-items-center mb-3">
-																<a href="javascript:void(0);">
-																	<img src="assets/img/settings/payment-icon-01.svg" class="img-fluid me-2" alt="clock">
-																</a>
-																<div>
-																	<p class="mb-1">James Peterson</p>
-																	<h6 class="fs-14 fw-medium mb-1">Visa •••• 1568</h6>
-																</div>
-															</div>
-															<div class="d-flex align-items-center justify-content-between">
-																<a href="javascript:void(0);" class="badge badge-success bg-success">Default</a>
-																<div class="d-flex align-items-center">
-																	<a href="javascript:void(0);" class="avatar text-dark avatar-md border rounded-circle me-2 bg-light"><i class="isax isax-edit text-gray"></i></a>
-																	<a href="javascript:void(0);" class="avatar text-dark avatar-md border rounded-circle bg-light" data-bs-toggle="modal" data-bs-target="#delete_card"><i class="isax isax-trash text-gray"></i></a>
-																</div>
-															</div>
-														</div><!-- end card body -->
-													</div><!-- end card -->
-												</div><!-- end col -->
-												<div class="col-xl-6">
-													<div class="card shadow-none">
-														<div class="card-body">
-															<div class="d-flex align-items-center mb-3">
-																<a href="javascript:void(0);">
-																	<img src="assets/img/settings/payment-icon-02.svg" class="img-fluid me-2" alt="clock">
-																</a>
-																<div>
-																	<p class="mb-1">Raymond Rowley</p>
-																	<h6 class="fs-14 fw-medium mb-1">Mastercard •••• 1279</h6>
-																</div>
-															</div>
-															<div class="d-flex align-items-center justify-content-between">
-																<a href="javascript:void(0);" class="text-primary text-decoration-underline">Set as Default</a>
-																<div class="d-flex align-items-center">
-																	<a href="javascript:void(0);" class="avatar text-dark avatar-md border rounded-circle me-2 bg-light"><i class="isax isax-edit text-gray"></i></a>
-																	<a href="javascript:void(0);" class="avatar text-dark avatar-md border rounded-circle bg-light" data-bs-toggle="modal" data-bs-target="#delete_card"><i class="isax isax-trash text-gray"></i></a>
-																</div>
-															</div>
-														</div><!-- end card body -->
-													</div><!-- end card -->
-												</div><!-- end col -->
-											</div>
-											<!-- end row -->
-
-										</div>
-										<div class="mb-3 border-top pt-4">
-											<div class="d-flex align-items-center mb-3">
-												<span class="bg-dark avatar avatar-sm me-2 flex-shrink-0"><i class="isax isax-transaction-minus fs-14"></i></span>
-												<h6 class="fs-16 fw-semibold mb-0">Transactions</h6>
-											</div>
-											<div>
-												<!-- Table Search -->
-												<div class="mb-3">
-													<div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-														<div class="d-flex align-items-center flex-wrap gap-2">
-															<div class="input-icon-start position-relative me-2">
-																<span class="input-icon-addon">
-																	<i class="isax isax-search-normal"></i>
-																</span>
-																<input type="text" class="form-control form-control-sm bg-white" placeholder="Search">															
-															</div>
-														</div>
-														<div class="d-flex align-items-center flex-wrap gap-2">
-															<div class="dropdown">
-																<a href="javascript:void(0);" class="btn btn-outline-white d-inline-flex align-items-center"  data-bs-toggle="dropdown">
-																	<i class="isax isax-export-1 me-1"></i>Export
-																</a>
-																<ul class="dropdown-menu">
-																	<li>
-																		<a class="dropdown-item" href="#"></a>
-																	</li>
-																	<li>
-																		<a class="dropdown-item" href="#">Download as Excel</a>
-																	</li>
-																</ul>
-															</div>
-														</div>
-													</div>			
-													
-												</div>
-												<!-- /Table Search -->
-
-												<!-- Table List -->
-												<div class="table-responsive table-nowrap">
-													<table class="table border mb-0">
-														<thead class="table-light">
-															<tr>
-																<th>Plan Name</th>
-																<th>Amount</th>
-																<th>Purchased Date</th>
-																<th>End Date</th>
-																<th>Status</th>
-																<th class="no-sort"></th>
-															</tr>
-														</thead>
-														<tbody>
-															<tr>
-																<td><p class="text-dark">Basic</p></td>
-																<td>$99</td>
-																<td>22 Feb 2025</td>
-																<td>22 Mar 2025</td>
-																<td>
-																	<span class="badge badge-soft-success d-inline-flex align-items-center">Completed
-																		<i class="isax isax-tick-circle5 ms-1"></i>
-																	</span>
-																</td>
-																<td class="action-item">
-																	<a href="javascript:void(0);" data-bs-toggle="dropdown">
-																		<i class="isax isax-more"></i>
-																	</a>
-																	<ul class="dropdown-menu">
-																		<li>
-																			<a href="javascript:void(0);" class="dropdown-item d-flex align-items-center"><i class="isax isax-edit me-2"></i>Edit</a>
-																		</li>
-																		<li>
-																			<a href="javascript:void(0);" class="dropdown-item d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="isax isax-trash me-2"></i>Delete</a>
-																		</li>
-																	</ul>
-																</td>
-															</tr>
-															<tr>
-																<td><p class="text-dark">Premium</p></td>
-																<td>$199</td>
-																<td>22 Jan 2025</td>
-																<td>22 Feb 2025</td>
-																<td>
-																	<span class="badge badge-soft-success d-inline-flex align-items-center">Completed
-																		<i class="isax isax-tick-circle5 ms-1"></i>
-																	</span>
-																</td>
-																<td class="action-item">
-																	<a href="javascript:void(0);" data-bs-toggle="dropdown">
-																		<i class="isax isax-more"></i>
-																	</a>
-																	<ul class="dropdown-menu">
-																		<li>
-																			<a href="javascript:void(0);" class="dropdown-item d-flex align-items-center"><i class="isax isax-edit me-2"></i>Edit</a>
-																		</li>
-																		<li>
-																			<a href="javascript:void(0);" class="dropdown-item d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="isax isax-trash me-2"></i>Delete</a>
-																		</li>
-																	</ul>
-																</td>
-															</tr>
-															<tr>
-																<td><p class="text-dark">Enterprise</p></td>
-																<td>$299</td>
-																<td>22 Dec 2025</td>
-																<td>22 Jan 2025</td>
-																<td>
-																	<span class="badge badge-soft-success d-inline-flex align-items-center">Completed
-																		<i class="isax isax-tick-circle5 ms-1"></i>
-																	</span>
-																</td>
-																<td class="action-item">
-																	<a href="javascript:void(0);" data-bs-toggle="dropdown">
-																		<i class="isax isax-more"></i>
-																	</a>
-																	<ul class="dropdown-menu">
-																		<li>
-																			<a href="javascript:void(0);" class="dropdown-item d-flex align-items-center"><i class="isax isax-edit me-2"></i>Edit</a>
-																		</li>
-																		<li>
-																			<a href="javascript:void(0);" class="dropdown-item d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="isax isax-trash me-2"></i>Delete</a>
-																		</li>
-																	</ul>
-																</td>
-															</tr>
-															<tr>
-																<td><p class="text-dark">Premium</p></td>
-																<td>$199</td>
-																<td>22 Nov 2025</td>
-																<td>22 Dec 2025</td>
-																<td>
-																	<span class="badge badge-soft-success d-inline-flex align-items-center">Completed
-																		<i class="isax isax-tick-circle5 ms-1"></i>
-																	</span>
-																</td>
-																<td class="action-item">
-																	<a href="javascript:void(0);" data-bs-toggle="dropdown">
-																		<i class="isax isax-more"></i>
-																	</a>
-																	<ul class="dropdown-menu">
-																		<li>
-																			<a href="javascript:void(0);" class="dropdown-item d-flex align-items-center"><i class="isax isax-edit me-2"></i>Edit</a>
-																		</li>
-																		<li>
-																			<a href="javascript:void(0);" class="dropdown-item d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#delete_modal"><i class="isax isax-trash me-2"></i>Delete</a>
-																		</li>
-																	</ul>
-																</td>
-															</tr>
-														</tbody>
-													</table>
-												</div>
-												<!-- /Table List -->
-											</div>
-										</div>
-									</form>
                                 </div>
-							</div><!-- end col -->
+
+                                {{-- Usage meters --}}
+                                @if ($plan && !$planService->isExpired())
+                                    <div class="mb-3 border-bottom">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <span class="bg-dark avatar avatar-sm me-2 flex-shrink-0"><i class="isax isax-chart-2 fs-14"></i></span>
+                                            <h6 class="fs-16 fw-semibold mb-0">Usage</h6>
+                                        </div>
+                                        <div class="row g-3 mb-4">
+                                            @foreach ($usages as $key => $meter)
+                                                <div class="col-md-6 col-xl-4">
+                                                    <div class="card shadow-none border mb-0">
+                                                        <div class="card-body">
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <span class="fs-14 fw-medium text-capitalize">{{ str_replace('_', ' ', $key) }}</span>
+                                                                @if ($meter['unlimited'])
+                                                                    <span class="badge badge-soft-info">Unlimited</span>
+                                                                @else
+                                                                    <span class="badge badge-soft-{{ $meter['within'] ? 'success' : 'danger' }}">{{ $meter['usage'] }} / {{ $meter['limit'] }}</span>
+                                                                @endif
+                                                            </div>
+                                                            <div class="progress progress-sm" role="progressbar" aria-label="{{ $key }}" aria-valuenow="{{ $meter['usage'] }}" aria-valuemin="0" aria-valuemax="{{ $meter['limit'] > 0 ? $meter['limit'] : 1 }}">
+                                                                <div class="progress-bar bg-{{ $meter['within'] ? 'success' : 'danger' }}" style="width: {{ $meter['unlimited'] || $meter['limit'] <= 0 ? 0 : min(100, round($meter['usage'] / $meter['limit'] * 100)) }}%"></div>
+                                                            </div>
+                                                            @if (!$meter['unlimited'])
+                                                                <div class="fs-12 text-muted mt-1">{{ $meter['remaining'] }} remaining</div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+
+                                {{-- Transactions --}}
+                                <div class="mb-3">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <span class="bg-dark avatar avatar-sm me-2 flex-shrink-0"><i class="isax isax-transaction-minus fs-14"></i></span>
+                                        <h6 class="fs-16 fw-semibold mb-0">Transactions</h6>
+                                    </div>
+                                    <div class="table-responsive table-nowrap">
+                                        <table class="table border mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Plan Name</th>
+                                                    <th>Gateway</th>
+                                                    <th>Amount</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse ($payments as $payment)
+                                                    <tr>
+                                                        <td>{{ $payment->meta['plan_name'] ?? '—' }}</td>
+                                                        <td class="text-capitalize">{{ $payment->gateway }}</td>
+                                                        <td>{{ $payment->currency }} {{ number_format($payment->amount, 2) }}</td>
+                                                        <td>{{ $payment->created_at?->format('d M Y') }}</td>
+                                                        <td>
+                                                            <span class="badge badge-soft-{{ $payment->status === 'paid' ? 'success' : ($payment->status === 'pending' ? 'warning' : 'danger') }}">
+                                                                {{ ucfirst($payment->status) }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                @empty
+                                                    <tr>
+                                                        <td colspan="5" class="text-center text-muted py-4">No transactions yet.</td>
+                                                    </tr>
+                                                @endforelse
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <!-- end row -->
-
-                </div><!-- end col -->
+                </div>
             </div>
-            <!-- end row -->
-
         </div>
-        <!-- End Content -->
-
-
     </div>
 
-    <!-- ========================
-               End Page Content
-              ========================= -->
+    {{-- Upgrade modal --}}
+    <div class="modal fade" id="upgradeModal" tabindex="-1" aria-labelledby="upgradeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="upgradeModalLabel">Choose a Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @forelse ($availablePlans as $availablePlan)
+                        <div class="card border mb-3">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+                                    <div>
+                                        <h6 class="fw-bold mb-1">{{ $availablePlan->name }}</h6>
+                                        <span class="fs-18 fw-semibold">
+                                            @if ($availablePlan->isFree())
+                                                Free
+                                            @else
+                                                {{ $availablePlan->currency }} {{ number_format($availablePlan->price) }}
+                                                <span class="fs-12 text-muted fw-normal">/{{ $availablePlan->billing_period }}</span>
+                                            @endif
+                                        </span>
+                                    </div>
+                                    <div class="fs-12 text-muted text-end">
+                                        @foreach ($availablePlan->limits ?? [] as $key => $value)
+                                            @if ($value >= 0)
+                                                <div class="text-capitalize">{{ str_replace('_', ' ', $key) }}: {{ $value }}</div>
+                                            @else
+                                                <div class="text-capitalize">{{ str_replace('_', ' ', $key) }}: Unlimited</div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @if ($availablePlan->description)
+                                    <p class="fs-13 text-muted mb-2">{{ $availablePlan->description }}</p>
+                                @endif
+                                <div class="d-flex align-items-center gap-2">
+                                    @if ($gateways['stripe'])
+                                        <form action="{{ route('billing.checkout') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="plan_id" value="{{ $availablePlan->id }}">
+                                            <input type="hidden" name="gateway" value="stripe">
+                                            <button class="btn btn-primary">Pay with Stripe</button>
+                                        </form>
+                                    @endif
+                                    @if ($gateways['razorpay'])
+                                        <form action="{{ route('billing.checkout') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="plan_id" value="{{ $availablePlan->id }}">
+                                            <input type="hidden" name="gateway" value="razorpay">
+                                            <button class="btn btn-dark">Pay with Razorpay</button>
+                                        </form>
+                                    @endif
+                                    @if (!$gateways['stripe'] && !$gateways['razorpay'])
+                                        <span class="fs-13 text-muted">Online payment is not configured yet. Please contact support.</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-center text-muted mb-0">No other plans available right now.</p>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
-
-@push('scripts')
-    <script>
-        function toggleCaptchaFields(provider) {
-            const googleFields = document.getElementById('google-fields');
-            const cloudflareFields = document.getElementById('cloudflare-fields');
-
-            if (provider === 'google') {
-                googleFields.style.display = 'block';
-                cloudflareFields.style.display = 'none';
-            } else {
-                googleFields.style.display = 'none';
-                cloudflareFields.style.display = 'block';
-            }
-        }
-
-        function checkDomain() {
-            fetch("{{ route('general-settings.check-domain') }}")
-                .then(response => response.json())
-                .then(data => {
-                    const icon = data.is_active ? 'success' : 'warning';
-                    const statusColor = data.is_active ? '#198754' : '#dc3545';
-                    const statusText = data.is_active ? 'Active' : 'Inactive';
-
-                    Swal.fire({
-                        icon: icon,
-                        title: data.is_active ? 'Domain Verified!' : 'Domain Mismatch',
-                        text: data.message,
-                        footer: `
-                    <div class="text-start w-100">
-                        <small class="text-muted">
-                            <strong>Current Domain:</strong> ${data.current_domain}<br>
-                            <strong>Captcha Status:</strong> <span style="color: ${statusColor}; font-weight: bold;">${statusText}</span>
-                        </small>
-                    </div>
-                `,
-                        timer: 10000, // 10 seconds in milliseconds
-                        timerProgressBar: true, // Shows progress bar
-                        showConfirmButton: true, // Keep button in case they want to close early
-                        confirmButtonText: 'OK'
-                    });
-
-                    // Reload after 10 seconds
-                    setTimeout(() => {
-                        location.reload();
-                    }, 10000);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Failed to check domain. Please try again.',
-                        timer: 10000,
-                        timerProgressBar: true,
-                        confirmButtonText: 'OK'
-                    });
-                });
-        }
-    </script>
-@endpush

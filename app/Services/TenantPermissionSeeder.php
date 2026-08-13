@@ -43,6 +43,7 @@ class TenantPermissionSeeder
         $manager = Role::firstOrCreate(['name' => 'Manager', 'guard_name' => self::GUARD]);
         $managerPermissions = Permission::whereIn('name', [
             'view-dashboard',
+            'view-plans-billing',
             'view-products',
             'manage-products',
             'manage-category',
@@ -220,6 +221,7 @@ class TenantPermissionSeeder
             'edit-general-settings',
             'edit-system-settings',
             'view-administration',
+            'view-plans-billing',
 
             // ========== Purchases (Commented Section - Optional) ==========
             'view-purchases',

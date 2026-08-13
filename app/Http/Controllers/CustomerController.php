@@ -6,9 +6,12 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\State;
+use App\Http\Controllers\Concerns\EnforcesPlanLimits;
 
 class CustomerController extends Controller
 {
+    use EnforcesPlanLimits;
+
     public function index()
     {
         $customers = Customer::with([
@@ -29,6 +32,10 @@ class CustomerController extends Controller
 
     public function store(Request $request)
 {
+    if ($guard = $this->ensurePlanLimit('customers', 'customer')) {
+        return $guard;
+    }
+
     $data = $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:customers,email',

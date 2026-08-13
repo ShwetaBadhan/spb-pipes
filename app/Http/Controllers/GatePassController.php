@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Log;
 use Exception;
+use App\Http\Controllers\Concerns\EnforcesPlanLimits;
 class GatePassController extends Controller
 {
+    use EnforcesPlanLimits;
+
     public function index()
     {
         $gatePasses = GatePass::select('batch_number', 'date')
@@ -75,6 +78,10 @@ class GatePassController extends Controller
 
     public function store(Request $request)
     {
+        if ($guard = $this->ensurePlanLimit('gate_passes', 'gate pass')) {
+            return $guard;
+        }
+
         $request->validate([
              'customer_id' => 'required|exists:customers,id', // ✅ Now valid
         'invoice_id' => 'nullable|exists:invoices,id', // ✅ Now valid

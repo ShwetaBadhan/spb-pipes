@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 use App\Models\RawMaterial;
 use Illuminate\Http\Request;
 use App\Models\Unit;
+use App\Http\Controllers\Concerns\EnforcesPlanLimits;
 class RawMaterialController extends Controller
 {
+  use EnforcesPlanLimits;
+
   public function index()
 {
     $materials = RawMaterial::with('unit')->latest()->get();
@@ -25,6 +28,10 @@ class RawMaterialController extends Controller
 
     public function store(Request $request)
     {
+        if ($guard = $this->ensurePlanLimit('raw_materials', 'raw material')) {
+            return $guard;
+        }
+
         $request->validate([
             'material_name' => 'required|max:100',
             'unit_id'      => 'required|string',
