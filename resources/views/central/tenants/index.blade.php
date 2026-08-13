@@ -40,7 +40,7 @@
                                     <label for="subdomain" class="form-label">Subdomain</label>
                                     <div class="input-group">
                                         <input type="text" name="subdomain" id="subdomain" class="form-control" value="{{ old('subdomain') }}" required placeholder="e.g. acme">
-                                        <span class="input-group-text p-1">.localhost</span>
+                                        <span class="input-group-text p-1">.{{ config('tenancy.central_domains')[0] }}</span>
                                     </div>
                                 </div>
 
