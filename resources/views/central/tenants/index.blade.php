@@ -3,10 +3,20 @@
 @section('title', 'Manage Tenants')
 
 @section('content')
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white"><h5 class="mb-0">Create Tenant</h5></div>
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+        <div>
+            <h6 class="mb-1">Manage Tenants</h6>
+            <p class="text-muted fs-14 mb-0">Create new tenants with their own database and subdomain, or delete existing ones.</p>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-xl-4">
+            <div class="card">
+                <div class="card-header bg-white py-3">
+                    <h6 class="mb-0"><i class="isax isax-add-square me-1"></i> Create Tenant</h6>
+                </div>
                 <div class="card-body">
                     <form action="{{ route('central.tenants.store') }}" method="POST">
                         @csrf
@@ -51,44 +61,51 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white"><h5 class="mb-0">Tenants</h5></div>
+        <div class="col-xl-8">
+            <div class="card">
+                <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+                    <h6 class="mb-0"><i class="isax isax-building me-1"></i> Tenants</h6>
+                    <span class="badge bg-primary-subtle text-primary">{{ $tenants->count() }} total</span>
+                </div>
                 <div class="card-body p-0">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Domain</th>
-                                <th class="text-end">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($tenants as $tenant)
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
                                 <tr>
-                                    <td><code>{{ $tenant->id }}</code></td>
-                                    <td>{{ $tenant->name }}</td>
-                                    <td>
-                                        @forelse ($tenant->domains as $domain)
-                                            <a href="http://{{ $domain->domain }}:8000" target="_blank">{{ $domain->domain }}</a>
-                                        @empty
-                                            <span class="text-muted">—</span>
-                                        @endforelse
-                                    </td>
-                                    <td class="text-end">
-                                        <form action="{{ route('central.tenants.destroy', $tenant) }}" method="POST" onsubmit="return confirm('Delete this tenant and its domains?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-sm btn-outline-danger">Delete</button>
-                                        </form>
-                                    </td>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Domain</th>
+                                    <th>Created</th>
+                                    <th class="text-end">Actions</th>
                                 </tr>
-                            @empty
-                                <tr><td colspan="4" class="text-center text-muted py-4">No tenants yet.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @forelse ($tenants as $tenant)
+                                    <tr>
+                                        <td><code>{{ $tenant->id }}</code></td>
+                                        <td>{{ $tenant->name }}</td>
+                                        <td>
+                                            @forelse ($tenant->domains as $domain)
+                                                <a href="http://{{ $domain->domain }}:8000" target="_blank" class="text-primary">{{ $domain->domain }}</a>
+                                            @empty
+                                                <span class="text-muted">—</span>
+                                            @endforelse
+                                        </td>
+                                        <td>{{ $tenant->created_at?->format('d M Y') }}</td>
+                                        <td class="text-end">
+                                            <form action="{{ route('central.tenants.destroy', $tenant) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this tenant and its domains?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-soft-danger">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr><td colspan="5" class="text-center text-muted py-4">No tenants yet.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

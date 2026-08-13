@@ -51,7 +51,7 @@ Route::middleware(['auth:central', 'central', 'superadmin'])->prefix('admin')->n
 
     Route::get('/admins', [CentralAdminController::class, 'index'])->name('admins.index');
     Route::post('/admins', [CentralAdminController::class, 'store'])->name('admins.store');
-    Route::post('/admins/{admin}/toggle', [CentralAdminController::class, 'toggle'])->name('admins.toggle');
+    Route::patch('/admins/{admin}/toggle', [CentralAdminController::class, 'toggle'])->name('admins.toggle');
     Route::delete('/admins/{admin}', [CentralAdminController::class, 'destroy'])->name('admins.destroy');
 
     Route::get('/settings', [CentralSettingController::class, 'index'])->name('settings.index');

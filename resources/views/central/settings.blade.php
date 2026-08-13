@@ -3,26 +3,44 @@
 @section('title', 'Central Settings')
 
 @section('content')
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Platform Settings</h5>
+    <!-- Page Header -->
+    <div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+        <div>
+            <h6 class="mb-1">Central Settings</h6>
+            <p class="text-muted fs-14 mb-0">Platform-wide settings applied across all tenants.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-white py-3">
+            <h6 class="mb-0"><i class="isax isax-setting-2 me-1"></i> Platform Settings</h6>
+        </div>
+        <div class="card-body">
+            @if (session('status'))
+                <div class="alert alert-success py-2 fs-14">{{ session('status') }}</div>
+            @endif
+
+            <form action="{{ route('central.settings.update') }}" method="POST">
+                @csrf
+                <div class="row g-3">
+                    @foreach ($fields as $key => $type)
+                        <div class="col-md-6">
+                            <label for="{{ $key }}" class="form-label">
+                                {{ str_replace('_', ' ', ucwords($key)) }}
+                            </label>
+                            <input type="{{ $type === 'email' ? 'email' : 'text' }}" name="{{ $key }}"
+                                   id="{{ $key }}" class="form-control"
+                                   value="{{ old($key, $settings[$key] ?? '') }}">
+                            @error($key)
+                                <span class="text-danger fs-14">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @endforeach
                 </div>
-                <div class="card-body">
-                    <form action="{{ route('central.settings.update') }}" method="POST">
-                        @csrf
-                        @foreach ($fields as $key => $type)
-                            <div class="mb-3">
-                                <label for="{{ $key }}" class="form-label">{{ ucwords(str_replace('_', ' ', $key)) }}</label>
-                                <input type="{{ $type }}" name="{{ $key }}" id="{{ $key }}"
-                                    class="form-control" value="{{ old($key, $settings[$key] ?? '') }}">
-                            </div>
-                        @endforeach
-                        <button type="submit" class="btn btn-primary">Save Settings</button>
-                    </form>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Save Settings</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 @endsection

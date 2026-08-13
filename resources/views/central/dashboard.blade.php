@@ -7,7 +7,7 @@
     <div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
         <div>
             <h6 class="mb-1">Central Admin Dashboard</h6>
-            <p class="text-muted fs-14 mb-0">Manage all tenants, settings and platform admins from here.</p>
+            {{-- <p class="text-muted fs-14 mb-0">Manage all tenants, settings and platform admins from here.</p> --}}
         </div>
         <div class="d-flex align-items-center flex-wrap gap-2">
             <a href="{{ route('central.tenants.index') }}" class="btn btn-primary d-inline-flex align-items-center">
@@ -87,7 +87,7 @@
     <div class="card">
         <div class="card-header bg-white d-flex align-items-center justify-content-between py-3">
             <h6 class="mb-0">Recent Tenants</h6>
-            <a href="{{ route('central.tenants.index') }}" class="fs-14 text-primary">View All</a>
+            <a href="{{ route('central.tenants.index') }}" class="fs-14 btn btn-primary">View All</a>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
