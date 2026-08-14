@@ -5,8 +5,7 @@ namespace App\Traits;
 use App\Models\EmailSetting;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Log
-;
+use Illuminate\Support\Facades\Log;
 
 trait ConfiguresMail
 {
@@ -67,30 +66,30 @@ trait ConfiguresMail
 
        // At the end of configureMailerFromSettings(), after the switch statement:
 
-// ✅ CRITICAL: Set from address from config (not env fallback)
-$fromEmail = $config['from_email'] ?? null;
-$fromName = $config['from_name'] ?? 'Invoice System';
+        // ✅ CRITICAL: Set from address from config (not env fallback)
+        $fromEmail = $config['from_email'] ?? null;
+        $fromName = $config['from_name'] ?? 'Invoice System';
 
-if ($fromEmail) {
-    // Validate domain has MX records (optional but helpful)
-    if (!checkdnsrr(preg_replace('/.*@/', '', $fromEmail), 'MX')) {
-        Log::warning("From domain may not accept mail", ['from_email' => $fromEmail]);
-        // Don't block - let SMTP server decide
-    }
-    
-    Config::set('mail.from.address', $fromEmail);
-    Config::set('mail.from.name', $fromName);
-    
-    Log::info('Mail from address configured', [
-        'address' => $fromEmail,
-        'name' => $fromName
-    ]);
-} else {
-    Log::error('No from_email configured in email settings');
-    return false;
-}
+        if ($fromEmail) {
+            // Validate domain has MX records (optional but helpful)
+            if (!checkdnsrr(preg_replace('/.*@/', '', $fromEmail), 'MX')) {
+                Log::warning("From domain may not accept mail", ['from_email' => $fromEmail]);
+                // Don't block - let SMTP server decide
+            }
+            
+            Config::set('mail.from.address', $fromEmail);
+            Config::set('mail.from.name', $fromName);
+            
+            Log::info('Mail from address configured', [
+                'address' => $fromEmail,
+                'name' => $fromName
+            ]);
+        } else {
+            Log::error('No from_email configured in email settings');
+            return false;
+        }
 
-return true;
+        return true;
         
     }
 }

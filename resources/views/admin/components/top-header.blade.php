@@ -1,60 +1,3 @@
-{{-- resources/views/admin/components/top-header.blade.php --}}
-@php
-    use App\Models\Product;
-    use App\Models\RawMaterial;
-    use App\Services\InventoryService;
-
-    $lowStockNotifications = collect();
-    $currentUser = auth()->user(); // ✅ Cache user once
-
-    if ($currentUser) {
-        // ========================
-        // PRODUCTS LOW STOCK
-        // ========================
-        $products = Product::with('variants')->get();
-
-        foreach ($products as $product) {
-            $available = InventoryService::productAvailableQty($product->id);
-            $minAlert = $product->variants->min('alert_quantity') ?? 0;
-
-            if ($minAlert > 0 && $available <= $minAlert) {
-                $lowStockNotifications->push([
-                    'type' => 'product',
-                    'name' => $product->name,
-                    'status' => $available <= 0 ? 'Out of Stock' : 'Low Stock',
-                    'available' => $available,
-                    'image' => $product->image_path ?? null,
-                    'url' => route('inventory.index'),
-                ]);
-            }
-        }
-
-        // ========================
-        // RAW MATERIAL LOW STOCK
-        // ========================
-        $raws = RawMaterial::all();
-
-        foreach ($raws as $raw) {
-            $available = InventoryService::rawAvailableQty($raw->id);
-            $minStock = $raw->min_stock ?? 0;
-
-            if ($minStock > 0 && $available <= $minStock) {
-                $lowStockNotifications->push([
-                    'type' => 'raw',
-                    'name' => $raw->material_name,
-                    'status' => $available <= 0 ? 'Out of Stock' : 'Low Stock',
-                    'available' => $available,
-                    'image' => null,
-                    'url' => route('inventory.index'),
-                ]);
-            }
-        }
-
-        // Max 5 notifications
-        $lowStockNotifications = $lowStockNotifications->take(5);
-    }
-@endphp
-
 <div class="main-wrapper">		
     <!-- Topbar Start -->
     <div class="header">
@@ -78,7 +21,7 @@
             </a>
 
             <div class="header-user">
-                <div class="nav user-menu nav-list">
+                <div class="nav user-menu nav-list border-bottom">
                     <div class="me-auto d-flex align-items-center" id="header-search">
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
@@ -126,62 +69,14 @@
 
                                 <!-- Notification Dropdown -->
                                 <div class="notification-body position-relative z-2 rounded-0" data-simplebar>
-                                    @forelse($lowStockNotifications as $index => $item)
-                                        <div class="dropdown-item notification-item py-2 text-wrap border-bottom"
-                                            id="notification-low-{{ $index }}">
-                                            <div class="d-flex">
-                                                <!-- IMAGE / ICON -->
-                                                <div class="flex-shrink-0 me-2">
-                                                    <div class="avatar-sm">
-                                                        <span class="avatar-title bg-soft-warning text-warning fs-18 rounded-circle">
-                                                            @if (!empty($item['image']))
-                                                                <img src="{{ tenant_storage_url($item['image']) }}"
-                                                                    alt="{{ $item['name'] }}" class="rounded-circle"
-                                                                    width="36" height="36">
-                                                            @else
-                                                                <i class="isax isax-warning-2"></i>
-                                                            @endif
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <!-- CONTENT -->
-                                                <div class="flex-grow-1">
-                                                    <p class="mb-0 fw-semibold text-dark">{{ $item['name'] }}</p>
-                                                    <p class="mb-1 fs-14">
-                                                        {{ $item['status'] }}
-                                                        <span class="text-muted">(Available: {{ $item['available'] }})</span>
-                                                    </p>
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <span class="fs-12 text-muted">
-                                                            <i class="isax isax-clock me-1"></i> Just now
-                                                        </span>
-                                                        <div class="notification-action d-flex align-items-center gap-2">
-                                                            <a href="{{ $item['url'] }}"
-                                                                class="btn rounded-circle text-info p-0"
-                                                                data-bs-toggle="tooltip" title="View Inventory">
-                                                                <i class="isax isax-eye fs-12"></i>
-                                                            </a>
-                                                            <button class="btn rounded-circle text-danger p-0"
-                                                                data-bs-dismiss="alert">
-                                                                <i class="isax isax-close-circle fs-12"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @empty
-                                        <div class="dropdown-item py-3 text-center text-muted">
-                                            No low stock alerts 🎉
-                                        </div>
-                                    @endforelse
+                                   
                                 </div>
 
                                 <!-- View All -->
                                 <div class="p-2 border-top text-center">
-                                    <a href="{{ route('inventory.index') }}"
+                                    <a href="javascript:void(0);"
                                         class="text-center fw-medium fs-14 text-primary">
-                                        View All Inventory
+                                        View All Notifications
                                     </a>
                                 </div>
                             </div>
@@ -198,64 +93,35 @@
                         </div>
 
                         <!-- ✅ FIXED: User Dropdown with Null Checks -->
-                        <div class="dropdown profile-dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center"
-                                data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                        <div class="dropdown profile-dropdown border rounded-pill me-2 p-1">
+                            <a href="javascript:void(0);" class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" data-bs-auto-close="outside">
                                 <span class="avatar online">
-                                    <img src="{{ url('assets/img/profiles/avatar-01.jpg') }}" alt="Img"
-                                        class="img-fluid rounded-circle">
+                                    <img src="{{ url('assets/img/profiles/avatar-01.jpg') }}" alt="Img" class="img-fluid rounded-circle">
+                                </span>
+                                <span class="mx-2 d-none d-lg-block">
+                                    <span class="text-dark fw-semibold d-block fs-14">
+                                        {{ Auth::check() ? Auth::user()->name : 'Guest' }}
+                                    </span> 
                                 </span>
                             </a>
                             <div class="dropdown-menu p-2">
-                                @if($currentUser)
-                                    <div class="bg-light p-2 mb-2">
-                                        <span class="avatar avatar-lg me-2">
-                                            <img src="assets/img/profiles/avatar-01.jpg" alt="img"
-                                                class="rounded-circle">
-                                        </span>
-                                        <div>
-                                            <h6 class="fs-14 fw-medium mb-1">
-                                                {{ ucfirst($currentUser->name ?? 'User') }}
-                                            </h6>
-                                            <p class="fs-13">
-                                                @php
-                                                    $role = $currentUser->getRoleNames()->first();
-                                                @endphp
-                                                {{ ucfirst($role ?? 'Member') }}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Item-->
-                                    <a class="dropdown-item d-flex align-items-center" href="#">
-                                        <i class="isax isax-profile-circle me-2"></i>Profile Settings
-                                    </a>
+                                @if (Auth::check())                                    
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('account-settings') }}">
+                                        <i class="isax isax-profile-circle me-2"></i> Settings
+                                    </a> 
 
                                     <hr class="dropdown-divider my-2">
 
-                                    <!-- Logout -->
                                     <a class="dropdown-item logout d-flex align-items-center" href="#"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                         <i class="isax isax-logout me-2"></i> Sign Out
                                     </a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
-                                    </form>
-                                @else
-                                    <!-- Guest Fallback -->
-                                    <div class="bg-light p-2 mb-2">
-                                        <span class="avatar avatar-lg me-2">
-                                            <img src="assets/img/profiles/avatar-01.jpg" alt="img" class="rounded-circle">
-                                        </span>
-                                        <div>
-                                            <h6 class="fs-14 fw-medium mb-1">Guest</h6>
-                                            <p class="fs-13 text-muted">Not logged in</p>
-                                        </div>
-                                    </div>
-                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('login') }}">
-                                        <i class="isax isax-login me-2"></i> Sign In
-                                    </a>
+                                    </form>  
+                                                                  
                                 @endif
+                                
                             </div>
                         </div>
                         <!-- ✅ END Fixed User Dropdown -->
@@ -274,18 +140,18 @@
                     </span>
                 </a>
                 <div class="dropdown-menu p-2 mt-0">
-                    @if($currentUser)
+                    @if(Auth::check())
+                        <a class="dropdown-item logout d-flex align-items-center" href="#"
+                            onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();">
+                            <i class="isax isax-logout me-2"></i>Signout
+                        </a>
                         <a class="dropdown-item logout d-flex align-items-center" href="#"
                             onclick="event.preventDefault(); document.getElementById('logout-form-mobile').submit();">
                             <i class="isax isax-logout me-2"></i>Signout
                         </a>
                         <form id="logout-form-mobile" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
-                        </form>
-                    @else
-                        <a class="dropdown-item d-flex align-items-center" href="{{ route('login') }}">
-                            <i class="isax isax-login me-2"></i>Sign In
-                        </a>
+                        </form>                    
                     @endif
                 </div>
             </div>

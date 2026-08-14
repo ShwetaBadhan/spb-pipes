@@ -3,9 +3,17 @@
 namespace App\Http\Controllers\Central;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
+use App\Models\GatePass;
+use App\Models\Invoice;
 use App\Models\Plan;
+use App\Models\Product;
+use App\Models\RawMaterial;
 use App\Models\Subscription;
+use App\Models\SubscriptionPayment;
 use App\Models\Tenant;
+use App\Models\User;
+use App\Services\TenantLoginService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -75,6 +83,75 @@ class TenantController extends Controller
         ]);
 
         return redirect()->route('central.tenants.index')->with('status', 'Tenant created.');
+    }
+
+    public function show(Tenant $tenant): View
+    {
+        $tenant->load(['domains', 'plan', 'activeSubscription']);
+
+        $counts = [
+            'customers' => Customer::query()->where('tenant_id', $tenant->id)->count(),
+            'invoices' => Invoice::query()->where('tenant_id', $tenant->id)->count(),
+            'products' => Product::query()->where('tenant_id', $tenant->id)->count(),
+            'users' => User::query()->where('tenant_id', $tenant->id)->count(),
+            'gate_passes' => GatePass::query()->where('tenant_id', $tenant->id)->count(),
+            'raw_materials' => RawMaterial::query()->where('tenant_id', $tenant->id)->count(),
+        ];
+
+        $subscription = $tenant->activeSubscription;
+
+        $admin = User::query()->where('tenant_id', $tenant->id)->orderBy('id')->first();
+
+        $usage = [];
+
+        foreach (Plan::LIMIT_KEYS as $key) {
+            $limit = $tenant->plan?->limit($key) ?? -1;
+            $limit = $subscription?->limitOverride($key) ?? $limit;
+
+            $count = $counts[$key];
+
+            $usage[$key] = [
+                'usage' => $count,
+                'limit' => $limit,
+                'remaining' => $limit < 0 ? PHP_INT_MAX : max(0, $limit - $count),
+                'unlimited' => $limit < 0,
+                'percent' => $limit < 0 ? 0 : min(100, (int) round($count / max(1, $limit) * 100)),
+            ];
+        }
+
+        $financials = [
+            'invoice_total' => Invoice::query()->where('tenant_id', $tenant->id)->sum('grand_total'),
+            'invoice_count' => $counts['invoices'],
+        ];
+
+        $payments = SubscriptionPayment::query()
+            ->where('tenant_id', $tenant->id)
+            ->with('subscription.plan')
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get();
+
+        return view('central.tenants.show', compact('tenant', 'admin', 'usage', 'financials', 'payments'));
+    }
+
+    public function loginAs(Tenant $tenant): RedirectResponse
+    {
+        $user = User::query()->where('tenant_id', $tenant->id)->orderBy('id')->first();
+
+        if (! $user) {
+            return back()->withErrors(['error' => 'This tenant has no admin user yet.']);
+        }
+
+        $domain = $tenant->domains()->value('domain');
+
+        if (! $domain) {
+            return back()->withErrors(['error' => 'This tenant has no domain assigned.']);
+        }
+
+        $service = app(TenantLoginService::class);
+        $token = $service->issueLoginToken($user, '/dashboard');
+
+        return redirect()->away($service->tenantUrl($domain, "/auth/login-as/{$token}"));
     }
 
     public function edit(Tenant $tenant): View

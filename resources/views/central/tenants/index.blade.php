@@ -121,7 +121,9 @@
                                 @forelse ($tenants as $tenant)
                                     <tr>
                                         <td><code>{{ $tenant->id }}</code></td>
-                                        <td>{{ $tenant->name }}</td>
+                                        <td>
+                                            <a href="{{ route('central.tenants.show', $tenant) }}" class="text-primary fw-medium">{{ $tenant->name }}</a>
+                                        </td>
                                         <td>
                                             @forelse ($tenant->domains as $domain)
                                                 <a href="http://{{ $domain->domain }}:8000" target="_blank" class="text-primary">{{ $domain->domain }} <i class="fa-solid fa-arrow-up-right-from-square"></i></a> 
@@ -148,6 +150,10 @@
                                         </td>
                                         <td>{{ $tenant->created_at?->format('d M Y') }}</td>
                                         <td class="text-end">
+                                            <a href="{{ route('central.tenants.show', $tenant) }}" class="btn btn-sm btn-soft-primary">Details</a>
+                                            <a href="{{ route('central.tenants.login', $tenant) }}" class="btn btn-sm btn-soft-success">
+                                                <i class="isax isax-login me-1"></i> Move to Tenant
+                                            </a>
                                             <a href="{{ route('central.tenants.edit', $tenant) }}" class="btn btn-sm btn-soft-primary">Edit</a>
                                             <form action="{{ route('central.tenants.destroy', $tenant) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this tenant and its domains?');">
                                                 @csrf

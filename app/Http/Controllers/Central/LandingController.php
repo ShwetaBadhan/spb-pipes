@@ -7,11 +7,10 @@ use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Models\User;
+use App\Services\TenantLoginService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\View\View;
 
 class LandingController extends Controller
@@ -99,35 +98,12 @@ class LandingController extends Controller
             ->first();
 
         $next = $status === Subscription::STATUS_TRIALING ? '/dashboard' : '/plans-billings';
-        $token = $admin ? $this->issueLoginToken($admin, $next) : null;
+        $token = $admin ? app(TenantLoginService::class)->issueLoginToken($admin, $next) : null;
 
         if (! $token) {
-            return redirect()->away($this->tenantUrl($domain, '/login'));
+            return redirect()->away(app(TenantLoginService::class)->tenantUrl($domain, '/login'));
         }
 
-        return redirect()->away($this->tenantUrl($domain, "/auth/login-as/{$token}"));
-    }
-
-    private function tenantUrl(string $domain, string $path): string
-    {
-        $scheme = app()->environment('production') ? 'https' : 'http';
-        $port = app()->environment('production') ? '' : ':8000';
-
-        return $scheme . '://' . $domain . $port . $path;
-    }
-
-    private function issueLoginToken(User $user, string $next): string
-    {
-        $expiresAt = Carbon::now()->addHour();
-        $payload = json_encode([
-            'uid' => $user->id,
-            'next' => $next,
-            'exp' => $expiresAt->timestamp,
-        ]);
-
-        $token = Crypt::encryptString($payload);
-        Cache::store()->put("auth.login.{$token}", $user->id, $expiresAt);
-
-        return $token;
+        return redirect()->away(app(TenantLoginService::class)->tenantUrl($domain, "/auth/login-as/{$token}"));
     }
 }

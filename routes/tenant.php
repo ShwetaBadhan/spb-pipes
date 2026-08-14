@@ -70,6 +70,10 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
 
+    // Route::get('/', function () {
+    //     return redirect()->route('login');
+    // })->name('tenant.home');
+
     Route::get('/auth/register', function () {
         return view('admin.auth.register');
     })->name("register");

@@ -48,9 +48,11 @@ Route::post('/billing/webhook/razorpay', [WebhookController::class, 'razorpay'])
 Route::middleware(['auth:central', 'central', 'superadmin'])->prefix('admin')->name('central.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/tenants', [TenantController::class, 'index'])->name('tenants.index');
-    Route::post('/tenants', [TenantController::class, 'store'])->name('tenants.store');
-    Route::get('/tenants/{tenant}/edit', [TenantController::class, 'edit'])->name('tenants.edit');
+Route::get('/tenants', [TenantController::class, 'index'])->name('tenants.index');
+Route::post('/tenants', [TenantController::class, 'store'])->name('tenants.store');
+Route::get('/tenants/{tenant}', [TenantController::class, 'show'])->name('tenants.show');
+Route::get('/tenants/{tenant}/login', [TenantController::class, 'loginAs'])->name('tenants.login');
+Route::get('/tenants/{tenant}/edit', [TenantController::class, 'edit'])->name('tenants.edit');
     Route::put('/tenants/{tenant}', [TenantController::class, 'update'])->name('tenants.update');
     Route::delete('/tenants/{tenant}', [TenantController::class, 'destroy'])->name('tenants.destroy');
 

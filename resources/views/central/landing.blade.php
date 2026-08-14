@@ -117,7 +117,7 @@
         <div class="container position-relative">
             <div class="row align-items-center g-5">
                 <div class="col-lg-6">
-                    <span class="badge bg-white bg-opacity-10 border border-white border-opacity-25 rounded-pill px-3 py-2 fs-13 mb-4">
+                    <span class="badge bg-white bg-opacity-10 border border-white border-opacity-25 rounded-pill px-3 py-2 fs-13 mb-4 text-dark">
                         <i class="isax isax-flash text-warning me-1"></i> New: Free 14-day trial &middot; No credit card required
                     </span>
                     <h1 class="display-4 mb-3 lh-sm">Run Your <span class="text-warning">Pipe Business</span> From One Place</h1>
