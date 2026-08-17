@@ -106,6 +106,9 @@
                             </a>
                             <div class="dropdown-menu p-2">
                                 @if (Auth::check())                                    
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('billing.plans-billings') }}">
+                                        <i class="isax isax-profile-circle me-2"></i> Subscription Settings
+                                    </a> 
                                     <a class="dropdown-item d-flex align-items-center" href="{{ route('account-settings') }}">
                                         <i class="isax isax-profile-circle me-2"></i> Settings
                                     </a> 

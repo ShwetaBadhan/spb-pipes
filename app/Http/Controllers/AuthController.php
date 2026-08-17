@@ -42,6 +42,23 @@ class AuthController extends Controller
                 ]);
             }
 
+            $user = auth()->user();
+            $tenant = $user->tenant;
+
+            // Redirect to subscription management if no subscription at all
+            // (includes users with no plan, expired subscription, or on trial)
+            if (! $tenant || ! $tenant->subscriptions()->exists()) {
+                return redirect()->route('billing.plans-billings');
+            }
+
+            // If user has a subscription but it's not active/pending (i.e. expired/canceled),
+            // still redirect to billing to manage/re-subscribe
+            $hasActiveOrTrial = $tenant->subscriptions()->active()->exists();
+
+            if (! $hasActiveOrTrial) {
+                return redirect()->route('billing.plans-billings');
+            }
+
             return redirect()->route('dashboard');
         }
 

@@ -13,13 +13,13 @@ class UserRegisterController extends Controller
 {
     use EnforcesPlanLimits;
 
-    public function index() // For user list page
-{
-    $users = User::with('roles')->latest()->paginate(15);
-    $roles = Role::all(); // fetch all roles for dropdown
+    public function index()
+    {
+        $users = User::with('roles')->latest()->paginate(15);
+        $roles = Role::all(); // fetch all roles for dropdown
 
-    return view('admin.pages.admin-users', compact('users', 'roles'));
-}
+        return view('admin.pages.admin-users', compact('users', 'roles'));
+    }
     public function store(Request $request) // For adding new user
     {
         if ($guard = $this->ensurePlanLimit('users', 'user')) {

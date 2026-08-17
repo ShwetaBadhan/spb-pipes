@@ -15,11 +15,11 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::with([
-    'billingStateRelation', 
-    'billingCityRelation',
-    'shippingStateRelation',
-    'shippingCityRelation'
-])->get();
+            'billingStateRelation', 
+            'billingCityRelation',
+            'shippingStateRelation',
+            'shippingCityRelation'
+        ])->get();
 
         return view('admin.pages.customers.customers-view', compact('customers'));
     }

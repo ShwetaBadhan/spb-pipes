@@ -15,6 +15,6 @@ trait EnforcesPlanLimits
 
         return back()
             ->withInput()
-            ->with('error', "You have reached the {$label} limit for your current plan. <a href=\"" . route('billing.plans-billings') . "\">Upgrade your plan</a> to continue.");
+            ->with('error', 'You’ve reached the user limit for your current plan. Upgrade your plan to add more users.');
     }
 }
