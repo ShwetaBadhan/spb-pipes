@@ -74,7 +74,7 @@
         </div>
 
         {{-- footer --}}
-        @include('central.components.footer')
+        {{-- @include('central.components.footer') --}}
     </div>
 
     <!-- jQuery -->
@@ -88,6 +88,9 @@
 
     <!-- Custom JS -->
     <script src="{{ url('assets/js/script.js') }}"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 
     @stack('scripts')
 </body>

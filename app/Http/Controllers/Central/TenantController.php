@@ -12,6 +12,7 @@ use App\Models\RawMaterial;
 use App\Models\Subscription;
 use App\Models\SubscriptionPayment;
 use App\Models\Tenant;
+use App\Models\TenantActivityLog;
 use App\Models\User;
 use App\Services\TenantLoginService;
 use Illuminate\Http\RedirectResponse;
@@ -22,9 +23,29 @@ use Illuminate\View\View;
 
 class TenantController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $tenants = Tenant::with(['domains', 'plan'])->orderByDesc('created_at')->get();
+        $query = Tenant::with(['domains', 'plan', 'activeSubscription', 'latestActivity']);
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('admin_email', 'like', "%{$search}%")
+                  ->orWhere('admin_name', 'like', "%{$search}%")
+                  ->orWhere('id', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('subscription_status', $request->input('status'));
+        }
+
+        if ($request->filled('plan_id')) {
+            $query->where('plan_id', $request->input('plan_id'));
+        }
+
+        $tenants = $query->orderByDesc('created_at')->paginate(20)->withQueryString();
         $plans = Plan::active()->ordered()->get();
         $defaultPlan = Plan::where('is_default', true)->first() ?? $plans->first();
 
@@ -82,12 +103,14 @@ class TenantController extends Controller
             'gateway' => 'manual',
         ]);
 
+        TenantActivityLog::log($tenant->id, 'tenant.created', "Tenant '{$tenant->name}' was created.");
+
         return redirect()->route('central.tenants.index')->with('status', 'Tenant created.');
     }
 
     public function show(Tenant $tenant): View
     {
-        $tenant->load(['domains', 'plan', 'activeSubscription']);
+        $tenant->load(['domains', 'plan', 'activeSubscription.plan', 'latestSubscription.plan']);
 
         $counts = [
             'customers' => Customer::query()->where('tenant_id', $tenant->id)->count(),
@@ -103,13 +126,10 @@ class TenantController extends Controller
         $admin = User::query()->where('tenant_id', $tenant->id)->orderBy('id')->first();
 
         $usage = [];
-
         foreach (Plan::LIMIT_KEYS as $key) {
             $limit = $tenant->plan?->limit($key) ?? -1;
             $limit = $subscription?->limitOverride($key) ?? $limit;
-
             $count = $counts[$key];
-
             $usage[$key] = [
                 'usage' => $count,
                 'limit' => $limit,
@@ -131,7 +151,33 @@ class TenantController extends Controller
             ->limit(10)
             ->get();
 
-        return view('central.tenants.show', compact('tenant', 'admin', 'usage', 'financials', 'payments'));
+        $users = User::query()
+            ->where('tenant_id', $tenant->id)
+            ->orderByDesc('last_login_at')
+            ->get();
+
+        $allSubscriptions = Subscription::query()
+            ->where('tenant_id', $tenant->id)
+            ->with('plan')
+            ->orderByDesc('created_at')
+            ->get();
+
+        $allPayments = SubscriptionPayment::query()
+            ->where('tenant_id', $tenant->id)
+            ->with('subscription.plan')
+            ->orderByDesc('created_at')
+            ->get();
+
+        $activityLogs = TenantActivityLog::query()
+            ->where('tenant_id', $tenant->id)
+            ->orderByDesc('created_at')
+            ->limit(50)
+            ->get();
+
+        return view('central.tenants.show', compact(
+            'tenant', 'admin', 'usage', 'financials', 'payments',
+            'users', 'allSubscriptions', 'allPayments', 'activityLogs'
+        ));
     }
 
     public function loginAs(Tenant $tenant): RedirectResponse
@@ -147,6 +193,8 @@ class TenantController extends Controller
         if (! $domain) {
             return back()->withErrors(['error' => 'This tenant has no domain assigned.']);
         }
+
+        TenantActivityLog::log($tenant->id, 'admin.impersonate', 'Admin impersonated tenant login.');
 
         $service = app(TenantLoginService::class);
         $token = $service->issueLoginToken($user, '/dashboard');
@@ -174,6 +222,7 @@ class TenantController extends Controller
         ]);
 
         $plan = Plan::findOrFail($data['plan_id']);
+        $oldPlanId = $tenant->plan_id;
 
         $subscription = $tenant->activeSubscription()->first();
 
@@ -225,11 +274,19 @@ class TenantController extends Controller
 
         Cache::store()->forget("plan.subscription.{$tenant->id}");
 
+        $action = $request->boolean('suspend') ? 'tenant.suspended' : 'tenant.updated';
+        $desc = $request->boolean('suspend')
+            ? "Tenant suspended."
+            : "Tenant plan changed from #{$oldPlanId} to #{$plan->id}.";
+        TenantActivityLog::log($tenant->id, $action, $desc);
+
         return redirect()->route('central.tenants.index')->with('status', 'Tenant updated.');
     }
 
     public function destroy(Tenant $tenant): RedirectResponse
     {
+        TenantActivityLog::log($tenant->id, 'tenant.deleted', "Tenant '{$tenant->name}' was deleted.");
+
         SubscriptionPayment::query()->where('tenant_id', $tenant->id)->delete();
         Subscription::query()->where('tenant_id', $tenant->id)->delete();
         Cache::store()->forget("plan.subscription.{$tenant->id}");
@@ -238,5 +295,72 @@ class TenantController extends Controller
         $tenant->delete();
 
         return redirect()->route('central.tenants.index')->with('status', 'Tenant deleted.');
+    }
+
+    public function extendTrial(Tenant $tenant, Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'days' => ['required', 'integer', 'min:1', 'max:365'],
+        ]);
+
+        $tenant->trial_ends_at = ($tenant->trial_ends_at ?? now())->addDays($data['days']);
+        $tenant->subscription_ends_at = $tenant->trial_ends_at;
+        $tenant->save();
+
+        $sub = $tenant->activeSubscription;
+        if ($sub) {
+            $sub->ends_at = $tenant->trial_ends_at;
+            $sub->save();
+        }
+
+        TenantActivityLog::log($tenant->id, 'trial.extended', "Trial extended by {$data['days']} days. New end: {$tenant->trial_ends_at->format('d M Y')}.");
+
+        return back()->with('status', "Trial extended by {$data['days']} days.");
+    }
+
+    public function resetTrial(Tenant $tenant): RedirectResponse
+    {
+        $plan = $tenant->plan ?? Plan::where('is_default', true)->first();
+        $trialDays = $plan?->trial_days ?? 14;
+
+        $tenant->subscription_status = Subscription::STATUS_TRIALING;
+        $tenant->trial_ends_at = now()->addDays($trialDays);
+        $tenant->subscription_ends_at = $tenant->trial_ends_at;
+        $tenant->save();
+
+        $sub = $tenant->activeSubscription;
+        if ($sub) {
+            $sub->status = Subscription::STATUS_TRIALING;
+            $sub->starts_at = now();
+            $sub->ends_at = $tenant->trial_ends_at;
+            $sub->cancelled_at = null;
+            $sub->save();
+        } else {
+            Subscription::create([
+                'tenant_id' => $tenant->id,
+                'plan_id' => $plan->id,
+                'status' => Subscription::STATUS_TRIALING,
+                'starts_at' => now(),
+                'ends_at' => $tenant->trial_ends_at,
+                'gateway' => 'manual',
+            ]);
+        }
+
+        TenantActivityLog::log($tenant->id, 'trial.reset', "Trial reset. New end: {$tenant->trial_ends_at->format('d M Y')}.");
+
+        return back()->with('status', 'Trial has been reset.');
+    }
+
+    public function forceLogout(Tenant $tenant): RedirectResponse
+    {
+        $users = User::where('tenant_id', $tenant->id)->get();
+
+        foreach ($users as $user) {
+            $user->forceFill(['last_login_at' => null])->save();
+        }
+
+        TenantActivityLog::log($tenant->id, 'admin.force_logout', "Force logout issued for all tenant users.");
+
+        return back()->with('status', 'All tenant users have been logged out.');
     }
 }

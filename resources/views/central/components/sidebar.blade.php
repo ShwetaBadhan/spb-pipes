@@ -46,6 +46,12 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="{{ route('central.subscriptions.index') }}"
+                                    class="{{ request()->routeIs('central.subscriptions.*') ? 'active' : '' }}">
+                                    <i class="isax isax-cube5"></i><span>Subscriptions</span>
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('central.plans.index') }}"
                                     class="{{ request()->routeIs('central.plans.*') ? 'active' : '' }}">
                                     <i class="isax isax-crown"></i><span>Plans</span>

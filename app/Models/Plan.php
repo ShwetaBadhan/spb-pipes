@@ -41,6 +41,16 @@ class Plan extends Model
         'limits' => 'array',
     ];
 
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function tenants()
+    {
+        return $this->hasMany(Tenant::class);
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
