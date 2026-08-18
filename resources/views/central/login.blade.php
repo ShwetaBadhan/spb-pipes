@@ -2,9 +2,34 @@
 
 @section('title', 'Superadmin Login')
 @section('auth_title', 'Welcome Back')
+@section('auth_subtitle', 'Sign in to continue to the admin dashboard')
+
+@section('left_panel')
+    <img src="{{ asset('assets/img/logo-spb.png') }}" alt="SPB Pipes">
+    <h2 class="text-white">SPB Pipes SaaS</h2>
+    <p>Manage your business from one powerful admin dashboard.</p>
+    <div class="auth-brand-features">
+        <div class="feature-item">
+            <i class="fas fa-chart-line"></i>
+            <span>Real-time analytics &amp; reporting</span>
+        </div>
+        <div class="feature-item">
+            <i class="fas fa-users"></i>
+            <span>User &amp; tenant management</span>
+        </div>
+        <div class="feature-item">
+            <i class="fas fa-shield-halved"></i>
+            <span>Enterprise-grade security</span>
+        </div>
+        <div class="feature-item">
+            <i class="fas fa-bolt"></i>
+            <span>Fast &amp; reliable performance</span>
+        </div>
+    </div>
+@endsection
 
 @section('content')
-    <form action="{{ route('central.login.submit') }}" method="POST">
+    <form action="{{ route('central.login.submit') }}" method="POST" class="mt-4">
         @csrf
         <div class="form-control-lg-icon mb-3">
             <span class="icon"><i class="fas fa-envelope"></i></span>
