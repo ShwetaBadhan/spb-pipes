@@ -1,5 +1,5 @@
 <!-- Guest Footer -->
-<footer class="bg-dark text-white py-5 mt-5">
+<footer class="bg-dark text-white py-5">
     <div class="container">
         <div class="row">
             <div class="col-lg-4 mb-4 mb-lg-0">

@@ -36,7 +36,7 @@ class PlanSeeder extends Seeder
                 'price' => 499,
                 'currency' => 'INR',
                 'billing_period' => 'monthly',
-                'trial_days' => 14,
+                'trial_days' => 0,
                 'is_default' => false,
                 'sort_order' => 2,
                 'limits' => [
@@ -55,7 +55,7 @@ class PlanSeeder extends Seeder
                 'price' => 999,
                 'currency' => 'INR',
                 'billing_period' => 'monthly',
-                'trial_days' => 14,
+                'trial_days' => 0,
                 'is_default' => false,
                 'sort_order' => 3,
                 'limits' => [
@@ -74,7 +74,7 @@ class PlanSeeder extends Seeder
                 'price' => 2499,
                 'currency' => 'INR',
                 'billing_period' => 'monthly',
-                'trial_days' => 14,
+                'trial_days' => 0,
                 'is_default' => false,
                 'sort_order' => 4,
                 'limits' => [

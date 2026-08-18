@@ -12937,6 +12937,8 @@ p:last-child {
 }
 .sidebar .sidebar-inner, .sidebars .sidebar-inner {
   width: 100%;
+  flex: 1;
+  min-height: 0;
 }
 .sidebar .sidebar-menu, .sidebars .sidebar-menu {
   margin-top: 56px;
@@ -13588,6 +13590,9 @@ p:last-child {
 .two-col-sidebar .sidebar {
   /* left: 60px; */
   width: 276px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 @media (max-width: 991.98px) {
   .two-col-sidebar .sidebar {
@@ -22533,6 +22538,116 @@ table td a:hover {
 .filter-range .irs--flat .irs-single:before {
   border-top-color: var(--primary);
   left: 60%;
+}
+
+.sidebar-upgrade-banner {
+  flex-shrink: 0;
+  padding: 12px;
+}
+.sidebar-upgrade-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.10));
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+.sidebar-upgrade-link:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.18));
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+  color: inherit;
+}
+.sidebar-upgrade-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+}
+.sidebar-upgrade-icon.pending-icon {
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+}
+.sidebar-upgrade-content {
+  flex: 1;
+  min-width: 0;
+}
+.sidebar-upgrade-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--dark);
+}
+.sidebar-upgrade-desc {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--secondary);
+}
+.sidebar-upgrade-desc strong {
+  color: var(--dark);
+}
+.sidebar-upgrade-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 6px;
+  background: var(--primary);
+  color: #fff;
+  transition: background 0.2s;
+}
+.sidebar-upgrade-btn:hover {
+  background: #4f46e5;
+}
+.sidebar-upgrade-btn.pending-btn {
+  background: #f59e0b;
+}
+.sidebar-upgrade-btn.pending-btn:hover {
+  background: #d97706;
+}
+.sidebar-upgrade-banner.pending .sidebar-upgrade-link {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(249, 115, 22, 0.08));
+  border-color: rgba(245, 158, 11, 0.3);
+}
+.sidebar-upgrade-banner.pending .sidebar-upgrade-link:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(249, 115, 22, 0.15));
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+}
+[data-bs-theme=dark] .sidebar-upgrade-title {
+  color: var(--white);
+}
+[data-bs-theme=dark] .sidebar-upgrade-desc {
+  color: rgba(255, 255, 255, 0.55);
+}
+[data-bs-theme=dark] .sidebar-upgrade-desc strong {
+  color: var(--white);
+}
+[data-bs-theme=dark] .sidebar-upgrade-link {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.08));
+  border-color: rgba(99, 102, 241, 0.2);
+}
+[data-bs-theme=dark] .sidebar-upgrade-link:hover {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.15));
+}
+[data-bs-theme=dark] .sidebar-upgrade-banner.pending .sidebar-upgrade-link {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(249, 115, 22, 0.06));
+}
+[data-bs-theme=dark] .sidebar-upgrade-banner.pending .sidebar-upgrade-link:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(249, 115, 22, 0.12));
 }
 
 /*# sourceMappingURL=style.css.map */

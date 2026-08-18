@@ -1,46 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>SPB Pipes | SPB Pipes</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SPB Pipes SaaS platform for managing operations, tenants and central administration.">
-    <meta name="keywords" content="SPB Pipes, SaaS, pipe management, ERP">
-    <meta name="author" content="">
-    <meta http-equiv="Cache-Control" content="no-transform">
-
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon.png') }}">
-
-    <!-- Theme Script js -->
-    <script src="{{ url('assets/js/theme-script.js') }}"></script>
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ url('assets/css/bootstrap.min.css') }}">
-
-    <!-- Tabler Icon CSS -->
-    <link rel="stylesheet" href="{{ url('assets/plugins/tabler-icons/tabler-icons.min.css') }}">
-
-    <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="{{ url('assets/plugins/fontawesome/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ url('assets/plugins/fontawesome/css/all.min.css') }}">
-
-    <!-- Simplebar CSS -->
-    <link rel="stylesheet" href="{{ url('assets/plugins/simplebar/simplebar.min.css') }}">
-
-    <!-- Iconsax CSS -->
-    <link rel="stylesheet" href="{{ url('assets/css/iconsax.css') }}">
-
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="{{ url('assets/css/style.css') }}">
-
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
+@extends('central.layouts.app')
+@section('title', 'SPB Pipes - Home')
+@section('sections')
+@push('styles')
     <style>
         .hero-section {
-            background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+            background: linear-gradient(250deg, #26516f 0%, #2480ad 100%);
             padding: 120px 0;
         }
         .hero-section h1 {
@@ -103,14 +67,10 @@
             scroll-margin-top: 80px;
         }
     </style>
-</head>
+@endpush
 
-<body>
-
-    {{-- header --}}
     @include('central.components.guest-header')
 
-    {{-- Hero Banner --}}
     <section id="home" class="hero-section text-white position-relative overflow-hidden">
         <div class="hero-glow hero-glow-1" aria-hidden="true"></div>
         <div class="hero-glow hero-glow-2" aria-hidden="true"></div>
@@ -207,7 +167,6 @@
         </div>
     </section>
 
-    {{-- Features Section --}}
     <section id="features" class="py-5">
         <div class="container">
             <div class="text-center mb-5">
@@ -458,9 +417,13 @@
                                         </li>
                                     @endforeach
                                 </ul>
-                                <a href="{{ route('central.register', ['plan' => $plan->id]) }}" class="btn btn-primary w-100">
-                                    {{ $plan->trial_days > 0 ? 'Start Free Trial' : 'Get Started' }}
-                                </a>
+                                @if ($plan->isFree())
+                                    <a href="{{ route('central.register', ['plan' => $plan->id]) }}" class="btn btn-primary w-100">Start Free Trial</a>
+                                @elseif ($plan->trial_days > 0)
+                                    <a href="{{ route('central.register', ['plan' => $plan->id]) }}" class="btn btn-primary w-100">Start Free Trial</a>
+                                @else
+                                    <a href="{{ route('central.register', ['plan' => $plan->id]) }}" class="btn btn-primary w-100">Get Started</a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -470,23 +433,6 @@
             </div>
         </div>
     </section>
+@endsection
 
-    {{-- footer --}}
-    @include('central.components.guest-footer')
-
-    <!-- jQuery -->
-    <script src="{{ url('assets/js/jquery-3.7.1.min.js') }}"></script>
-
-    <!-- Bootstrap Core JS -->
-    <script src="{{ url('assets/js/bootstrap.bundle.min.js') }}"></script>
-
-    <!-- Simplebar JS -->
-    <script src="{{ url('assets/plugins/simplebar/simplebar.min.js') }}"></script>
-
-    <!-- Custom JS -->
-    <script src="{{ url('assets/js/script.js') }}"></script>
-
-    @stack('scripts')
-</body>
-
-</html>
+    

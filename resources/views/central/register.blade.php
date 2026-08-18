@@ -1,38 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('central.layouts.app')
+@section('title', 'SPB Pipes - Home')
+@section('sections')
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Create Your Workspace | SPB Pipes</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon.png') }}">
-
-    <!-- Theme Script js -->
-    <script src="{{ url('assets/js/theme-script.js') }}"></script>
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ url('assets/css/bootstrap.min.css') }}">
-
-    <!-- Tabler Icon CSS -->
-    <link rel="stylesheet" href="{{ url('assets/plugins/tabler-icons/tabler-icons.min.css') }}">
-
-    <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="{{ url('assets/plugins/fontawesome/css/fontawesome.min.css') }}">
-    <link rel="stylesheet" href="{{ url('assets/plugins/fontawesome/css/all.min.css') }}">
-
-    <!-- Iconsax CSS -->
-    <link rel="stylesheet" href="{{ url('assets/css/iconsax.css') }}">
-
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="{{ url('assets/css/style.css') }}">
-
+@push('styles')
     <style>
         .register-bg {
-            background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+            background: linear-gradient(250deg, #26516f 0%, #2480ad 100%);
             min-height: 100vh;
             padding: 48px 0;
         }
@@ -49,9 +22,7 @@
             border-radius: 0 .375rem .375rem 0;
         }
     </style>
-</head>
-
-<body>
+@endpush
 
     @include('central.components.guest-header')
 
@@ -160,11 +131,13 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-lg w-100 mt-1" id="submitBtn">
-                                @if ($plan->trial_days > 0)
+<button type="submit" class="btn btn-primary btn-lg w-100 mt-1" id="submitBtn">
+                                @if ($plan->isFree())
+                                    Skip Payment
+                                @elseif ($plan->trial_days > 0)
                                     Start Free Trial
                                 @else
-                                    Create Workspace &amp; Pay
+                                    Create Workspace & Pay
                                 @endif
                             </button>
 
@@ -179,17 +152,10 @@
         </div>
     </div>
 
-    @include('central.components.guest-footer')
+   
 
-    <!-- jQuery -->
-    <script src="{{ url('assets/js/jquery-3.7.1.min.js') }}"></script>
-
-    <!-- Bootstrap Core JS -->
-    <script src="{{ url('assets/js/bootstrap.bundle.min.js') }}"></script>
-
-    <!-- Custom JS -->
-    <script src="{{ url('assets/js/script.js') }}"></script>
-
+@endsection
+@push('scripts')
     <script>
         $(function () {
             var $select = $('#planSelect');
@@ -210,7 +176,4 @@
             $select.on('change', refreshPlan);
         });
     </script>
-
-</body>
-
-</html>
+@endpush

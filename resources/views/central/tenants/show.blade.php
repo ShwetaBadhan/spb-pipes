@@ -205,6 +205,26 @@
                 </div>
             </div>
 
+            @php
+        $isTrialPlan = $planStatus === 'trialing';
+        $hasActiveTrial = $tenant->trial_ends_at && $tenant->trial_ends_at > now();
+        $isPaidPlan = $planStatus === 'active' && !$hasActiveTrial;
+        $planIsFree = $tenant->plan?->isFree();
+    @endphp
+
+            @if ($isTrialPlan)
+                <div class="card mt-3">
+                    <div class="card-header bg-white py-3">
+                        <h6 class="mb-0"><i class="isax isax-info-circle me-1"></i> Action</h6>
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ app('App\Services\TenantLoginService')->tenantUrl($domain, '/plans-billings') }}" class="btn btn-warning w-100">
+                            <i class="isax isax-dollar me-1"></i> Complete Payment
+                        </a>
+                    </div>
+                </div>
+            @endif
+
             <div class="card mt-3">
                 <div class="card-header bg-white py-3">
                     <h6 class="mb-0"><i class="isax isax-wallet-3 me-1"></i> Financials</h6>

@@ -434,10 +434,52 @@
                     @endcanany
 
                 </ul>
-
             </div>
         </div>
+        <!-- /Sidenav Menu -->
+
+        @if (tenant()->trial_ends_at && tenant()->trial_ends_at > now())
+            <div class="sidebar-upgrade-banner">
+                <a href="{{ route('billing.plans-billings') }}" class="sidebar-upgrade-link">
+                    <div class="sidebar-upgrade-icon">
+                        <i class="isax isax-crown-1"></i>
+                    </div>
+                    <div class="sidebar-upgrade-content">
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span class="sidebar-upgrade-title">Upgrade Plan</span>
+                            <span class="badge bg-primary">{{ abs(tenant()->trial_ends_at->diffInDays(now()) + 1) }}d left</span>
+                        </div>
+                        <p class="sidebar-upgrade-desc">
+                            Trial ends <strong>{{ tenant()->trial_ends_at->format('d M') }}</strong>. Upgrade to keep all features.
+                        </p>
+                        <span class="sidebar-upgrade-btn">
+                            <i class="isax isax-arrow-right-1"></i> View Plans
+                        </span>
+                    </div>
+                </a>
+            </div>
+        @elseif (tenant()->subscription_status === 'pending')
+            <div class="sidebar-upgrade-banner pending">
+                <a href="{{ route('billing.plans-billings') }}" class="sidebar-upgrade-link">
+                    <div class="sidebar-upgrade-icon pending-icon">
+                        <i class="isax isax-wallet-check"></i>
+                    </div>
+                    <div class="sidebar-upgrade-content">
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span class="sidebar-upgrade-title">Complete Payment</span>
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        </div>
+                        <p class="sidebar-upgrade-desc">
+                            Your account is awaiting payment to activate subscription.
+                        </p>
+                        <span class="sidebar-upgrade-btn pending-btn">
+                            <i class="isax isax-arrow-right-1"></i> Pay Now
+                        </span>
+                    </div>
+                </a>
+            </div>
+        @endif
+        </div>
     </div>
-</div>
 </div>
 <!-- Sidenav Menu End -->

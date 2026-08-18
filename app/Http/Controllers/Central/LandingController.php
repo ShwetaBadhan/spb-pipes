@@ -66,7 +66,11 @@ class LandingController extends Controller
         $startsAt = Carbon::now();
         $endsAt = $trialDays > 0 ? $startsAt->copy()->addDays($trialDays) : null;
 
-        $status = $trialDays > 0 ? Subscription::STATUS_TRIALING : Subscription::STATUS_PENDING;
+        // Free plans always have pending status, skip payment
+        $isFreePlan = $plan->isFree();
+        $status = $isFreePlan
+            ? Subscription::STATUS_PENDING
+            : ($trialDays > 0 ? Subscription::STATUS_TRIALING : Subscription::STATUS_PENDING);
 
         $tenant = Tenant::create([
             'id' => $data['subdomain'],
@@ -77,7 +81,7 @@ class LandingController extends Controller
             'admin_password' => $data['admin_password'],
             'plan_id' => $plan->id,
             'subscription_status' => $status,
-            'trial_ends_at' => $status === Subscription::STATUS_TRIALING ? $endsAt : null,
+            'trial_ends_at' => $isFreePlan ? null : ($status === Subscription::STATUS_TRIALING ? $endsAt : null),
             'subscription_ends_at' => $endsAt,
         ]);
 
