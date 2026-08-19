@@ -438,7 +438,7 @@
         </div>
         <!-- /Sidenav Menu -->
 
-        @if (tenant()->trial_ends_at && tenant()->trial_ends_at > now())
+        {{-- @if (tenant()->trial_ends_at && tenant()->trial_ends_at > now())
             <div class="sidebar-upgrade-banner">
                 <a href="{{ route('billing.plans-billings') }}" class="sidebar-upgrade-link">
                     <div class="sidebar-upgrade-icon">
@@ -478,7 +478,7 @@
                     </div>
                 </a>
             </div>
-        @endif
+        @endif --}}
         </div>
     </div>
 </div>

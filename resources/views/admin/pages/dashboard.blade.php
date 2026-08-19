@@ -22,6 +22,57 @@
                 @endif
             @endcan
 
+            {{-- Subscription & Payment Alerts --}}
+            @if ($tenant->is_suspended)
+                <div class="alert alert-danger d-flex align-items-center alert-dismissible fade show" role="alert">
+                    <i class="isax isax-normalime fs-20 me-2"></i>
+                    <div>
+                        <strong>Account Suspended</strong> — Your account has been suspended. Please contact support.
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @elseif ($tenant->subscription_status === 'pending')
+                <div class="alert alert-warning d-flex align-items-center alert-dismissible fade show" role="alert">
+                    <i class="isax isax-wallet-check fs-20 me-2"></i>
+                    <div class="flex-grow-1">
+                        <strong>Complete Payment</strong> — Your subscription is awaiting payment to activate.
+                        <a href="{{ route('billing.plans-billings') }}" class="fw-semibold ms-1">Pay Now <i class="isax isax-arrow-right-3"></i></a>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @elseif ($tenant->subscription_status === 'trialing' && $tenant->trial_ends_at && $tenant->trial_ends_at->isFuture())
+                @php $daysLeft = (int) now()->diffInDays($tenant->trial_ends_at, false); @endphp
+                @if ($daysLeft <= 7)
+                    <div class="alert alert-info d-flex align-items-center alert-dismissible fade show" role="alert">
+                        <i class="isax isax-crown-1 fs-20 me-2"></i>
+                        <div class="flex-grow-1">
+                            <strong>Trial Ending Soon</strong> —
+                            Your trial ends in <strong>{{ $daysLeft }} day{{ $daysLeft !== 1 ? 's' : '' }}</strong>
+                            ({{ $tenant->trial_ends_at->format('d M, Y') }}).
+                            Upgrade to keep all features.
+                            <a href="{{ route('billing.plans-billings') }}" class="fw-semibold ms-1">Upgrade Plan <i class="isax isax-arrow-right-3"></i></a>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+            @elseif (in_array($tenant->subscription_status, ['expired', 'canceled', 'past_due']))
+                <div class="alert alert-danger d-flex align-items-center alert-dismissible fade show" role="alert">
+                    <i class="isax isax-notice fs-20 me-2"></i>
+                    <div class="flex-grow-1">
+                        <strong>Subscription {{ ucfirst($tenant->subscription_status) }}</strong> —
+                        @if ($tenant->subscription_status === 'canceled')
+                            Your subscription has been canceled.
+                        @elseif ($tenant->subscription_status === 'past_due')
+                            Your payment is overdue.
+                        @else
+                            Your subscription has expired.
+                        @endif
+                        <a href="{{ route('billing.plans-billings') }}" class="fw-semibold ms-1">Subscribe Now <i class="isax isax-arrow-right-3"></i></a>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
             <!-- Start Breadcrumb -->
             <div class="d-flex d-block align-items-center justify-content-between flex-wrap gap-3 mb-3">
                 <div>
