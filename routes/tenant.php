@@ -64,15 +64,10 @@ use App\Models\Customer;
 |
 */
 
-Route::middleware([
-    'web',
-    InitializeTenancyByDomain::class,
-    PreventAccessFromCentralDomains::class,
-])->group(function () {
-
-    // Route::get('/', function () {
-    //     return redirect()->route('login');
-    // })->name('tenant.home');
+Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCentralDomains::class,])->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('login');
+    })->name('tenant.home');
 
     Route::get('/auth/register', function () {
         return view('admin.auth.register');

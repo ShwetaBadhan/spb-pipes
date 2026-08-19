@@ -48,7 +48,7 @@
             
             <!-- Left: Cover Image -->
             <div class="col-lg-8 position-relative">
-                <img src="{{ tenant_storage_url($cover_image) ?? asset('assets/img/login-cover-default.jpg') }}" 
+                <img src="{{ tenant_storage_url($cover_image) ?? asset('assets/img/login-bg.webp') }}" 
                      class="img-fluid w-100 h-100 object-fit-cover" 
                      alt="Cover Image"
                      >
@@ -107,13 +107,13 @@
                                 </div>
                             </div>
 
-                            <div class="d-flex align-items-center justify-content-between mb-3 px-2">
+                            {{-- <div class="d-flex align-items-center justify-content-between mb-3 px-2">
                                 <div class="form-check">
                                     <input class="form-check-input" id="remember_me" name="remember" type="checkbox">
                                     <label for="remember_me" class="form-check-label">Remember Me</label>
                                 </div>
                                 <a href="#">Forgot Password</a>
-                            </div>
+                            </div> --}}
 
                             <button type="submit" class="btn bg-primary-gradient text-white w-100">
                                 Sign In
@@ -124,7 +124,7 @@
 
                 <!-- ✅ COPYRIGHT SECTION - Fixed Positioning -->
                 <div class="mt-4 mb-3 text-center w-100">
-                    @include('admin.components.copyright')
+                    {{-- @include('admin.components.copyright') --}}
                 </div>
 
             </div>

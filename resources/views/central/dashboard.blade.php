@@ -4,10 +4,7 @@
 
 @section('content')
     <div class="page-header d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
-        <div>
-            <h6 class="mb-1">Central Admin Dashboard</h6>
-            <p class="text-muted fs-14 mb-0">Overview of your SaaS platform performance</p>
-        </div>
+        <h6 class="mb-0 fw-bold"><i class="isax isax-element-45 me-1"></i> Dashboard</h6>
         <div class="d-flex align-items-center flex-wrap gap-2">
             <a href="{{ route('central.tenants.index') }}" class="btn btn-primary d-inline-flex align-items-center">
                 <i class="isax isax-add-square me-1"></i> Create Tenant

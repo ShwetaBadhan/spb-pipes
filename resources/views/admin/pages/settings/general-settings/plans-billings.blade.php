@@ -95,13 +95,37 @@
                                                     </div>
                                                 </div>
                                                 @if (!$planService->isExpired() || $planService->status() === 'pending')
-                                                    <button type="button" class="btn btn-{{ $planService->status() === 'pending' ? 'warning' : 'primary' }} btn-md d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#upgradeModal">
-                                                        @if ($planService->status() === 'pending')
-                                                            <i class="isax isax-card me-1"></i>Complete Payment
-                                                        @else
+                                                    @if ($planService->status() === 'pending')
+                                                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                                                            @if ($gateways['stripe'])
+                                                                <form action="{{ route('billing.checkout') }}" method="POST">
+                                                                    @csrf
+                                                                    <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                                                                    <input type="hidden" name="gateway" value="stripe">
+                                                                    <button class="btn btn-primary btn-md d-inline-flex align-items-center">
+                                                                        <i class="isax isax-card me-1"></i>Pay with Stripe
+                                                                    </button>
+                                                                </form>
+                                                            @endif
+                                                            @if ($gateways['razorpay'])
+                                                                <form action="{{ route('billing.checkout') }}" method="POST">
+                                                                    @csrf
+                                                                    <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                                                                    <input type="hidden" name="gateway" value="razorpay">
+                                                                    <button class="btn btn-dark btn-md d-inline-flex align-items-center">
+                                                                        <i class="isax isax-card me-1"></i>Pay with Razorpay
+                                                                    </button>
+                                                                </form>
+                                                            @endif
+                                                            @if (!$gateways['stripe'] && !$gateways['razorpay'])
+                                                                <span class="fs-13 text-muted">Online payment is not configured yet.</span>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        <button type="button" class="btn btn-primary btn-md d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#upgradeModal">
                                                             <i class="isax isax-crown me-1"></i>Upgrade
-                                                        @endif
-                                                    </button>
+                                                        </button>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </div>
