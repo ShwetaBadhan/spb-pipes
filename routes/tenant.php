@@ -69,8 +69,10 @@ Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCen
         return view('admin.auth.register');
     })->name("register");
 
-    Route::get('/auth/login-as/{token}', [AuthController::class, 'loginAs'])
-        ->name('auth.login-as');
+    Route::get('/auth/login-as/{token}', [AuthController::class, 'loginAs'])->name('auth.login-as');
+    Route::get('/login', [AuthController::class, 'login'])->name('login');
+    // Route::get('/auth/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'authenticate'])->name('login.submit');
 
     // routes/web.php
     Route::get('/security-settings', [SecuritySettingController::class, 'index'])->name('security-settings');
@@ -569,11 +571,7 @@ Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCen
     Route::get('/admin-users/{user}', [UserRegisterController::class, 'show'])->name('users.show');
 
     // auth pages
-    Route::get('/login', [AuthController::class, 'login'])->name('login');
-
-    Route::get('/auth/login', [AuthController::class, 'login']);
-
-    Route::post('/login', [AuthController::class, 'authenticate'])->name('login.submit');
+   
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -748,6 +746,6 @@ Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCen
         ->name('settings.system-settings.remove-image');
 
     Route::fallback(function () {
-        return redirect()->route('login');
+        abort(404);
     });
 });

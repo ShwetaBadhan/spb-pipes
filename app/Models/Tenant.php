@@ -18,16 +18,16 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     protected $fillable = [
         'name',
         'domain',
+        'plan_id',
         'admin_name',
         'admin_email',
         'admin_password',
-        'plan_id',
         'subscription_status',
         'is_suspended',
         'trial_ends_at',
         'subscription_ends_at',
         'data',
-        'last_login_at'
+        'last_login_at',
     ];
 
     protected $casts = [
@@ -36,6 +36,22 @@ class Tenant extends BaseTenant implements TenantWithDatabase
         'is_suspended' => 'boolean',
         'last_login_at' => 'datetime',
     ];
+
+    public static function getCustomColumns(): array
+    {
+        return [
+            'id',
+            'created_at',
+            'updated_at',
+            'data',
+            'plan_id',
+            'subscription_status',
+            'is_suspended',
+            'trial_ends_at',
+            'subscription_ends_at',
+            'last_login_at',
+        ];
+    }
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -87,6 +103,13 @@ class Tenant extends BaseTenant implements TenantWithDatabase
     public function users()
     {
         return $this->hasMany(User::class, 'tenant_id', 'id');
+    }
+    public function adminUser()
+    {
+        return $this->hasOne(User::class, 'tenant_id', 'id')
+        ->whereHas('roles', function ($query) {
+            $query->where('name', 'admin');
+        });
     }
 
     public function activityLogs()

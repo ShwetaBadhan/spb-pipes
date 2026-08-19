@@ -143,8 +143,8 @@
                                     <a href="{{ route('central.tenants.show', $tenant) }}" class="text-primary fw-medium">{{ $tenant->name }}</a>
                                     <br><small class="text-muted">{{ Str::limit($tenant->id, 12) }}</small>
                                 </td>
-                                <td>{{ $tenant->admin_name ?? '—' }}</td>
-                                <td><small>{{ $tenant->admin_email ?? '—' }}</small></td>
+                                <td>{{ $tenant->adminUser?->name ?? '—' }}</td>
+                                <td><small>{{ $tenant->adminUser?->email ?? '—' }}</small></td>
                                 <td>
                                     @if ($tenant->plan)
                                         <span class="badge badge-soft-primary">{{ $tenant->plan->name }}</span>

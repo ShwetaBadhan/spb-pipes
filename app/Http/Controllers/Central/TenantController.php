@@ -25,7 +25,7 @@ class TenantController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Tenant::with(['domains', 'plan', 'activeSubscription', 'latestActivity']);
+        $query = Tenant::with(['adminUser', 'domains', 'plan', 'activeSubscription', 'latestActivity']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');

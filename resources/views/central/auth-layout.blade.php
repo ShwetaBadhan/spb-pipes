@@ -279,7 +279,7 @@
                 <div class="floating-shape"></div>
                 <div class="floating-shape"></div>
                 @yield('left_panel')
-                <img src="{{ asset('assets/img/logo-spb.png') }}" alt="SPB Pipes" class="mt-auto opacity-50" style="width:80px; margin-top:2rem;">
+                {{-- <img src="{{ asset('assets/img/logo-spb.png') }}" alt="SPB Pipes" class="mt-auto opacity-50" style="width:80px; margin-top:2rem;"> --}}
             </div>
 
             {{-- Right Form Panel --}}

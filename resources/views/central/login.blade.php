@@ -6,7 +6,7 @@
 
 @section('left_panel')
     <img src="{{ asset('assets/img/logo-spb.png') }}" alt="SPB Pipes">
-    <h2 class="text-white">SPB Pipes SaaS</h2>
+    <h2 class="text-white">SPB Pipes</h2>
     <p>Manage your business from one powerful admin dashboard.</p>
     <div class="auth-brand-features">
         <div class="feature-item">
