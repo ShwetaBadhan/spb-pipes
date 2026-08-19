@@ -30,19 +30,21 @@ use Illuminate\Support\Facades\Route;
 //     return view('central.landing');
 // })->name('home');
 
-Route::get('/', [LandingController::class, 'index'])->name('home');
+Route::middleware(['central.only'])->group(function () {
+    Route::get('/', [LandingController::class, 'index'])->name('home');
 
-Route::get('/register', [LandingController::class, 'register'])->name('central.register');
-Route::post('/register', [LandingController::class, 'store'])->name('central.register.submit');
+    Route::get('/register', [LandingController::class, 'register'])->name('central.register');
+    Route::post('/register', [LandingController::class, 'store'])->name('central.register.submit');
 
-Route::get('/admin/login', [CentralAuthController::class, 'showLoginForm'])->name('central.login');
-Route::post('/admin/login', [CentralAuthController::class, 'login'])->name('central.login.submit');
-Route::post('/admin/logout', [CentralAuthController::class, 'logout'])->name('central.logout');
+    Route::get('/admin/login', [CentralAuthController::class, 'showLoginForm'])->name('central.login');
+    Route::post('/admin/login', [CentralAuthController::class, 'login'])->name('central.login.submit');
+    Route::post('/admin/logout', [CentralAuthController::class, 'logout'])->name('central.logout');
 
-Route::get('/admin/forgot-password', [CentralAuthController::class, 'showForgotPasswordForm'])->name('central.password.request');
-Route::post('/admin/forgot-password', [CentralAuthController::class, 'sendResetLink'])->name('central.password.email');
-Route::get('/admin/reset-password/{token}', [CentralAuthController::class, 'showResetPasswordForm'])->name('central.password.reset');
-Route::post('/admin/reset-password', [CentralAuthController::class, 'resetPassword'])->name('central.password.update');
+    Route::get('/admin/forgot-password', [CentralAuthController::class, 'showForgotPasswordForm'])->name('central.password.request');
+    Route::post('/admin/forgot-password', [CentralAuthController::class, 'sendResetLink'])->name('central.password.email');
+    Route::get('/admin/reset-password/{token}', [CentralAuthController::class, 'showResetPasswordForm'])->name('central.password.reset');
+    Route::post('/admin/reset-password', [CentralAuthController::class, 'resetPassword'])->name('central.password.update');
+});
 
 Route::post('/billing/webhook/stripe', [WebhookController::class, 'stripe'])->name('billing.webhook.stripe');
 Route::post('/billing/webhook/razorpay', [WebhookController::class, 'razorpay'])->name('billing.webhook.razorpay');

@@ -65,10 +65,6 @@ use App\Models\Customer;
 */
 
 Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCentralDomains::class,])->group(function () {
-    Route::get('/', function () {
-        return redirect()->route('login');
-    })->name('tenant.home');
-
     Route::get('/auth/register', function () {
         return view('admin.auth.register');
     })->name("register");
@@ -750,4 +746,8 @@ Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCen
         ->name('settings.system-settings.update');
     Route::delete('system-settings/remove-image/{type}', [SystemSettingController::class, 'removeImage'])
         ->name('settings.system-settings.remove-image');
+
+    Route::fallback(function () {
+        return redirect()->route('login');
+    });
 });

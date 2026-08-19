@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'central' => \App\Http\Middleware\EnsureCentralRequest::class,
             'superadmin' => \App\Http\Middleware\EnsureSuperAdmin::class,
+            'central.only' => \App\Http\Middleware\PreventAccessFromTenantDomains::class,
         ]);
 
         $middleware->validateCsrfTokens(except: [
