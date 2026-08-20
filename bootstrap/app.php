@@ -24,5 +24,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->renderable(function (Stancl\Tenancy\Exceptions\TenantCouldNotBeIdentifiedOnDomainException $e) {
+            if (in_array(request()->getHost(), config('tenancy.central_domains', []))) {
+                return null;
+            }
+
+            return response()->view('errors.tenant-not-found', [], 404);
+        });
     })->create();
