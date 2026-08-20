@@ -27,6 +27,7 @@ use App\Http\Controllers\LaborTypeController;
 use App\Http\Controllers\LocalizationSettingController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MaintenanceModeController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\NotificationSettingController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
@@ -72,6 +73,7 @@ Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCen
         Route::post('/login', [AuthController::class, 'authenticate'])->name('login.submit');
         Route::get('/auth/register', fn () => view('admin.auth.register'))->name('register');
         Route::get('/auth/login-as/{token}', [AuthController::class, 'loginAs'])->name('auth.login-as');
+        Route::get('/subscription-required', [SubscriptionController::class, 'show'])->name('subscription.required');
     });
 
     /*
@@ -79,7 +81,7 @@ Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCen
     | Authenticated Routes
     |--------------------------------------------------------------------------
     */
-    Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth', 'subscription.active'])->group(function () {
 
         // Logout
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -129,10 +131,12 @@ Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCen
         | Orders
         |--------------------------------------------------------------
         */
-        Route::prefix('admin')->name('admin.')->group(function () {
-            Route::resource('orders', OrderController::class)->except(['edit', 'update']);
-            Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
-            Route::get('orders/{order}/details', [OrderController::class, 'getOrderDetails'])->name('orders.details');
+        Route::middleware('tenant.feature:orders')->group(function () {
+            Route::prefix('admin')->name('admin.')->group(function () {
+                Route::resource('orders', OrderController::class)->except(['edit', 'update']);
+                Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+                Route::get('orders/{order}/details', [OrderController::class, 'getOrderDetails'])->name('orders.details');
+            });
         });
 
         /*
@@ -140,20 +144,22 @@ Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCen
         | Invoices & Payments
         |--------------------------------------------------------------
         */
-        Route::prefix('admin/invoices')->name('admin.invoices.')->group(function () {
-            Route::get('/', [InvoiceController::class, 'index'])->name('index');
-            Route::get('/create', [InvoiceController::class, 'create'])->name('create');
-            Route::post('/', [InvoiceController::class, 'store'])->name('store');
-            Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('show');
-            Route::get('/{invoice}/edit', [InvoiceController::class, 'edit'])->name('edit');
-            Route::put('/{invoice}', [InvoiceController::class, 'update'])->name('update');
-            Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
-            Route::patch('/{invoice}/status', [InvoiceController::class, 'updateStatus'])->name('update-status');
-            Route::get('/{invoice}/pdf', [InvoiceController::class, 'pdf'])->name('pdf');
-            Route::get('/{invoice}/add-payment', [PaymentController::class, 'create'])->name('add-payment');
-            Route::post('/{invoice}/record-payment', [PaymentController::class, 'store'])->name('record-payment');
-            Route::get('/{invoice}/ledger', [PaymentController::class, 'getLedger'])->name('ledger');
-            Route::post('/{invoice}/ledger/filter', [InvoiceController::class, 'filterLedger'])->name('ledger.filter');
+        Route::middleware('tenant.feature:invoices')->group(function () {
+            Route::prefix('admin/invoices')->name('admin.invoices.')->group(function () {
+                Route::get('/', [InvoiceController::class, 'index'])->name('index');
+                Route::get('/create', [InvoiceController::class, 'create'])->name('create');
+                Route::post('/', [InvoiceController::class, 'store'])->name('store');
+                Route::get('/{invoice}', [InvoiceController::class, 'show'])->name('show');
+                Route::get('/{invoice}/edit', [InvoiceController::class, 'edit'])->name('edit');
+                Route::put('/{invoice}', [InvoiceController::class, 'update'])->name('update');
+                Route::delete('/{invoice}', [InvoiceController::class, 'destroy'])->name('destroy');
+                Route::patch('/{invoice}/status', [InvoiceController::class, 'updateStatus'])->name('update-status');
+                Route::get('/{invoice}/pdf', [InvoiceController::class, 'pdf'])->name('pdf');
+                Route::get('/{invoice}/add-payment', [PaymentController::class, 'create'])->name('add-payment');
+                Route::post('/{invoice}/record-payment', [PaymentController::class, 'store'])->name('record-payment');
+                Route::get('/{invoice}/ledger', [PaymentController::class, 'getLedger'])->name('ledger');
+                Route::post('/{invoice}/ledger/filter', [InvoiceController::class, 'filterLedger'])->name('ledger.filter');
+            });
         });
 
         /*
@@ -161,10 +167,12 @@ Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCen
         | Gate Passes
         |--------------------------------------------------------------
         */
-        Route::name('admin.')->group(function () {
-            Route::get('gate-passes/labor-rate/{id}', [GatePassController::class, 'getLaborRate'])->name('gate-passes.labor-rate');
-            Route::resource('gate-passes', GatePassController::class);
-            Route::get('gate-passes/slip/{batchNumber}', [GatePassController::class, 'generateSlip'])->name('gate-passes.slip');
+        Route::middleware('tenant.feature:gate_passes')->group(function () {
+            Route::name('admin.')->group(function () {
+                Route::get('gate-passes/labor-rate/{id}', [GatePassController::class, 'getLaborRate'])->name('gate-passes.labor-rate');
+                Route::resource('gate-passes', GatePassController::class);
+                Route::get('gate-passes/slip/{batchNumber}', [GatePassController::class, 'generateSlip'])->name('gate-passes.slip');
+            });
         });
 
         /*
@@ -172,94 +180,101 @@ Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCen
         | Inventory & Raw Materials
         |--------------------------------------------------------------
         */
-        Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
-        Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
-        Route::get('/inventory/history', [InventoryController::class, 'getHistory'])->name('inventory.history');
-        Route::delete('/inventory/{log}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
-        Route::resource('/rawmaterials/raw-materials', RawMaterialController::class);
+        Route::middleware('tenant.feature:inventory')->group(function () {
+            Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+            Route::post('/inventory', [InventoryController::class, 'store'])->name('inventory.store');
+            Route::get('/inventory/history', [InventoryController::class, 'getHistory'])->name('inventory.history');
+            Route::delete('/inventory/{log}', [InventoryController::class, 'destroy'])->name('inventory.destroy');
+            Route::resource('/rawmaterials/raw-materials', RawMaterialController::class);
+        });
 
         /*
         |--------------------------------------------------------------
         | Production
         |--------------------------------------------------------------
         */
-        Route::resource('production-rules', ProductionRuleController::class);
-        Route::get('/admin/production-rules/raw-materials/{productId}', [ProductionRuleController::class, 'getRawMaterialsForProduct']);
-        Route::resource('production-batches', ProductionBatchController::class);
-        Route::resource('bill-of-materials', ProductionRecipeController::class);
-        Route::get('bill-of-materials/by-product/{product}', function ($productId) {
-            $recipes = \App\Models\ProductionRecipe::with('rawMaterial')
-                ->where('product_id', $productId)->get();
-            return response()->json($recipes);
+        Route::middleware('tenant.feature:production')->group(function () {
+            Route::resource('production-rules', ProductionRuleController::class);
+            Route::get('/admin/production-rules/raw-materials/{productId}', [ProductionRuleController::class, 'getRawMaterialsForProduct']);
+            Route::resource('production-batches', ProductionBatchController::class);
+            Route::resource('bill-of-materials', ProductionRecipeController::class);
+            Route::get('bill-of-materials/by-product/{product}', function ($productId) {
+                $recipes = \App\Models\ProductionRecipe::with('rawMaterial')
+                    ->where('product_id', $productId)->get();
+                return response()->json($recipes);
+            });
+            Route::get('production-batches/consumptions/{batch}', [ProductionConsumptionController::class, 'consumptions'])->name('production-batches.consumptions');
+            Route::put('/production-batches/{batch}/consumptions', [ProductionConsumptionController::class, 'update'])->name('production-consumptions.update');
         });
-        Route::get('production-batches/consumptions/{batch}', [ProductionConsumptionController::class, 'consumptions'])->name('production-batches.consumptions');
-        Route::put('/production-batches/{batch}/consumptions', [ProductionConsumptionController::class, 'update'])->name('production-consumptions.update');
 
         /*
         |--------------------------------------------------------------
         | Labor
         |--------------------------------------------------------------
         */
-        Route::resource('rate-types', RateTypeController::class)->names('rate-types');
-        Route::post('rate-types/{rate_type}/toggle-status', [RateTypeController::class, 'toggleStatus'])->name('rate-types.toggle-status');
+        Route::middleware('tenant.feature:labor')->group(function () {
+            Route::resource('rate-types', RateTypeController::class)->names('rate-types');
+            Route::post('rate-types/{rate_type}/toggle-status', [RateTypeController::class, 'toggleStatus'])->name('rate-types.toggle-status');
 
-        Route::resource('work-types', WorkTypeController::class)->names('work-types');
-        Route::post('work-types/{work_type}/toggle-status', [WorkTypeController::class, 'toggleStatus'])->name('work-types.toggle-status');
+            Route::resource('work-types', WorkTypeController::class)->names('work-types');
+            Route::post('work-types/{work_type}/toggle-status', [WorkTypeController::class, 'toggleStatus'])->name('work-types.toggle-status');
 
-        Route::resource('labor-types', LaborTypeController::class)->names('labor-types');
-        Route::post('labor-types/generate-code', [LaborTypeController::class, 'generateCode'])->name('labor-types.generate-code');
-        Route::post('labor-types/{id}/activate', [LaborTypeController::class, 'activate'])->name('labor-types.activate');
-        Route::post('labor-types/{id}/deactivate', [LaborTypeController::class, 'deactivate'])->name('labor-types.deactivate');
-        Route::post('labor-types/{id}/toggle-status', [LaborTypeController::class, 'toggleStatus'])->name('labor-types.toggle-status');
+            Route::resource('labor-types', LaborTypeController::class)->names('labor-types');
+            Route::post('labor-types/generate-code', [LaborTypeController::class, 'generateCode'])->name('labor-types.generate-code');
+            Route::post('labor-types/{id}/activate', [LaborTypeController::class, 'activate'])->name('labor-types.activate');
+            Route::post('labor-types/{id}/deactivate', [LaborTypeController::class, 'deactivate'])->name('labor-types.deactivate');
+            Route::post('labor-types/{id}/toggle-status', [LaborTypeController::class, 'toggleStatus'])->name('labor-types.toggle-status');
 
-        Route::resource('labor-cost-assignments', LaborCostAssignmentController::class)->names('labor-cost-assignments');
-        Route::get('labor-cost-assignments/labor-type/{id}/details', [LaborCostAssignmentController::class, 'getLaborTypeDetails'])->name('labor-cost-assignments.labor-type-details');
+            Route::resource('labor-cost-assignments', LaborCostAssignmentController::class)->names('labor-cost-assignments');
+            Route::get('labor-cost-assignments/labor-type/{id}/details', [LaborCostAssignmentController::class, 'getLaborTypeDetails'])->name('labor-cost-assignments.labor-type-details');
 
-        Route::get('labor-history', [LaborHistoryController::class, 'index'])->name('labor-history.index');
-        Route::get('labor-history/export', [LaborHistoryController::class, 'export'])->name('labor-history.export');
+            Route::get('labor-history', [LaborHistoryController::class, 'index'])->name('labor-history.index');
+            Route::get('labor-history/export', [LaborHistoryController::class, 'export'])->name('labor-history.export');
 
-        Route::get('labor-cost-reports', [LaborCostReportController::class, 'index'])->name('labor-cost-reports.index');
-        Route::get('labor-cost-reports/generate', [LaborCostReportController::class, 'generate'])->name('labor-cost-reports.generate');
-        Route::get('labor-cost-reports/export-pdf', [LaborCostReportController::class, 'exportPdf'])->name('labor-cost-reports.export-pdf');
-        Route::get('labor-cost-reports/export-excel', [LaborCostReportController::class, 'exportExcel'])->name('labor-cost-reports.export-excel');
+            Route::get('labor-cost-reports', [LaborCostReportController::class, 'index'])->name('labor-cost-reports.index');
+            Route::get('labor-cost-reports/generate', [LaborCostReportController::class, 'generate'])->name('labor-cost-reports.generate');
+            Route::get('labor-cost-reports/export-pdf', [LaborCostReportController::class, 'exportPdf'])->name('labor-cost-reports.export-pdf');
+            Route::get('labor-cost-reports/export-excel', [LaborCostReportController::class, 'exportExcel'])->name('labor-cost-reports.export-excel');
+        });
 
         /*
         |--------------------------------------------------------------
         | Purchases (Placeholder Views)
         |--------------------------------------------------------------
         */
-        Route::get('/purchases/purchases-view', fn () => view('admin.pages.purchases.purchases-view'))->name('purchases-view');
-        Route::get('/purchases/add-purchase', fn () => view('admin.pages.purchases.add-purchase'))->name('add-purchase');
-        Route::get('/purchases/edit-purchase', fn () => view('admin.pages.purchases.edit-purchase'))->name('edit-purchase');
+        Route::middleware('tenant.feature:purchases')->group(function () {
+            Route::get('/purchases/purchases-view', fn () => view('admin.pages.purchases.purchases-view'))->name('purchases-view');
+            Route::get('/purchases/add-purchase', fn () => view('admin.pages.purchases.add-purchase'))->name('add-purchase');
+            Route::get('/purchases/edit-purchase', fn () => view('admin.pages.purchases.edit-purchase'))->name('edit-purchase');
 
-        /*
-        |--------------------------------------------------------------
-        | Purchase Orders (Placeholder Views)
-        |--------------------------------------------------------------
-        */
-        Route::get('/purchaseorders/purchase-order-view', fn () => view('admin.pages.purchaseorders.purchase-order-view'))->name('purchase-order-view');
-        Route::get('/purchaseorders/add-purchase-order', fn () => view('admin.pages.purchaseorders.add-purchase-order'))->name('add-purchase-orders');
-        Route::get('/purchaseorders/edit-purchase-order', fn () => view('admin.pages.purchaseorders.edit-purchase-order'))->name('edit-purchase-orders');
+            Route::get('/purchaseorders/purchase-order-view', fn () => view('admin.pages.purchaseorders.purchase-order-view'))->name('purchase-order-view');
+            Route::get('/purchaseorders/add-purchase-order', fn () => view('admin.pages.purchaseorders.add-purchase-order'))->name('add-purchase-orders');
+            Route::get('/purchaseorders/edit-purchase-order', fn () => view('admin.pages.purchaseorders.edit-purchase-order'))->name('edit-purchase-orders');
+        });
 
         /*
         |--------------------------------------------------------------
         | Suppliers (Placeholder Views)
         |--------------------------------------------------------------
         */
-        Route::get('/suppliers/suppliers-view', fn () => view('admin.pages.suppliers.suppliers-view'))->name('suppliers');
-        Route::get('/suppliers/supplier-payment', fn () => view('admin.pages.suppliers.supplier-payment'))->name('supplier-payment');
+        Route::middleware('tenant.feature:suppliers')->group(function () {
+            Route::get('/suppliers/suppliers-view', fn () => view('admin.pages.suppliers.suppliers-view'))->name('suppliers');
+            Route::get('/suppliers/supplier-payment', fn () => view('admin.pages.suppliers.supplier-payment'))->name('supplier-payment');
+        });
 
         /*
         |--------------------------------------------------------------
         | Finances (Placeholder Views)
         |--------------------------------------------------------------
         */
-        Route::get('/finances/expenses', fn () => view('admin.pages.finances.expenses'))->name('expenses');
-        Route::get('/finances/incomes', fn () => view('admin.pages.finances.incomes'))->name('incomes');
-        Route::get('/finances/payments', fn () => view('admin.pages.finances.payments'))->name('payments');
-        Route::get('/finances/transactions', fn () => view('admin.pages.finances.transactions'))->name('transactions');
-        Route::get('/finances/bank-accounts', fn () => view('admin.pages.finances.bank-accounts'))->name('bank-accounts');
-        Route::get('/finances/money-transfer', fn () => view('admin.pages.finances.money-transfer'))->name('money-transfer');
+        Route::middleware('tenant.feature:finances')->group(function () {
+            Route::get('/finances/expenses', fn () => view('admin.pages.finances.expenses'))->name('expenses');
+            Route::get('/finances/incomes', fn () => view('admin.pages.finances.incomes'))->name('incomes');
+            Route::get('/finances/payments', fn () => view('admin.pages.finances.payments'))->name('payments');
+            Route::get('/finances/transactions', fn () => view('admin.pages.finances.transactions'))->name('transactions');
+            Route::get('/finances/bank-accounts', fn () => view('admin.pages.finances.bank-accounts'))->name('bank-accounts');
+            Route::get('/finances/money-transfer', fn () => view('admin.pages.finances.money-transfer'))->name('money-transfer');
+        });
 
         /*
         |--------------------------------------------------------------

@@ -95,71 +95,79 @@
                                 @endcanany
 
                                 <!-- Production -->
-                                @canany(['manage-production', 'manage-production-rules', 'manage-production-batches',
-                                    'manage-bom'])
-                                    <li class="submenu">
-                                        @can('manage-production')
-                                            <a href="javascript:void(0);">
-                                                <i class="isax isax-box5"></i><span>Production</span>
-                                                <span class="menu-arrow"></span>
-                                            </a>
-                                        @endcan
-                                        <ul>
-                                            @can('manage-production-rules')
-                                                <li><a href="{{ route('production-rules.index') }}">Add Rules</a></li>
+                                @if(App\Services\PlanService::for()->hasFeature('production'))
+                                    @canany(['manage-production', 'manage-production-rules', 'manage-production-batches',
+                                        'manage-bom'])
+                                        <li class="submenu">
+                                            @can('manage-production')
+                                                <a href="javascript:void(0);">
+                                                    <i class="isax isax-box5"></i><span>Production</span>
+                                                    <span class="menu-arrow"></span>
+                                                </a>
                                             @endcan
+                                            <ul>
+                                                @can('manage-production-rules')
+                                                    <li><a href="{{ route('production-rules.index') }}">Add Rules</a></li>
+                                                @endcan
 
-                                            @can('manage-production-batches')
-                                                <li><a href="{{ route('production-batches.index') }}">Add Batches</a></li>
-                                            @endcan
+                                                @can('manage-production-batches')
+                                                    <li><a href="{{ route('production-batches.index') }}">Add Batches</a></li>
+                                                @endcan
 
-                                            @can('manage-bom')
-                                                <li><a href="{{ route('bill-of-materials.index') }}">Bill of Materials (BOM)</a>
-                                                </li>
-                                            @endcan
-                                        </ul>
-                                    </li>
-                                @endcanany
+                                                @can('manage-bom')
+                                                    <li><a href="{{ route('bill-of-materials.index') }}">Bill of Materials (BOM)</a>
+                                                    </li>
+                                                @endcan
+                                            </ul>
+                                        </li>
+                                    @endcanany
+                                @endif
 
                                 <!-- Raw Material -->
-                                @can('manage-raw-materials')
-                                    <li>
-                                        <a href="{{ route('raw-materials.index') }}">
-                                            <i class="isax isax-layer5"></i>
-                                            <span>Raw Material</span>
-                                        </a>
-                                    </li>
-                                @endcan
+                                @if(App\Services\PlanService::for()->hasFeature('inventory'))
+                                    @can('manage-raw-materials')
+                                        <li>
+                                            <a href="{{ route('raw-materials.index') }}">
+                                                <i class="isax isax-layer5"></i>
+                                                <span>Raw Material</span>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                @endif
 
                                 <!-- Inventory -->
-                                @can('view-inventory')
-                                    <li>
-                                        <a href="{{ route('inventory.index') }}">
-                                            <i class="isax isax-lifebuoy5"></i><span>Inventory</span>
-                                        </a>
-                                    </li>
-                                @endcan
+                                @if(App\Services\PlanService::for()->hasFeature('inventory'))
+                                    @can('view-inventory')
+                                        <li>
+                                            <a href="{{ route('inventory.index') }}">
+                                                <i class="isax isax-lifebuoy5"></i><span>Inventory</span>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                @endif
 
                                 <!-- Accounts -->
-                                @canany(['manage-invoices', 'view-invoices', 'create-invoices'])
-                                    <li class="submenu">
-                                        @can('manage-invoices')
-                                            <a href="javascript:void(0);">
-                                                <i class="isax isax-receipt-item5"></i><span>Accounts</span>
-                                                <span class="menu-arrow"></span>
-                                            </a>
-                                        @endcan
-                                        <ul>
-                                            @can('view-invoices')
-                                                <li><a href="{{ route('admin.invoices.index') }}">Invoices</a></li>
+                                @if(App\Services\PlanService::for()->hasFeature('invoices'))
+                                    @canany(['manage-invoices', 'view-invoices', 'create-invoices'])
+                                        <li class="submenu">
+                                            @can('manage-invoices')
+                                                <a href="javascript:void(0);">
+                                                    <i class="isax isax-receipt-item5"></i><span>Accounts</span>
+                                                    <span class="menu-arrow"></span>
+                                                </a>
                                             @endcan
+                                            <ul>
+                                                @can('view-invoices')
+                                                    <li><a href="{{ route('admin.invoices.index') }}">Invoices</a></li>
+                                                @endcan
 
-                                            @can('create-invoices')
-                                                <li><a href="{{ route('admin.invoices.create') }}">Create Invoice</a></li>
-                                            @endcan
-                                        </ul>
-                                    </li>
-                                @endcanany
+                                                @can('create-invoices')
+                                                    <li><a href="{{ route('admin.invoices.create') }}">Create Invoice</a></li>
+                                                @endcan
+                                            </ul>
+                                        </li>
+                                    @endcanany
+                                @endif
 
                                 <!-- Customers -->
                                 @canany(['manage-customers', 'view-customers'])
@@ -182,105 +190,111 @@
                         </li>
                     @endcanany
 
-                    @canany(['view-order-management', 'manage-orders', 'view-orders'])
-                        <li class="menu-title"><span>Order Management</span></li>
+                    @if(App\Services\PlanService::for()->hasFeature('orders'))
+                        @canany(['view-order-management', 'manage-orders', 'view-orders'])
+                            <li class="menu-title"><span>Order Management</span></li>
 
-                        <li>
-                            <ul>
-                                <li class="submenu">
-                                    @can('manage-orders')
-                                        <a href="javascript:void(0);">
-                                            <i class="isax isax-shopping-cart"></i>
-                                            <span>Orders</span>
-                                            <span class="menu-arrow"></span>
-                                        </a>
-                                    @endcan
-                                    <ul>
-                                        @can('view-orders')
-                                            <li><a href="{{ route('admin.orders.index') }}">All Orders</a></li>
+                            <li>
+                                <ul>
+                                    <li class="submenu">
+                                        @can('manage-orders')
+                                            <a href="javascript:void(0);">
+                                                <i class="isax isax-shopping-cart"></i>
+                                                <span>Orders</span>
+                                                <span class="menu-arrow"></span>
+                                            </a>
                                         @endcan
+                                        <ul>
+                                            @can('view-orders')
+                                                <li><a href="{{ route('admin.orders.index') }}">All Orders</a></li>
+                                            @endcan
 
-                                        @can('create-orders')
-                                            <li><a href="{{ route('admin.orders.create') }}">Create New Order</a></li>
+                                            @can('create-orders')
+                                                <li><a href="{{ route('admin.orders.create') }}">Create New Order</a></li>
+                                            @endcan
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endcanany
+                    @endif
+
+                    @if(App\Services\PlanService::for()->hasFeature('gate_passes'))
+                        @canany(['view-management', 'manage-gate-passes', 'view-gate-passes'])
+                            <li class="menu-title"><span>Gate Pass Management</span></li>
+
+                            <li>
+                                <ul>
+                                    <li class="submenu">
+                                        @can('manage-gate-passes')
+                                            <a href="javascript:void(0);">
+                                                <i class="isax isax-scan"></i>
+                                                <span>Gate Pass</span>
+                                                <span class="menu-arrow"></span>
+                                            </a>
                                         @endcan
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    @endcanany
+                                        <ul>
+                                            @can('view-gate-passes')
+                                                <li><a href="{{ route('admin.gate-passes.index') }}">All Passes</a></li>
+                                            @endcan
 
-                    @canany(['view-management', 'manage-gate-passes', 'view-gate-passes'])
-                        <li class="menu-title"><span>Gate Pass Management</span></li>
+                                            @can('create-gate-passes')
+                                                <li><a href="{{ route('admin.gate-passes.create') }}">Create Pass</a></li>
+                                            @endcan
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endcanany
+                    @endif
 
-                        <li>
-                            <ul>
-                                <li class="submenu">
-                                    @can('manage-gate-passes')
-                                        <a href="javascript:void(0);">
-                                            <i class="isax isax-scan"></i>
-                                            <span>Gate Pass</span>
-                                            <span class="menu-arrow"></span>
-                                        </a>
-                                    @endcan
-                                    <ul>
-                                        @can('view-gate-passes')
-                                            <li><a href="{{ route('admin.gate-passes.index') }}">All Passes</a></li>
+                    @if(App\Services\PlanService::for()->hasFeature('labor'))
+                        @canany(['view-costing', 'manage-labor', 'manage-work-types', 'manage-rate-types',
+                            'manage-labor-types', 'manage-labor-assignments', 'view-labor-history', 'view-labor-reports'])
+
+                            <li class="menu-title"><span>Costing</span></li>
+                            <li>
+                                <ul>
+                                    <!-- Labor Management -->
+                                    <li class="submenu">
+                                        @can('manage-labor')
+                                            <a href="javascript:void(0);">
+                                                <i class="isax isax-user-edit"></i>
+                                                <span>Labor Management</span>
+                                                <span class="menu-arrow"></span>
+                                            </a>
                                         @endcan
+                                        <ul>
+                                            @can('manage-work-types')
+                                                <li><a href="{{ route('work-types.index') }}">Manage Work Types</a></li>
+                                            @endcan
 
-                                        @can('create-gate-passes')
-                                            <li><a href="{{ route('admin.gate-passes.create') }}">Create Pass</a></li>
-                                        @endcan
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    @endcanany
+                                            @can('manage-rate-types')
+                                                <li><a href="{{ route('rate-types.index') }}">Manage Rate Types</a></li>
+                                            @endcan
 
-                    @canany(['view-costing', 'manage-labor', 'manage-work-types', 'manage-rate-types',
-                        'manage-labor-types', 'manage-labor-assignments', 'view-labor-history', 'view-labor-reports'])
+                                            @can('manage-labor-types')
+                                                <li><a href="{{ route('labor-types.index') }}">Manage Labor Types</a></li>
+                                            @endcan
 
-                        <li class="menu-title"><span>Costing</span></li>
-                        <li>
-                            <ul>
-                                <!-- Labor Management -->
-                                <li class="submenu">
-                                    @can('manage-labor')
-                                        <a href="javascript:void(0);">
-                                            <i class="isax isax-user-edit"></i>
-                                            <span>Labor Management</span>
-                                            <span class="menu-arrow"></span>
-                                        </a>
-                                    @endcan
-                                    <ul>
-                                        @can('manage-work-types')
-                                            <li><a href="{{ route('work-types.index') }}">Manage Work Types</a></li>
-                                        @endcan
+                                            @can('manage-labor-assignments')
+                                                <li><a href="{{ route('labor-cost-assignments.index') }}">Labor Cost Assignment</a>
+                                                </li>
+                                            @endcan
 
-                                        @can('manage-rate-types')
-                                            <li><a href="{{ route('rate-types.index') }}">Manage Rate Types</a></li>
-                                        @endcan
+                                            @can('view-labor-history')
+                                                <li><a href="{{ route('labor-history.index') }}">Labor History</a></li>
+                                            @endcan
 
-                                        @can('manage-labor-types')
-                                            <li><a href="{{ route('labor-types.index') }}">Manage Labor Types</a></li>
-                                        @endcan
-
-                                        @can('manage-labor-assignments')
-                                            <li><a href="{{ route('labor-cost-assignments.index') }}">Labor Cost Assignment</a>
-                                            </li>
-                                        @endcan
-
-                                        @can('view-labor-history')
-                                            <li><a href="{{ route('labor-history.index') }}">Labor History</a></li>
-                                        @endcan
-
-                                        @can('view-labor-reports')
-                                            <li><a href="{{ route('labor-cost-reports.index') }}">Labor Cost Reports</a></li>
-                                        @endcan
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                    @endcanany
+                                            @can('view-labor-reports')
+                                                <li><a href="{{ route('labor-cost-reports.index') }}">Labor Cost Reports</a></li>
+                                            @endcan
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        @endcanany
+                    @endif
 
 
 
@@ -438,7 +452,17 @@
         </div>
         <!-- /Sidenav Menu -->
 
-        {{-- @if (tenant()->trial_ends_at && tenant()->trial_ends_at > now())
+        @php
+            $planService = App\Services\PlanService::for();
+            $subStatus = $planService->status();
+        @endphp
+
+        @if($subStatus === 'trialing')
+            @php
+                $subscription = $planService->subscription();
+                $endsAt = $subscription?->ends_at;
+                $daysLeft = $endsAt ? max(0, $endsAt->diffInDays(now()) + 1) : 0;
+            @endphp
             <div class="sidebar-upgrade-banner">
                 <a href="{{ route('billing.plans-billings') }}" class="sidebar-upgrade-link">
                     <div class="sidebar-upgrade-icon">
@@ -447,10 +471,10 @@
                     <div class="sidebar-upgrade-content">
                         <div class="d-flex align-items-center justify-content-between mb-1">
                             <span class="sidebar-upgrade-title">Upgrade Plan</span>
-                            <span class="badge bg-primary">{{ abs(tenant()->trial_ends_at->diffInDays(now()) + 1) }}d left</span>
+                            <span class="badge bg-primary">{{ $daysLeft }}d left</span>
                         </div>
                         <p class="sidebar-upgrade-desc">
-                            Trial ends <strong>{{ tenant()->trial_ends_at->format('d M') }}</strong>. Upgrade to keep all features.
+                            Trial ends <strong>{{ $endsAt?->format('d M') }}</strong>. Upgrade to keep all features.
                         </p>
                         <span class="sidebar-upgrade-btn">
                             <i class="isax isax-arrow-right-1"></i> View Plans
@@ -458,7 +482,7 @@
                     </div>
                 </a>
             </div>
-        @elseif (tenant()->subscription_status === 'pending')
+        @elseif(in_array($subStatus, ['pending', 'expired', 'canceled']))
             <div class="sidebar-upgrade-banner pending">
                 <a href="{{ route('billing.plans-billings') }}" class="sidebar-upgrade-link">
                     <div class="sidebar-upgrade-icon pending-icon">
@@ -478,7 +502,7 @@
                     </div>
                 </a>
             </div>
-        @endif --}}
+        @endif
         </div>
     </div>
 </div>

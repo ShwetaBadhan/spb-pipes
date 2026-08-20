@@ -18,6 +18,18 @@ class Plan extends Model
         'raw_materials',
     ];
 
+    public const FEATURES = [
+        'production' => 'Production Management',
+        'labor' => 'Labor Management',
+        'orders' => 'Order Management',
+        'gate_passes' => 'Gate Pass Management',
+        'inventory' => 'Inventory Management',
+        'invoices' => 'Invoicing & Accounts',
+        'purchases' => 'Purchases',
+        'suppliers' => 'Suppliers',
+        'finances' => 'Finances',
+    ];
+
     protected $fillable = [
         'name',
         'slug',
@@ -30,6 +42,7 @@ class Plan extends Model
         'is_default',
         'sort_order',
         'limits',
+        'features',
     ];
 
     protected $casts = [
@@ -39,6 +52,7 @@ class Plan extends Model
         'is_default' => 'boolean',
         'sort_order' => 'integer',
         'limits' => 'array',
+        'features' => 'array',
     ];
 
     public function subscriptions()
@@ -76,5 +90,14 @@ class Plan extends Model
     public function isFree(): bool
     {
         return (float) $this->price <= 0;
+    }
+
+    public function hasFeature(string $key): bool
+    {
+        if ($this->features === null) {
+            return true;
+        }
+
+        return in_array($key, $this->features, true);
     }
 }

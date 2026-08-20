@@ -153,6 +153,15 @@ class PlanService
         return $this->usage($key) < $limit;
     }
 
+    public function hasFeature(string $key): bool
+    {
+        if ($this->isExpired()) {
+            return false;
+        }
+
+        return $this->plan?->hasFeature($key) ?? true;
+    }
+
     public function remaining(string $key): int
     {
         $limit = $this->limit($key);

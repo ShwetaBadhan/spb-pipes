@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'central' => \App\Http\Middleware\EnsureCentralRequest::class,
             'superadmin' => \App\Http\Middleware\EnsureSuperAdmin::class,
             'central.only' => \App\Http\Middleware\PreventAccessFromTenantDomains::class,
+            'subscription.active' => \App\Http\Middleware\EnsureActiveSubscription::class,
+            'tenant.feature' => \App\Http\Middleware\EnsureTenantFeature::class,
         ]);
 
         $middleware->validateCsrfTokens(except: [

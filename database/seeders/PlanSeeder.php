@@ -28,6 +28,7 @@ class PlanSeeder extends Seeder
                     'gate_passes' => 30,
                     'raw_materials' => 20,
                 ],
+                'features' => null,
             ],
             [
                 'name' => 'Basic',
@@ -47,6 +48,7 @@ class PlanSeeder extends Seeder
                     'gate_passes' => 500,
                     'raw_materials' => 200,
                 ],
+                'features' => ['orders', 'invoices'],
             ],
             [
                 'name' => 'Pro',
@@ -66,6 +68,7 @@ class PlanSeeder extends Seeder
                     'gate_passes' => 2500,
                     'raw_materials' => 1000,
                 ],
+                'features' => ['production', 'labor', 'orders', 'invoices', 'gate_passes', 'inventory', 'purchases'],
             ],
             [
                 'name' => 'Enterprise',
@@ -85,6 +88,7 @@ class PlanSeeder extends Seeder
                     'gate_passes' => -1,
                     'raw_materials' => -1,
                 ],
+                'features' => null,
             ],
         ];
 
