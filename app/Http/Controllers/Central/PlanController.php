@@ -22,6 +22,7 @@ class PlanController extends Controller
     {
         return view('central.plans.create', [
             'limitKeys' => Plan::LIMIT_KEYS,
+            'featureKeys' => Plan::FEATURES,
         ]);
     }
 
@@ -39,6 +40,7 @@ class PlanController extends Controller
         return view('central.plans.edit', [
             'plan' => $plan,
             'limitKeys' => Plan::LIMIT_KEYS,
+            'featureKeys' => Plan::FEATURES,
         ]);
     }
 
@@ -91,6 +93,7 @@ class PlanController extends Controller
             'is_default' => ['nullable', 'boolean'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'limits' => ['nullable', 'array'],
+            'features' => ['nullable', 'array'],
         ];
 
         if (! $plan) {
@@ -108,6 +111,15 @@ class PlanController extends Controller
         }
 
         $validated['limits'] = $limits;
+
+        $features = collect(Plan::FEATURES)
+            ->keys()
+            ->filter(fn ($key) => $request->boolean("features.{$key}"))
+            ->values()
+            ->toArray();
+
+        $validated['features'] = empty($features) ? null : $features;
+
         $validated['is_active'] = $request->boolean('is_active');
         $validated['is_default'] = $request->boolean('is_default');
 

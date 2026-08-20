@@ -188,7 +188,7 @@
                         <label class="form-label fs-13 fw-semibold">Notes</label>
                         <form action="{{ route('central.subscriptions.notes', $subscription) }}" method="POST">
                             @csrf @method('PATCH')
-                            <textarea name="notes" class="form-control form-control-sm mb-2" rows="3" placeholder="Internal notes about this subscription...">{{ $subscription->notes }}</textarea>
+                            <textarea name="notes" class="form-control form-control-sm mb-2 h-100" rows="8" placeholder="Internal notes about this subscription...">{{ $subscription->notes }}</textarea>
                             <button type="submit" class="btn btn-sm btn-outline-secondary">Save Notes</button>
                         </form>
                     </div>

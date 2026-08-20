@@ -1,5 +1,6 @@
 @php
     $limits = $plan->limits ?? [];
+    $features = $plan->features ?? [];
     $route = isset($plan->id) ? route('central.plans.update', $plan) : route('central.plans.store');
 @endphp
 
@@ -59,6 +60,22 @@
                         <label for="limits_{{ $key }}" class="form-label text-capitalize">{{ str_replace('_', ' ', $key) }}</label>
                         <input type="number" name="limits[{{ $key }}]" id="limits_{{ $key }}" class="form-control"
                             value="{{ old("limits.$key", $limits[$key] ?? 0) }}" min="-1">
+                    </div>
+                @endforeach
+            </div>
+
+            <hr>
+
+            <h6 class="fw-semibold mb-3">Features <span class="text-muted small fw-normal">(leave unchecked = all features enabled)</span></h6>
+
+            <div class="row g-3">
+                @foreach ($featureKeys as $key => $label)
+                    <div class="col-md-4">
+                        <div class="form-check form-switch">
+                            <input type="checkbox" name="features[{{ $key }}]" id="feature_{{ $key }}" value="1"
+                                class="form-check-input" @checked(in_array($key, old('features', $features)))>
+                            <label for="feature_{{ $key }}" class="form-check-label">{{ $label }}</label>
+                        </div>
                     </div>
                 @endforeach
             </div>

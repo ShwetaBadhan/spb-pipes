@@ -33,6 +33,7 @@
                             <th>Price</th>
                             <th>Period</th>
                             <th>Limits</th>
+                            <th>Features</th>
                             <th>Status</th>
                             <th>Default</th>
                             <th class="text-end">Actions</th>
@@ -62,6 +63,17 @@
                                         @endforeach
                                         @if (collect($plan->limits ?? [])->contains(fn ($v) => $v < 0))
                                             <span class="badge bg-success-subtle text-success">unlimited</span>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1" style="max-width: 280px;">
+                                        @if (empty($plan->features))
+                                            <span class="badge bg-success-subtle text-success">all features</span>
+                                        @else
+                                            @foreach ($plan->features as $feature)
+                                                <span class="badge bg-primary-subtle text-primary">{{ \App\Models\Plan::FEATURES[$feature] ?? $feature }}</span>
+                                            @endforeach
                                         @endif
                                     </div>
                                 </td>
@@ -96,7 +108,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">No plans yet.</td>
+                                <td colspan="8" class="text-center text-muted py-4">No plans yet.</td>
                             </tr>
                         @endforelse
                     </tbody>
