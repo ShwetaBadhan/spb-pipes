@@ -73,6 +73,8 @@
                 </div>
             @endif
 
+            @dump($tenant->toArray())
+
             <!-- Start Breadcrumb -->
             <div class="d-flex d-block align-items-center justify-content-between flex-wrap gap-3 mb-3">
                 <div>

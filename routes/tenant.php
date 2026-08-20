@@ -46,6 +46,7 @@ use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserRegisterController;
 use App\Http\Controllers\WorkTypeController;
 use Illuminate\Support\Facades\Route;
+use Stancl\Tenancy\Middleware\ScopeSessions;
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -59,7 +60,7 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 |
 */
 
-Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCentralDomains::class])->group(function () {
+Route::middleware(['web', InitializeTenancyByDomain::class, PreventAccessFromCentralDomains::class, ScopeSessions::class])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
