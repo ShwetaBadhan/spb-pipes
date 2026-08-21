@@ -66,6 +66,55 @@
         section {
             scroll-margin-top: 80px;
         }
+        :root {
+            --brand-dark: #1a4a7a;
+            --brand-light: #2a6cb6;
+        }
+        .brand-gradient {
+            background-image: linear-gradient(135deg, #1a4a7a, #2a6cb6);
+        }
+        .brand-text {
+            color: var(--brand-dark);
+        }
+        .btn-brand {
+            background-image: linear-gradient(135deg, #1a4a7a, #2a6cb6);
+            color: #fff;
+            transition: filter .2s ease, transform .15s ease;
+        }
+        .btn-brand:hover {
+            filter: brightness(1.12);
+            color: #fff;
+        }
+        .btn-brand:active {
+            transform: scale(.97);
+        }
+        .btn-outline-brand {
+            border: 1px solid var(--brand-light);
+            color: var(--brand-dark);
+            transition: background-color .2s ease;
+        }
+        .btn-outline-brand:hover {
+            background-color: rgba(42, 108, 182, .08);
+        }
+        .badge-brand-pill {
+            border: 1px solid #cfe0f2;
+            background-color: rgba(42, 108, 182, .10);
+            color: var(--brand-dark);
+        }
+        .plan-featured {
+            box-shadow: 0 0 0 2px var(--brand-light), 0 1rem 2rem -0.5rem rgba(26, 74, 122, .25);
+        }
+        .feature-tile {
+            transition: opacity .5s ease, transform .5s ease, translate .2s ease, background-color .3s ease, box-shadow .3s ease;
+        }
+        .feature-tile.feature-anim {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+        .feature-tile.is-visible {
+            opacity: 1;
+            transform: none;
+        }
     </style>
 @endpush
 
@@ -97,14 +146,14 @@
 
             <div class="hidden md:block space-x-3">
                 @if (auth('central')->check())
-                    <a href="{{ route('central.dashboard') }}" class="inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-700 transition text-white rounded-md">
+                    <a href="{{ route('central.dashboard') }}" class="btn-brand inline-block px-6 py-2 rounded-md">
                         Dashboard
                     </a>
                 @else
-                    <a href="{{ route('central.register') }}" class="inline-block px-6 py-2 bg-indigo-600 hover:bg-indigo-700 transition text-white rounded-md">
+                    <a href="{{ route('central.register') }}" class="btn-brand inline-block px-6 py-2 rounded-md">
                         Get started
                     </a>
-                    <a href="{{ route('central.login') }}" class="inline-block hover:bg-slate-100 transition px-6 py-2 border border-indigo-600 rounded-md">
+                    <a href="{{ route('central.login') }}" class="btn-outline-brand inline-block px-6 py-2 rounded-md">
                         Login
                     </a>
                 @endif
@@ -147,8 +196,8 @@
         </div>
 
         <main class="flex flex-col items-center max-md:px-2 container">
-            <a href="{{ route('central.register') }}" class="mt-32 flex items-center gap-2 border border-indigo-200 rounded-full p-1 pr-3 text-sm font-medium text-indigo-500 bg-indigo-200/20">
-                <span class="bg-indigo-600 text-white text-xs px-3 py-1 rounded-full">
+            <a href="{{ route('central.register') }}" class="badge-brand-pill mt-32 flex items-center gap-2 rounded-full p-1 pr-3 text-sm font-medium">
+                <span class="brand-gradient text-white text-xs px-3 py-1 rounded-full">
                     NEW
                 </span>
                 <p class="flex items-center gap-1">
@@ -166,7 +215,7 @@
                 SPB Pipes brings tenants, orders, inventory, billing and reporting together in a single secure platform — built for pipe manufacturers.
             </p>
             <div class="flex items-center gap-4 mt-8">
-                <a href="{{ route('central.register') }}" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white active:scale-95 rounded-lg px-7 h-11">
+                <a href="{{ route('central.register') }}" class="btn-brand flex items-center gap-2 active:scale-95 rounded-lg px-7 h-11">
                     Get started
                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4.166 10h11.667m0 0L9.999 4.165m5.834 5.833-5.834 5.834" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
@@ -209,136 +258,184 @@
                 Core Features
             </div>
 
-            <h1 class="mt-7 text-center text-5xl font-medium text-slate-900">
+            <h1 class="mt-7 text-center text-4xl sm:text-5xl font-medium text-slate-900">
                 Everything You Need to Run Your Business
             </h1>
 
             <p class="mt-3 max-w-[540px] text-center text-sm md:text-base text-slate-600">
-                Powerful tools for tenants, billing, inventory and reporting — designed to simplify day-to-day operations for pipe manufacturers.
+                Powerful tools for orders, invoicing, inventory, production and reporting — everything a growing pipe business needs.
             </p>
 
-            <div class="mt-10 grid w-full max-w- 6xl grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
-                <div class="flex flex-col rounded-lg border border-slate-200 bg-slate-50 p-6 hover:bg-slate-100 transition-colors duration-300">
-                    <div class="flex size-10 items-center justify-center rounded-lg border border-slate-200">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.333 17.5v-1.667A3.333 3.333 0 0 0 10 12.5H5a3.333 3.333 0 0 0-3.333 3.333V17.5M13.333 2.61a3.333 3.333 0 0 1 0 6.453m5 8.438v-1.667a3.334 3.334 0 0 0-2.5-3.225M7.5 9.167a3.333 3.333 0 1 0 0-6.667 3.333 3.333 0 0 0 0 6.667" stroke="#314158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="mt-10 grid w-full max-w -6xl grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
+                <div class="feature-tile flex flex-col rounded-xl border border-slate-200 bg-slate-50 p-6 hover:bg-white hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/70">
+                    <div class="mb-3 brand-gradient flex size-11 items-center justify-center rounded-lg shadow-sm">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4.167" y="3.333" width="11.667" height="13.333" rx="1.667" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="7.083" y="1.667" width="5.833" height="3.333" rx=".833" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 9.583h5M7.5 12.917h5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h2 class="mt-6 text-sm font-medium text-slate-800">Tenant Management</h2>
-                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Create and manage multiple tenants under a single central platform with ease.</p>
+                    <h5 class="mt-6 text-base font-semibold text-slate-900">Order Management</h5>
+                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Create, track and fulfil customer orders from confirmation to delivery in one flow.</p>
                     <div class="my-4.5 h-px w-full bg-linear-to-r from-slate-100 via-slate-200 to-slate-100"></div>
-                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm text-slate-600 group">
-                        Manage Tenants
-                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#45556c" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm font-medium brand-text group">
+                        Manage Orders
+                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#1a4a7a" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
                 </div>
 
-                <div class="flex flex-col rounded-lg border border-slate-200 bg-slate-50 p-6 hover:bg-slate-100 transition-colors duration-300">
-                    <div class="flex size-10 items-center justify-center rounded-lg border border-slate-200">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 12.503v4.166s2.525-.458 3.333-1.666c.9-1.35 0-4.167 0-4.167M3.75 13.748c-1.25 1.05-1.667 4.167-1.667 4.167s3.117-.417 4.167-1.667c.592-.7.583-1.775-.075-2.425a1.817 1.817 0 0 0-2.425-.075" stroke="#314158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 9.998a18.3 18.3 0 0 1 1.667-3.292 10.73 10.73 0 0 1 9.166-5.042c0 2.267-.65 6.25-5 9.167A18.7 18.7 0 0 1 10 12.498z" stroke="#314158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 9.996H3.333S3.792 7.471 5 6.663c1.35-.9 4.167.042 4.167.042" stroke="#314158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="feature-tile flex flex-col rounded-xl border border-slate-200 bg-slate-50 p-6 hover:bg-white hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/70">
+                    <div class="mb-3 brand-gradient flex size-11 items-center justify-center rounded-lg shadow-sm">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 11.666a.832.832 0 0 1-.65-1.358l8.25-8.5a.417.417 0 0 1 .717.383l-1.6 5.017a.833.833 0 0 0 .783 1.125h5.834a.833.833 0 0 1 .65 1.358l-8.25 8.5a.416.416 0 0 1-.717-.383l1.6-5.017a.833.833 0 0 0-.783-1.125z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h2 class="mt-6 text-sm font-medium text-slate-800">Central Settings</h2>
-                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Control platform-wide settings, configurations and preferences from one dashboard.</p>
+                    <h5 class="mt-6 text-base font-semibold text-slate-900">Invoices &amp; Payments</h5>
+                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Generate professional invoices, record payments and follow outstanding dues instantly.</p>
                     <div class="my-4.5 h-px w-full bg-linear-to-r from-slate-100 via-slate-200 to-slate-100"></div>
-                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm text-slate-600 group">
-                        Explore Settings
-                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#45556c" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm font-medium brand-text group">
+                        Create Invoices
+                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#1a4a7a" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
                 </div>
 
-                <div class="flex flex-col rounded-lg border border-slate-200 bg-slate-50 p-6 hover:bg-slate-100 transition-colors duration-300">
-                    <div class="flex size-10 items-center justify-center rounded-lg border border-slate-200">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.667 10.831c0 4.167-2.917 6.25-6.384 7.458a.83.83 0 0 1-.558-.008c-3.475-1.2-6.392-3.283-6.392-7.45V4.998a.833.833 0 0 1 .834-.834c1.666 0 3.75-1 5.2-2.266a.975.975 0 0 1 1.266 0c1.459 1.275 3.534 2.266 5.2 2.266a.833.833 0 0 1 .834.834z" stroke="#314158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="m7.5 10.003 1.667 1.666L12.5 8.336" stroke="#314158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="feature-tile flex flex-col rounded-xl border border-slate-200 bg-slate-50 p-6 hover:bg-white hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/70">
+                    <div class="mb-3 brand-gradient flex size-11 items-center justify-center rounded-lg shadow-sm">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.5 13.55v-7.1a1.667 1.667 0 0 0-.85-1.45L10.817 1.71a1.667 1.667 0 0 0-1.634 0L3.35 5a1.667 1.667 0 0 0-.85 1.45v7.1a1.667 1.667 0 0 0 .85 1.45l5.833 3.283a1.667 1.667 0 0 0 1.634 0l5.833-3.283a1.667 1.667 0 0 0 .85-1.45z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="m2.75 6.25 7.25 4.167 7.25-4.167M10 18.333v-7.916" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h2 class="mt-6 text-sm font-medium text-slate-800">Admin Roles</h2>
-                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Assign and manage super admins and central admins with role based access.</p>
+                    <h5 class="mt-6 text-base font-semibold text-slate-900">Inventory Management</h5>
+                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Track pipes, raw materials and stock levels across your warehouse in real time.</p>
                     <div class="my-4.5 h-px w-full bg-linear-to-r from-slate-100 via-slate-200 to-slate-100"></div>
-                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm text-slate-600 group">
-                        View Roles
-                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#45556c" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm font-medium brand-text group">
+                        Track Stock
+                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#1a4a7a" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
                 </div>
 
-                <div class="flex flex-col rounded-lg border border-slate-200 bg-slate-50 p-6 hover:bg-slate-100 transition-colors duration-300">
-                    <div class="flex size-10 items-center justify-center rounded-lg border border-slate-200">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 2.5H3.333a.833.833 0 0 0-.833.833v5.834c0 .46.373.833.833.833H7.5c.46 0 .833-.373.833-.833V3.333A.833.833 0 0 0 7.5 2.5m9.167 0H12.5a.833.833 0 0 0-.833.833v2.5c0 .46.373.834.833.834h4.167c.46 0 .833-.373.833-.834v-2.5a.833.833 0 0 0-.833-.833m0 7.5H12.5a.833.833 0 0 0-.833.833v5.834c0 .46.373.833.833.833h4.167c.46 0 .833-.373.833-.833v-5.834a.833.833 0 0 0-.833-.833M7.5 13.336H3.333a.833.833 0 0 0-.833.833v2.5c0 .46.373.834.833.834H7.5c.46 0 .833-.373.833-.834v-2.5a.833.833 0 0 0-.833-.833" stroke="#314158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="feature-tile flex flex-col rounded-xl border border-slate-200 bg-slate-50 p-6 hover:bg-white hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/70">
+                    <div class="mb-3 brand-gradient flex size-11 items-center justify-center rounded-lg shadow-sm">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.333 17.5v-1.667A3.333 3.333 0 0 0 10 12.5H5a3.333 3.333 0 0 0-3.333 3.333V17.5M13.333 2.61a3.333 3.333 0 0 1 0 6.453m5 8.438v-1.667a3.334 3.334 0 0 0-2.5-3.225M7.5 9.167a3.333 3.333 0 1 0 0-6.667 3.333 3.333 0 0 0 0 6.667" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h2 class="mt-6 text-sm font-medium text-slate-800">Dashboards</h2>
-                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Real time insights and reports to help you make smarter business decisions.</p>
+                    <h5 class="mt-6 text-base font-semibold text-slate-900">Customers &amp; Suppliers</h5>
+                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Maintain customer and supplier records with complete payment history in one place.</p>
                     <div class="my-4.5 h-px w-full bg-linear-to-r from-slate-100 via-slate-200 to-slate-100"></div>
-                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm text-slate-600 group">
-                        View Insights
-                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#45556c" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm font-medium brand-text group">
+                        Manage Contacts
+                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#1a4a7a" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
                 </div>
 
-                <div class="flex flex-col rounded-lg border border-slate-200 bg-slate-50 p-6 hover:bg-slate-100 transition-colors duration-300">
-                    <div class="flex size-10 items-center justify-center rounded-lg border border-slate-200">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.333" y="8.333" width="13.333" height="8.333" rx="1.667" stroke="#314158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.667 8.333V5.833a3.333 3.333 0 0 1 6.667 0v2.5" stroke="#314158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="feature-tile flex flex-col rounded-xl border border-slate-200 bg-slate-50 p-6 hover:bg-white hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/70">
+                    <div class="mb-3 brand-gradient flex size-11 items-center justify-center rounded-lg shadow-sm">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="4.583" width="15" height="10.833" rx="1.667" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 8.333h15M5.833 12.083h3.334" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h2 class="mt-6 text-sm font-medium text-slate-800">Secure &amp; Reliable</h2>
-                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Your data is protected with industry standard security practices.</p>
+                    <h5 class="mt-6 text-base font-semibold text-slate-900">Finance &amp; Expenses</h5>
+                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Monitor incomes, expenses, bank accounts and money transfers effortlessly.</p>
                     <div class="my-4.5 h-px w-full bg-linear-to-r from-slate-100 via-slate-200 to-slate-100"></div>
-                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm text-slate-600 group">
-                        Learn Security
-                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#45556c" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm font-medium brand-text group">
+                        View Finances
+                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#1a4a7a" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
                 </div>
 
-                <div class="flex flex-col rounded-lg border border-slate-200 bg-slate-50 p-6 hover:bg-slate-100 transition-colors duration-300">
-                    <div class="flex size-10 items-center justify-center rounded-lg border border-slate-200">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 11.666a.832.832 0 0 1-.65-1.358l8.25-8.5a.417.417 0 0 1 .717.383l-1.6 5.017a.833.833 0 0 0 .783 1.125h5.834a.833.833 0 0 1 .65 1.358l-8.25 8.5a.416.416 0 0 1-.717-.383l1.6-5.017a.833.833 0 0 0-.783-1.125z" stroke="#314158" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="feature-tile flex flex-col rounded-xl border border-slate-200 bg-slate-50 p-6 hover:bg-white hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/70">
+                    <div class="mb-3 brand-gradient flex size-11 items-center justify-center rounded-lg shadow-sm">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.167 16.667V10.833M10 16.667V3.333M15.833 16.667V6.667" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
-                    <h2 class="mt-6 text-sm font-medium text-slate-800">Dedicated Support</h2>
-                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Our support team is here to help you around the clock, whenever you need it.</p>
+                    <h5 class="mt-6 text-base font-semibold text-slate-900">Reports &amp; Insights</h5>
+                    <p class="mt-2 grow text-sm leading-5 text-slate-600">Labor cost, product-wise and detailed reports for smarter business decisions.</p>
                     <div class="my-4.5 h-px w-full bg-linear-to-r from-slate-100 via-slate-200 to-slate-100"></div>
-                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm text-slate-600 group">
-                        Contact Support
-                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#45556c" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <a href="{{ route('central.register') }}" class="flex items-center gap-1 text-sm font-medium brand-text group">
+                        View Reports
+                        <svg class="transition-transform duration-300 group-hover:translate-x-1" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#1a4a7a" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </a>
                 </div>
             </div>
         </div>
     </section>
 
+    <script>
+        (function () {
+            const tiles = document.querySelectorAll('.feature-tile');
+            if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            tiles.forEach((tile, i) => {
+                tile.classList.add('feature-anim');
+                tile.style.transitionDelay = `${(i % 3) * 90}ms`;
+                io.observe(tile);
+            });
+        })();
+    </script>
+
     {{-- About Section --}}
-    <section id="about" class="py-5 bg-light">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6 mb-4 mb-lg-0">
-                    <span class="badge text-bg-primary mb-2">About Us</span>
-                    <h2 class="fw-bold mb-3">About SPB Pipes</h2>
-                    <p class="text-muted">SPB Pipes is a leading manufacturer of high quality pipes and pipe related products. Our SaaS platform brings together all aspects of our business operations into a single, unified system.</p>
-                    <p class="text-muted">From tenant management to central administration, our platform is designed to scale with our business and provide a seamless experience for our team and partners.</p>
-                    <a href="{{ route('central.register') }}" class="btn btn-primary">Get Started Today</a>
+    <section id="about" class="w-full bg-slate-50 px-4 py-20 ">
+        <div class="mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-2 container">
+            <div>
+                <div class="inline-block rounded-full border border-slate-200 bg-white px-4 py-1.5 text-sm text-slate-800">
+                    About Us
                 </div>
-                <div class="col-lg-6">
-                    <div class="p-4 bg-white rounded-4 shadow-sm">
-                        <div class="d-flex align-items-start mb-4">
-                            <span class="feature-icon bg-primary bg-opacity-10 text-primary me-3">
-                                <i class="isax isax-radar"></i>
-                            </span>
-                            <div>
-                                <h6 class="fw-semibold mb-1">Our Mission</h6>
-                                <p class="text-muted mb-0">To deliver reliable, high quality products and services powered by modern technology.</p>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-start mb-4">
-                            <span class="feature-icon bg-success bg-opacity-10 text-success me-3">
-                                <i class="isax isax-eye"></i>
-                            </span>
-                            <div>
-                                <h6 class="fw-semibold mb-1">Our Vision</h6>
-                                <p class="text-muted mb-0">To be the trusted leader in pipe manufacturing through innovation and excellence.</p>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-start">
-                            <span class="feature-icon bg-warning bg-opacity-10 text-warning me-3">
-                                <i class="isax isax-heart"></i>
-                            </span>
-                            <div>
-                                <h6 class="fw-semibold mb-1">Our Values</h6>
-                                <p class="text-muted mb-0">Quality, integrity and customer satisfaction are at the heart of everything we do.</p>
-                            </div>
-                        </div>
+
+                <h2 class="mt-7 text-4xl sm:text-5xl font-medium text-slate-900">
+                    Built for Pipe Manufacturers
+                </h2>
+
+                <p class="mt-4 text-sm md:text-base leading-6 text-slate-600">
+                    SPB Pipes brings orders, invoicing, inventory, production and finances together in one secure workspace — so you spend less time on paperwork and more time making pipes.
+                </p>
+                <p class="mt-3 text-sm md:text-base leading-6 text-slate-600">
+                    From a single workshop to multiple units, the platform grows with your business and keeps every order, payment and report within reach.
+                </p>
+
+                <a href="{{ route('central.register') }}" class="btn-brand mt-8 inline-flex items-center gap-2 rounded-lg px-7 h-11 text-sm font-medium">
+                    Get Started Today
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.333 8h9.334M8 3.336l4.667 4.667L8 12.669" stroke="#fff" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+
+                <div class="mt-10 grid max-w-md grid-cols-3 gap-6">
+                    <div>
+                        <p class="text-2xl font-semibold brand-text">100+</p>
+                        <p class="mt-1 text-xs leading-4 text-slate-500">Manufacturers on board</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-semibold brand-text">50k+</p>
+                        <p class="mt-1 text-xs leading-4 text-slate-500">Invoices processed</p>
+                    </div>
+                    <div>
+                        <p class="text-2xl font-semibold brand-text">99.9%</p>
+                        <p class="mt-1 text-xs leading-4 text-slate-500">Platform uptime</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-4">
+                <div class="flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-4 transition-shadow duration-300 hover:shadow-md hover:shadow-slate-200/70">
+                    <div class="brand-gradient flex size-11 shrink-0 items-center justify-center rounded-lg shadow-sm">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="7.083" stroke="#fff" stroke-width="2"/><circle cx="10" cy="10" r="3.333" stroke="#fff" stroke-width="2"/><path d="M10 10.008V10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-semibold text-slate-900">Our Mission</h3>
+                        <p class="mt-1 text-sm leading-5 text-slate-600">To simplify how pipe businesses run their day — reliable tools, honest pricing and technology that stays out of the way.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-4 transition-shadow duration-300 hover:shadow-md hover:shadow-slate-200/70">
+                    <div class="brand-gradient flex size-11 shrink-0 items-center justify-center rounded-lg shadow-sm">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.667 10S4.583 4.167 10 4.167 18.333 10 18.333 10 15.417 15.833 10 15.833 1.667 10 1.667 10Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="10" r="2.5" stroke="#fff" stroke-width="2"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-semibold text-slate-900">Our Vision</h3>
+                        <p class="mt-1 text-sm leading-5 text-slate-600">To be the operating system behind every growing pipe manufacturer — from first order to final delivery.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-4 transition-shadow duration-300 hover:shadow-md hover:shadow-slate-200/70">
+                    <div class="brand-gradient flex size-11 shrink-0 items-center justify-center rounded-lg shadow-sm">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.083 7.292a4.167 4.167 0 0 0-7.083-2.95 4.167 4.167 0 1 0-5.892 5.892l5.892 5.891 5.892-5.891a4.167 4.167 0 0 0 1.191-2.942Z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-semibold text-slate-900">Our Values</h3>
+                        <p class="mt-1 text-sm leading-5 text-slate-600">Quality, integrity and customer satisfaction are at the heart of everything we build and support.</p>
                     </div>
                 </div>
             </div>
@@ -381,13 +478,13 @@
             }
         </style>
 
-        <div class="marquee-row w-full mx-auto max-w-5xl overflow-hidden relative">
+        <div class="marquee-row w-full mx-auto max-w-5xl overflow-hidden relative container">
             <div class="absolute left-0 top-0 h-full w-20 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent"></div>
             <div class="marquee-inner flex transform-gpu min-w-[200%] pt-10 pb-5" id="row1"></div>
             <div class="absolute right-0 top-0 h-full w-20 md:w-40 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent"></div>
         </div>
 
-        <div class="marquee-row w-full mx-auto max-w-5xl overflow-hidden relative">
+        <div class="marquee-row w-full mx-auto max-w-5xl overflow-hidden relative container">
             <div class="absolute left-0 top-0 h-full w-20 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent"></div>
             <div class="marquee-inner marquee-reverse flex transform-gpu min-w-[200%] pt-5 pb-10" id="row2"></div>
             <div class="absolute right-0 top-0 h-full w-20 md:w-40 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent"></div>
@@ -468,68 +565,83 @@
     </section>
 
     {{-- Pricing Section --}}
-    <section id="pricing" class="py-5 bg-light">
-        <div class="container">
-            <div class="text-center mb-5">
-                <span class="badge text-bg-primary mb-2">Pricing</span>
-                <h2 class="fw-bold mb-2">Simple, Transparent Pricing</h2>
-                <p class="text-muted">Choose a plan that fits your business. Start free, upgrade anytime.</p>
+    <section id="pricing" class="w-full px-4 py-20">
+        <div class="mx-auto flex w-full flex-col items-center">
+            <div class="rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-sm text-slate-800">
+                Pricing
             </div>
-            <div class="row g-4 justify-content-center">
-                @forelse ($plans as $plan)
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card h-100 border-0 shadow-sm feature-card">
-                            <div class="card-body p-4 d-flex flex-column">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 class="fw-bold mb-0">{{ $plan->name }}</h5>
-                                    @if ($plan->is_default)
-                                        <span class="badge text-bg-primary">Recommended</span>
-                                    @endif
-                                </div>
-                                @if ($plan->description)
-                                    <p class="text-muted fs-14 mb-3">{{ $plan->description }}</p>
-                                @endif
-                                <div class="mb-3">
-                                    @if ($plan->isFree())
-                                        <span class="fs-2 fw-bold">Free</span>
-                                        <span class="text-muted">forever</span>
-                                    @else
-                                        <span class="fs-2 fw-bold">{{ $plan->currency }} {{ number_format($plan->price) }}</span>
-                                        <span class="text-muted">/{{ $plan->billing_period }}</span>
-                                    @endif
-                                    @if ($plan->trial_days > 0)
-                                        <div class="fs-13 text-success mt-1">
-                                            <i class="isax isax-timer"></i> {{ $plan->trial_days }}-day free trial
-                                        </div>
-                                    @endif
-                                </div>
-                                <ul class="list-unstyled mb-4 flex-grow-1">
-                                    @foreach ($limitKeys as $key)
-                                        @php $value = $plan->limit($key); @endphp
-                                        <li class="d-flex align-items-center gap-2 mb-2">
-                                            <i class="isax isax-tick-circle text-success flex-shrink-0"></i>
-                                            <span class="text-capitalize fs-14">{{ str_replace('_', ' ', $key) }}:
-                                                @if ($value < 0)
-                                                    Unlimited
-                                                @else
-                                                    {{ $value }}
-                                                @endif
-                                            </span>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                                @if ($plan->isFree())
-                                    <a href="{{ route('central.register', ['plan' => $plan->id]) }}" class="btn btn-primary w-100">Start Free Trial</a>
-                                @elseif ($plan->trial_days > 0)
-                                    <a href="{{ route('central.register', ['plan' => $plan->id]) }}" class="btn btn-primary w-100">Start Free Trial</a>
-                                @else
-                                    <a href="{{ route('central.register', ['plan' => $plan->id]) }}" class="btn btn-primary w-100">Get Started</a>
-                                @endif
-                            </div>
+
+            <h2 class="mt-7 text-center text-4xl sm:text-5xl font-medium text-slate-900">
+                Simple, Transparent Pricing
+            </h2>
+
+            <p class="mt-3 max-w-[540px] text-center text-sm md:text-base text-slate-600">
+                Choose a plan that fits your business. Start free, upgrade anytime.
+            </p>
+
+            <div class="mt-10 grid w-full max-w-6xl grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                @php $paidPlans = $plans->reject(fn ($plan) => $plan->isFree()); @endphp
+                @forelse ($paidPlans as $plan)
+                    <div class="flex flex-col rounded-xl border bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-slate-200/70 {{ $plan->is_default ? 'plan-featured border-transparent' : 'border-slate-200' }}">
+                        <div class="flex items-center justify-between gap-3">
+                            <h3 class="text-lg font-semibold text-slate-900">{{ $plan->name }}</h3>
+                            @if ($plan->is_default)
+                                <span class="brand-gradient shrink-0 rounded-full px-3 py-1 text-xs font-medium text-white">Recommended</span>
+                            @endif
                         </div>
+
+                        @if ($plan->description)
+                            <p class="mt-2 text-sm leading-5 text-slate-600">{{ $plan->description }}</p>
+                        @endif
+
+                        <div class="mt-5">
+                            @if ($plan->isFree())
+                                <span class="text-4xl font-semibold text-slate-900">Free</span>
+                                <span class="text-sm text-slate-500">forever</span>
+                            @else
+                                <span class="text-4xl font-semibold text-slate-900">{{ $plan->currency }} {{ number_format($plan->price) }}</span>
+                                <span class="text-sm text-slate-500">/{{ $plan->billing_period }}</span>
+                            @endif
+                            @if ($plan->trial_days > 0)
+                                <div class="mt-2 flex items-center gap-1.5 text-sm text-emerald-600">
+                                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="6.333" stroke="currentColor" stroke-width="1.5"/><path d="M8 4.667V8l2.333 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                                    {{ $plan->trial_days }}-day free trial
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="my-5 h-px w-full bg-linear-to-r from-slate-100 via-slate-200 to-slate-100"></div>
+
+                        <ul class="mb-6 grow space-y-2.5">
+                            @foreach ($limitKeys as $key)
+                                @php $value = $plan->limit($key); @endphp
+                                <li class="flex items-center gap-2 text-sm">
+                                    <svg class="shrink-0" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m3.333 8.5 3 3 6.334-6.667" stroke="#1a4a7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    <span class="capitalize text-slate-600">{{ str_replace('_', ' ', $key) }}:
+                                        @if ($value < 0)
+                                            <span class="font-medium text-slate-900">Unlimited</span>
+                                        @else
+                                            <span class="font-medium text-slate-900">{{ $value }}</span>
+                                        @endif
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        @if ($plan->isFree() || $plan->trial_days > 0)
+                            <a href="{{ route('central.register', ['plan' => $plan->id]) }}" class="{{ $plan->is_default ? 'btn-brand' : 'btn-outline-brand' }} mt-auto flex h-11 items-center justify-center rounded-lg text-sm font-medium">
+                                Start Free Trial
+                            </a>
+                        @else
+                            <a href="{{ route('central.register', ['plan' => $plan->id]) }}" class="{{ $plan->is_default ? 'btn-brand' : 'btn-outline-brand' }} mt-auto flex h-11 items-center justify-center rounded-lg text-sm font-medium">
+                                Get Started
+                            </a>
+                        @endif
                     </div>
                 @empty
-                    <p class="text-center text-muted">Plans are not available yet. Please check back soon.</p>
+                    <div class="col-span-full rounded-xl border border-dashed border-slate-300 bg-slate-50 p-10 text-center">
+                        <p class="text-sm text-slate-600">Plans are not available yet. Please check back soon.</p>
+                    </div>
                 @endforelse
             </div>
         </div>
