@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-lg-4 mb-4 mb-lg-0">
                 <a class="d-inline-block mb-3" href="{{ route('home') }}">
-                    <img src="{{ asset('assets/img/logo-spb.png') }}" alt="SPB Pipes Logo" height="40">
+                    <img src="{{ asset('assets/img/saas-default-logo.png') }}" width="150" alt="SPB Pipes Logo" height="40">
                 </a>
                 <p class="text-white-50 mb-0">Powerful SaaS platform for managing SPB Pipes operations, tenants, and central administration.</p>
             </div>

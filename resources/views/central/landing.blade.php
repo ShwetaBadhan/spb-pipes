@@ -74,7 +74,7 @@
     <section id="home" class="flex flex-col items-center text-sm bg-[url('https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/hero/bg-with-grid.png')] bg-cover bg-center bg-no-repeat">
         <nav class="z-50 flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-32 backdrop-blur text-slate-800 text-sm">
             <a href="{{ route('home') }}">
-                <img src="{{ asset('assets/img/logo-spb.png') }}" alt="SPB Pipes Logo" class="h-10 w-auto">
+                <img src="{{ asset('assets/img/saas-default-logo.png') }}" width="150" alt="SPB Pipes Logo" class="h -10 w- auto">
             </a>
 
             <div class="hidden md:flex items-center gap-8 transition duration-500">
@@ -346,79 +346,125 @@
     </section>
 
     {{-- Testimonials Section --}}
-    <section id="testimonials" class="py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <span class="badge text-bg-primary mb-2">Testimonials</span>
-                <h2 class="fw-bold mb-2">What Our Customers Say</h2>
-                <p class="text-muted">Trusted by pipe manufacturers and operations teams across India.</p>
+    <section id="testimonials" class="py-20">
+        <div class="mx-auto flex w-full flex-col items-center px-4">
+            <div class="rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-sm text-slate-800">
+                Testimonials
             </div>
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm feature-card">
-                        <div class="card-body p-4">
-                            <div class="text-warning testimonial-stars mb-3">
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                            </div>
-                            <p class="text-muted mb-4">&ldquo;We moved all our tenant records, billing and inventory onto SPB Pipes. The plan limits keep our teams accountable, and setup took minutes — not months.&rdquo;</p>
-                            <div class="d-flex align-items-center gap-3">
-                                <span class="hero-avatar bg-primary text-white flex-shrink-0">RP</span>
-                                <div>
-                                    <h6 class="fw-semibold mb-0">Ramesh Patel</h6>
-                                    <span class="fs-13 text-muted">Plant Manager, Gujarat Steel Pipes</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm feature-card">
-                        <div class="card-body p-4">
-                            <div class="text-warning testimonial-stars mb-3">
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                            </div>
-                            <p class="text-muted mb-4">&ldquo;The multi-tenant setup lets each of our units run independently while I keep full control from the central dashboard. Reporting that used to take a day now takes minutes.&rdquo;</p>
-                            <div class="d-flex align-items-center gap-3">
-                                <span class="hero-avatar bg-success text-white flex-shrink-0">PS</span>
-                                <div>
-                                    <h6 class="fw-semibold mb-0">Priya Sharma</h6>
-                                    <span class="fs-13 text-muted">Operations Head, Titan Pipes Ltd</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 border-0 shadow-sm feature-card">
-                        <div class="card-body p-4">
-                            <div class="text-warning testimonial-stars mb-3">
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                                <i class="isax isax-star-1"></i>
-                            </div>
-                            <p class="text-muted mb-4">&ldquo;Upgrading plans is effortless and the support team is genuinely responsive. It&rsquo;s the first system our entire team actually enjoys using every single day.&rdquo;</p>
-                            <div class="d-flex align-items-center gap-3">
-                                <span class="hero-avatar bg-warning text-dark flex-shrink-0">AV</span>
-                                <div>
-                                    <h6 class="fw-semibold mb-0">Amit Verma</h6>
-                                    <span class="fs-13 text-muted">Director, Nova Tubes Pvt Ltd</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+            <h2 class="mt-7 text-center text-5xl font-medium text-slate-900">
+                What Our Customers Say
+            </h2>
+
+            <p class="mt-3 max-w-[540px] text-center text-sm md:text-base text-slate-600">
+                Trusted by pipe manufacturers and operations teams across India.
+            </p>
         </div>
+
+        <style>
+            @keyframes marqueeScroll {
+                0% {
+                    transform: translateX(0%);
+                }
+
+                100% {
+                    transform: translateX(-50%);
+                }
+            }
+
+            .marquee-inner {
+                animation: marqueeScroll 25s linear infinite;
+            }
+
+            .marquee-reverse {
+                animation-direction: reverse;
+            }
+        </style>
+
+        <div class="marquee-row w-full mx-auto max-w-5xl overflow-hidden relative">
+            <div class="absolute left-0 top-0 h-full w-20 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent"></div>
+            <div class="marquee-inner flex transform-gpu min-w-[200%] pt-10 pb-5" id="row1"></div>
+            <div class="absolute right-0 top-0 h-full w-20 md:w-40 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent"></div>
+        </div>
+
+        <div class="marquee-row w-full mx-auto max-w-5xl overflow-hidden relative">
+            <div class="absolute left-0 top-0 h-full w-20 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent"></div>
+            <div class="marquee-inner marquee-reverse flex transform-gpu min-w-[200%] pt-5 pb-10" id="row2"></div>
+            <div class="absolute right-0 top-0 h-full w-20 md:w-40 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent"></div>
+        </div>
+
+        <script>
+            const cardsData = [
+                {
+                    image: '{{ asset("assets/img/profiles/avatar-01.jpg") }}',
+                    name: 'Ramesh Patel',
+                    handle: '@rameshpatel',
+                    date: 'April 20, 2025',
+                    text: 'We moved all our orders, billing and inventory onto SPB Pipes. Setup took minutes — not months.'
+                },
+                {
+                    image: '{{ asset("assets/img/profiles/avatar-04.jpg") }}',
+                    name: 'Priya Sharma',
+                    handle: '@priyasharma',
+                    date: 'May 10, 2025',
+                    text: 'Each unit runs independently while I keep full control from one dashboard. Reporting that took a day now takes minutes.'
+                },
+                {
+                    image: '{{ asset("assets/img/profiles/avatar-07.jpg") }}',
+                    name: 'Amit Verma',
+                    handle: '@amitverma',
+                    date: 'June 5, 2025',
+                    text: 'Upgrading plans is effortless and support is genuinely responsive. The first system our team enjoys using daily.'
+                },
+                {
+                    image: '{{ asset("assets/img/profiles/avatar-12.jpg") }}',
+                    name: 'Sneha Kapoor',
+                    handle: '@snehakapoor',
+                    date: 'July 18, 2025',
+                    text: 'Gate passes, labor reports and invoices in one place — our dispatch desk runs twice as fast now.'
+                },
+            ];
+
+            const row1 = document.getElementById('row1');
+            const row2 = document.getElementById('row2');
+
+            const createCard = (card) => `
+                <div class="p-4 rounded-lg mx-4 shadow hover:shadow-lg transition-all duration-200 w-72 shrink-0">
+                    <div class="flex gap-2">
+                        <img class="size-11 rounded-full" src="${card.image}" alt="User Image">
+                        <div class="flex flex-col">
+                            <div class="flex items-center gap-1">
+                                <p>${card.name}</p>
+                                <svg class="mt-0.5" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.555.72a4 4 0 0 1-.297.24c-.179.12-.38.202-.59.244a4 4 0 0 1-.38.041c-.48.039-.721.058-.922.129a1.63 1.63 0 0 0-.992.992c-.071.2-.09.441-.129.922a4 4 0 0 1-.041.38 1.6 1.6 0 0 1-.245.59 3 3 0 0 1-.239.297c-.313.368-.47.551-.56.743-.213.444-.213.96 0 1.404.09.192.247.375.56.743.125.146.187.219.24.297.12.179.202.38.244.59.018.093.026.189.041.38.039.48.058.721.129.922.163.464.528.829.992.992.2.071.441.09.922.129.191.015.287.023.38.041.21.042.411.125.59.245.078.052.151.114.297.239.368.313.551.47.743.56.444.213.96.213 1.404 0 .192-.09.375-.247.743-.56.146-.125.219-.187.297-.24.179-.12.38-.202.59-.244a4 4 0 0 1 .38-.041c.48-.039.721-.058.922-.129.464-.163.829-.528.992-.992.071-.2.09-.441.129-.922a4 4 0 0 1 .041-.38c.042-.21.125-.411.245-.59.052-.078.114-.151.239-.297.313-.368.47-.551.56-.743.213-.444.213-.96 0-1.404-.09-.192-.247-.375-.56-.743a4 4 0 0 1-.24-.297 1.6 1.6 0 0 1-.244-.59 3 3 0 0 1-.041-.38c-.039-.48-.058-.721-.129-.922a1.63 1.63 0 0 0-.992-.992c-.2-.071-.441-.09-.922-.129a4 4 0 0 1-.38-.041 1.6 1.6 0 0 1-.59-.245A3 3 0 0 1 7.445.72C7.077.407 6.894.25 6.702.16a1.63 1.63 0 0 0-1.404 0c-.192.09-.375.247-.743.56m4.07 3.998a.488.488 0 0 0-.691-.69l-2.91 2.91-.958-.957a.488.488 0 0 0-.69.69l1.302 1.302c.19.191.5.191.69 0z" fill="#2196F3" />
+                                </svg>
+                            </div>
+                            <span class="text-xs text-slate-500">${card.handle}</span>
+                        </div>
+                    </div>
+                    <p class="text-sm py-4 text-gray-800">${card.text}</p>
+                    <div class="flex items-center justify-between text-slate-500 text-xs">
+                        <div class="flex items-center gap-1">
+                            <span>Posted on</span>
+                            <a href="https://x.com" target="_blank" class="hover:text-sky-500">
+                                <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="m.027 0 4.247 5.516L0 10h.962l3.742-3.926L7.727 10H11L6.514 4.174 10.492 0H9.53L6.084 3.616 3.3 0zM1.44.688h1.504l6.64 8.624H8.082z" fill="currentColor" />
+                                </svg>
+                            </a>
+                        </div>
+                        <p>${card.date}</p>
+                    </div>
+                </div>
+            `;
+
+            const renderCards = (target) => {
+                const doubled = [...cardsData, ...cardsData];
+                doubled.forEach(card => target.insertAdjacentHTML('beforeend', createCard(card)));
+            };
+
+            renderCards(row1);
+            renderCards(row2);
+        </script>
     </section>
 
     {{-- Pricing Section --}}
