@@ -188,7 +188,7 @@
         </div>
         @if ($tenants->hasPages())
             <div class="card-footer bg-white">
-                {{ $tenants->links() }}
+                {{ $tenants->links('pagination::bootstrap-5') }}
             </div>
         @endif
     </div>

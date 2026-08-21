@@ -98,7 +98,7 @@
         </div>
         @if ($subscriptions->hasPages())
             <div class="card-footer bg-white">
-                {{ $subscriptions->links() }}
+                {{ $subscriptions->links('pagination::bootstrap-5') }}
             </div>
         @endif
     </div>
