@@ -11,7 +11,7 @@ use Stancl\Tenancy\Events\TenantCreated;
 
 class TenantSeeder extends Seeder
 {
-    public int $count = 10;
+    public int $count = 50;
 
     public function run(): void
     {
