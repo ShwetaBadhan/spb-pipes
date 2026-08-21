@@ -28,8 +28,9 @@ class DatabaseSeeder extends Seeder
         RateTypeSeeder::class,
         WorkTypeSeeder::class,
          PermissionSeeder::class,
-         PlanSeeder::class,
-    ]);
+          PlanSeeder::class,
+         TenantSeeder::class,
+     ]);
        
     }
 }
